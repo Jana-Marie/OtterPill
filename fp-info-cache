@@ -1,4 +1,4 @@
-15780737721998909
+15788522269921909
 badgelib
 A150GKCBBUP5A
 
@@ -50806,6 +50806,20 @@ otter_laying_2_8251
 0
 0
 otter
+otter_laying_144
+
+
+0
+0
+0
+otter
+otter_laying_144_Cu
+
+
+0
+0
+0
+otter
 otter_laying_278
 
 
@@ -50918,6 +50932,13 @@ otter_wave_11082
 0
 0
 otter
+PA1137NL
+
+
+0
+10
+10
+otter
 PAD7.5x12
 
 
@@ -50931,6 +50952,20 @@ Pads7.5x12
 0
 1
 1
+otter
+PinHeader_1x03_P2.00mm_Vertical_COMBI
+Through hole straight pin header, 1x03, 2.00mm pitch, single row
+Through hole pin header THT 1x03 2.00mm single row
+0
+6
+3
+otter
+PinHeader_1x06_P2.00mm_Vertical_COMBI
+Through hole straight pin header, 1x06, 2.00mm pitch, single row
+Through hole pin header THT 1x06 2.00mm single row
+0
+12
+6
 otter
 RS20H11AA015
 
