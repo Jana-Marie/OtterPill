@@ -13,7 +13,8 @@ More documentation and firmware examples will be aviable soon.
 
 Or you can generate a basic firmware with HAL init and Makefile with CubeMX. The binary can then be build with make flashed with dfu-utils.
 
-    $ dfu-util -a 0 -s 0x08000000:leave -D build/pd-buddy-firmware.bin
+    $ make
+    $ dfu-util -a 0 -s 0x08000000:leave -D build/firmware.bin
 
 ## Images
 
