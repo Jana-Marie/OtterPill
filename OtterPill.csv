@@ -1,19 +1,19 @@
-References,Qty,Description,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Digikey,Mouser,RS,Newark,Farnell
-"C1,C4",2,10u 25V,Panasonic,ECA-1HM100,,,,,,,,,,,,,,,,,,,,,,,,,,,
-"C2,C3,C5,C6,C7,C8,C9,C10",8,100n 50V,Yageo,CC0603KRX7R9BB104,Murata,GRM188R71H104KA93D,Yageo,CC0805KRX7R9BB104,Murata,GRM21BR71H104KA01L,,,,,,,,,,,,,,,,,,,,,
-D1,1,LED RED,Lite-On,LTST-C190KRKT,Avago,HSMH-C190,Everlight,19-217-R6C-AL1M2VY-3T,,,,,,,,,,,,,,,,,,,160-1436-1-ND,859LTSTC190KRKT,7166570,68Y1170,2497373
-D2,1,LED GREEN,Lite-On,LTST-C190GKT,Avago,HSMG-C190,Everlight,19-217-G7C-AN1P2-3T,,,,,,,,,,,,,,,,,,,160-1183-1-ND,859LTSTC190GKT,6920975,68Y1165,2497374
-"D3,D4",2,SM4007PL,,,,,,,,,,,,,,,,,,,,,,,,,SM4007PL-TPMSCT-ND,833SM4007PLTP,,,2371000
-J1,1,USB-c,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-"J3,J4",2,PinHeader_1x15_P2.54mm_Vertical,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-J5,1,PinHeader_1x04_P2.54mm_Horizontal,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-L1,1,4.7uH,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-"R1,R2",2,DNP,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-"R5,R3,R4,R7,R10,R12,R11",7,5.1k Ohm,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-R6,1,16k Ohm,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-"R8,R9",2,0 Ohm,Yageo,RC0402JR-070RL,Panasonic,ERJ-2GE0R00X,Vishay,CRCW04020000Z0ED,Yageo,RC0603JR-070RL,Panasonic,ERJ-3GEY0R00V,Vishay,CRCW06030000Z0EA,Yageo,RC0805JR-070RL,Panasonic,ERJ-6GEY0R00V,Vishay,CRCW08050000Z0EA,Yageo,RC1206JR-070RL,Panasonic,ERJ-8GEY0R00V,Vishay,CRCW12060000Z0EA,,,,,
-SW1,1,SPST_PTS810,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-U1,1,USBLC6-4,,,,,,,,,,,,,,,,,,,,,,,,,497-4492-1-ND,511USBLC64SC6,9206272,51AC9790,2849694
-U2,1,STM32F072CBU6,,,,,,,,,,,,,,,,,,,,,,,,,497-18985-1-ND,511STM32F072CBU6,9074748,75X0285,2432095
-U3,1,ACT4088,,,,,,,,,,,,,,,,,,,,,,,,,1488-1108-1-ND,107ACT4088UST,,,
-U4,1,FUSB302B,,,,,,,,,,,,,,,,,,,,,,,,,FUSB302BVMPXOSCT-ND,863FUSB302BGEVB,1464481P,24AC8628,2770617
+References,Qty,Description,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Manufacturer,MPN,Digikey,Mouser,RS,Newark,Farnell,LCSC,
+"C1,C4",2,10u 25V,Panasonic,ECA-1HM100,,,,,,,,,,,,,,,,,,,,,,,,,,,,C15850,
+"C2,C3,C5,C6,C7,C8,C9,C10",8,100n 50V,Yageo,CC0603KRX7R9BB104,Murata,GRM188R71H104KA93D,Yageo,CC0805KRX7R9BB104,Murata,GRM21BR71H104KA01L,,,,,,,,,,,,,,,,,,,,,,C1525,
+D1,1,LED RED,Lite-On,LTST-C190KRKT,Avago,HSMH-C190,Everlight,19-217-R6C-AL1M2VY-3T,,,,,,,,,,,,,,,,,,,160-1436-1-ND,859LTSTC190KRKT,7166570,68Y1170,2497373,C2286,
+D2,1,LED GREEN,Lite-On,LTST-C190GKT,Avago,HSMG-C190,Everlight,19-217-G7C-AN1P2-3T,,,,,,,,,,,,,,,,,,,160-1183-1-ND,859LTSTC190GKT,6920975,68Y1165,2497374,C72043,
+"D3,D4",2,SM4007PL,,,,,,,,,,,,,,,,,,,,,,,,,SM4007PL-TPMSCT-ND,833SM4007PLTP,,,2371000,C64898,
+J1,1,USB-c,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+"J3,J4",2,PinHeader_1x15_P2.54mm_Vertical,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+J5,1,PinHeader_1x04_P2.54mm_Horizontal,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+L1,1,4.7uH,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+"R1,R2",2,DNP,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,x,
+"R5,R3,R4,R7,R10,R12,R11",7,5.1k Ohm,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,C25905,
+R6,1,16k Ohm,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,C25756,
+"R8,R9",2,0 Ohm,Yageo,RC0402JR-070RL,Panasonic,ERJ-2GE0R00X,Vishay,CRCW04020000Z0ED,Yageo,RC0603JR-070RL,Panasonic,ERJ-3GEY0R00V,Vishay,CRCW06030000Z0EA,Yageo,RC0805JR-070RL,Panasonic,ERJ-6GEY0R00V,Vishay,CRCW08050000Z0EA,Yageo,RC1206JR-070RL,Panasonic,ERJ-8GEY0R00V,Vishay,CRCW12060000Z0EA,,,,,,C17168,
+SW1,1,SPST_PTS810,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+U1,1,USBLC6-4,,,,,,,,,,,,,,,,,,,,,,,,,497-4492-1-ND,511USBLC64SC6,9206272,51AC9790,2849694,C111212,e
+U2,1,STM32F072CBU6,,,,,,,,,,,,,,,,,,,,,,,,,497-18985-1-ND,511STM32F072CBU6,9074748,75X0285,2432095,C92504,e
+U3,1,ACT4088,,,,,,,,,,,,,,,,,,,,,,,,,1488-1108-1-ND,107ACT4088UST,,,,C11135,e
+U4,1,FUSB302B,,,,,,,,,,,,,,,,,,,,,,,,,FUSB302BVMPXOSCT-ND,863FUSB302BGEVB,1464481P,24AC8628,2770617,C132291,e
