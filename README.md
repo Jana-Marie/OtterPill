@@ -1,6 +1,6 @@
 # OtterPill
 
-**V1.2 is in a untested state**
+**V1.2 is in a untested state! Please dont order pcbs until this note vanished**
 
 STM32F072 devboard featuring USB 2.0 full-speed, DFU Bootloader, USB-PD Phy, Arduino nano alike pinout and size.
 
