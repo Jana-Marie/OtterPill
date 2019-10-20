@@ -16,6 +16,10 @@ Or you can generate a basic firmware with HAL init and Makefile with CubeMX. The
     $ make
     $ dfu-util -a 0 -s 0x08000000:leave -D build/firmware.bin
 
+## USB-PD example firmware
+
+[https://github.com/Jan--Henrik/USB-PD-Firmware](https://github.com/Jan--Henrik/USB-PD-Firmware)
+
 ## Images
 
 ![](images/1.jpg)
