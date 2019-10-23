@@ -1,0 +1,18 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    </head>
+    <body>
+    <h1>/home/janhenrik/kiCAD/stm32f072PrototypingBoard/OtterPill.sch</h1>
+    <p>Sat 28 Sep 2019 06:29:43 PM CEST</p>
+    <p>Eeschema 5.0.1</p>
+    <p><b>Component Count:</b>36</p>
+    <table>
+    <tr><th style='width:640px'>Ref</th><th>Qnty</th><th>Value</th><th>Part</th><th>Datasheet</th><th>Description</th><th>Vendor</th></tr><tr><td>C1, C4</td><td>2</td><td>10u</td><td>Device:C_Small</td><td>~</td><td>Unpolarized capacitor, small symbol</td><td></td></tr><tr><td>C2, C3, C5, C6, C7, C8, C9, C10</td><td>8</td><td>100n</td><td>Device:C_Small</td><td>~</td><td>Unpolarized capacitor, small symbol</td><td></td></tr><tr><td>D1, D2</td><td>2</td><td>LED</td><td>Device:LED</td><td>~</td><td>Light emitting diode</td><td></td></tr><tr><td>D3, D4</td><td>2</td><td>SS310</td><td>Device:D_Small</td><td>~</td><td>Diode, small symbol</td><td></td></tr><tr><td>J1</td><td>1</td><td>USB-c</td><td>Connector:USB_C_Receptacle_USB2.0</td><td>https://www.usb.org/sites/default/files/documents/usb_type-c.zip</td><td>USB 2.0-only Type-C Receptacle connector</td><td></td></tr><tr><td>J3</td><td>1</td><td>1</td><td>Connector:Conn_01x15_Male</td><td>~</td><td>Generic connector, single row, 01x15, script generated (kicad-library-utils/schlib/autogen/connector/)</td><td></td></tr><tr><td>J4</td><td>1</td><td>2</td><td>Connector:Conn_01x15_Male</td><td>~</td><td>Generic connector, single row, 01x15, script generated (kicad-library-utils/schlib/autogen/connector/)</td><td></td></tr><tr><td>J5</td><td>1</td><td>SWD</td><td>Connector:Conn_01x04_Male</td><td>~</td><td>Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)</td><td></td></tr><tr><td>L1</td><td>1</td><td>4u7</td><td>Device:L_Small</td><td>~</td><td>Inductor, small symbol</td><td></td></tr><tr><td>R1, R2, R5, R7, R10, R11, R12</td><td>7</td><td>5k1</td><td>Device:R_Small</td><td>~</td><td>Resistor, small symbol</td><td></td></tr><tr><td>R3, R4</td><td>2</td><td>R</td><td>Device:R</td><td>~</td><td>Resistor</td><td></td></tr><tr><td>R6</td><td>1</td><td>16k</td><td>Device:R_Small</td><td>~</td><td>Resistor, small symbol</td><td></td></tr><tr><td>R8, R9</td><td>2</td><td>DNP</td><td>Device:R_Small</td><td>~</td><td>Resistor, small symbol</td><td></td></tr><tr><td>SW1</td><td>1</td><td>SW_Push</td><td>Switch:SW_Push</td><td>~</td><td>Push button switch, generic, two pins</td><td></td></tr><tr><td>U1</td><td>1</td><td>USBLC6-4</td><td>otter:USBLC6-4</td><td></td><td></td><td></td></tr><tr><td>U2</td><td>1</td><td>STM32F072CBUx</td><td>MCU_ST_STM32F0:STM32F072CBUx</td><td>http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/DM00090510.pdf</td><td>ARM Cortex-M0 MCU, 128KB flash, 16KB RAM, 48MHz, 2-3.6V, 37 GPIO, UFQFPN-48</td><td></td></tr><tr><td>U3</td><td>1</td><td>ACT4088</td><td>otter:ACT4088</td><td></td><td></td><td></td></tr><tr><td>U4</td><td>1</td><td>FUSB302BMPX</td><td>Interface_USB:FUSB302BMPX</td><td>http://www.onsemi.com/pub/Collateral/FUSB302B-D.PDF</td><td>Programmable USB Type-C Controller w/PD, I2C address 0x22, WQFN-14</td><td></td></tr><!--TABLEROW-->
+    </table>
+    </body>
+</html>
+    
