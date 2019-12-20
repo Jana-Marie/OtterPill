@@ -18,6 +18,10 @@ Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. T
     $ make
     $ dfu-util -a 0 -s 0x08000000:leave -D build/firmware.bin
 
+## Pinout
+
+![](pinout.png)
+
 ## USB-PD example firmware
 
 This is a working USB-PD example using ChibiOS, a new voltage can be requested by pressing the Button.
