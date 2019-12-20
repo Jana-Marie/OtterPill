@@ -2,9 +2,9 @@
 
 OtterPill is a 3$ STM32F072 devboard featuring USB 2.0 full-speed, a DFU Bootloader, a USB-PD Phy and Arduino nano alike pinout and size.
 
-Changelog V1.2: BOM cost reduction by ~40%, PCB can be fully populated by JLCSMT, more efficient buck converter (PCB gets less warm at 20V), GND-hook for probing, Reset-Pin will be exposed as pad, power pads for 20V/5A
+Changelog V1.2: BOM cost reduction by ~40%, PCB can be fully populated by JLCSMT, more efficient buck converter (PCB gets less warm at 20V), GND-hook for probing, Reset-Pin exposed as pad, power pads for 20V/5A
 
-More documentation and firmware examples will be aviable soon (including pinout diagram). 
+More documentation and firmware examples will be aviable soon. 
 
 ## Building and Flashing
 ### Via Arduino
@@ -22,11 +22,21 @@ Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. T
 
 ![](pinout.png)
 
+## Blank example firmware
+
+SoonTM
+
 ## USB-PD example firmware
 
 This is a working USB-PD example using ChibiOS, a new voltage can be requested by pressing the Button.
 
 [https://github.com/Jan--Henrik/USB-PD-Firmware](https://github.com/Jan--Henrik/USB-PD-Firmware)
+
+## Shields and addons
+
+Most Arduino shields should be compatible.
+
+#### [USB-to-CAN-adapter](https://github.com/Jan--Henrik/OtterPill-CAN-Adapter)
 
 ## Images
 
