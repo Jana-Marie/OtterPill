@@ -6,7 +6,8 @@ Changelog V1.2: BOM cost reduction by ~40%, PCB can be fully populated by JLCSMT
 
 More documentation and firmware examples will be aviable soon. 
 
-How do I get an OtterPill? I have made a small production run, OtterPills will be available soon! More details will be announced via [Twitter](twitter.com/janhenrikh/) :3
+**How do I get an OtterPill?** 
+I have made a small production run, OtterPills will be available soon! More details will be announced via [Twitter](twitter.com/janhenrikh/) :3
 
 ## Building and Flashing
 ### Via Arduino
