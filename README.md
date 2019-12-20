@@ -11,7 +11,7 @@ More documentation and firmware examples will be aviable soon (including pinout 
 
 [You can build and flash the firmware via Arduino as described here.](https://github.com/stm32duino/Arduino_Core_STM32)
 
-## Via Makefile and DFU
+### Via Makefile and DFU
 
 Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. The binary can then be build with make and flashed with dfu-utils. To enter DFU mode, press and hold the Button while plugging in power.
 
