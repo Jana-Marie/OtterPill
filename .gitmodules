@@ -1,3 +1,3 @@
 [submodule "KiCAD-libs"]
 	path = KiCAD-libs
-	url = https://github.com/Jan--Henrik/KiCAD-libs
+	url = git@github.com:Jan--Henrik/KiCAD-libs.git
