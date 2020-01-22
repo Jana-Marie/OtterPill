@@ -25,9 +25,9 @@ Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. T
 
 ![](pinout.png)
 
-## Blank example firmware
+## Blink example firmware
 
-SoonTM
+[Blink/](Blink/)
 
 ## USB-PD example firmware
 
