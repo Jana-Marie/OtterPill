@@ -33,6 +33,10 @@ Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. T
 
 [Blink/](Blink/)
 
+## Rust example
+
+[https://github.com/jamesmunns/OtterPill-rs](https://github.com/jamesmunns/OtterPill-rs)
+
 ## USB-PD example firmware
 
 This is a working USB-PD example using ChibiOS, a new voltage can be requested by pressing the Button.
