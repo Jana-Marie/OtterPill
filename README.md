@@ -35,6 +35,8 @@ Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. T
 
 ## Rust example
 
+Thank you [@jamesmunns](https://github.com/jamesmunns)! :3
+
 [https://github.com/jamesmunns/OtterPill-rs](https://github.com/jamesmunns/OtterPill-rs)
 
 ## USB-PD example firmware
