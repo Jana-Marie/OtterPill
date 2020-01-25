@@ -21,6 +21,10 @@ Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. T
     $ make
     $ dfu-util -a 0 -s 0x08000000:leave -D build/firmware.bin
 
+## Schematic
+
+[HW v1.2/OtterPill.pdf](HW%20v1.2/OtterPill.pdf)
+
 ## Pinout
 
 ![](pinout.png)
