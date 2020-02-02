@@ -29,6 +29,8 @@ Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. T
 
 ![](pinout.png)
 
+Pinout by [SarahhhhFoster](https://github.com/SarahhhhFoster) :)
+
 ## Blink example firmware
 
 [Blink/](Blink/)
