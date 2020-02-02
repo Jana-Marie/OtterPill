@@ -1,3 +1,3 @@
 # OtterPill
 
-Hardware rev 1.2 is not tested yet!
+Hardware rev 1.2 is not tested and works!
