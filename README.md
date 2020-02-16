@@ -43,7 +43,7 @@ Thank you [@jamesmunns](https://github.com/jamesmunns)! :3
 
 ## STM workshop based on OtterPill
 
-[](https://github.com/Jan--Henrik/hackerhotel-stm-workshop)
+[https://github.com/Jan--Henrik/hackerhotel-stm-workshop](https://github.com/Jan--Henrik/hackerhotel-stm-workshop)
 
 ## USB-PD example firmware
 
