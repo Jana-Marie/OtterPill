@@ -41,6 +41,10 @@ Thank you [@jamesmunns](https://github.com/jamesmunns)! :3
 
 [https://github.com/jamesmunns/OtterPill-rs](https://github.com/jamesmunns/OtterPill-rs)
 
+## STM workshop based on OtterPill
+
+[](https://github.com/Jan--Henrik/hackerhotel-stm-workshop)
+
 ## USB-PD example firmware
 
 This is a working USB-PD example using ChibiOS, a new voltage can be requested by pressing the Button.
