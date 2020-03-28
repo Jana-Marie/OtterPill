@@ -21,13 +21,31 @@ Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. T
     $ make
     $ dfu-util -a 0 -s 0x08000000:leave -D build/firmware.bin
 
+## Schematic
+
+[HW v1.2/OtterPill.pdf](HW%20v1.2/OtterPill.pdf)
+
 ## Pinout
 
 ![](pinout.png)
 
-## Blank example firmware
+Pinout by [SarahhhhFoster](https://github.com/SarahhhhFoster) :)
 
-SoonTM
+## Blink example firmware
+
+[Blink/](Blink/)
+
+## Rust example
+
+Thank you [@jamesmunns](https://github.com/jamesmunns)! :3
+
+[https://github.com/jamesmunns/OtterPill-rs](https://github.com/jamesmunns/OtterPill-rs)
+
+## STM workshop based on OtterPill
+
+[https://github.com/Jan--Henrik/hackerhotel-stm-workshop](https://github.com/Jan--Henrik/hackerhotel-stm-workshop)
+
+![](https://github.com/Jan--Henrik/hackerhotel-stm-workshop/blob/master/monochrome_c.gif)
 
 ## USB-PD example firmware
 
