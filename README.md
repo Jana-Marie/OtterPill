@@ -57,6 +57,9 @@ This is a working USB-PD example using ChibiOS, a new voltage can be requested b
 
 [https://github.com/Jan--Henrik/IBM-dials-retrofit](https://github.com/Jan--Henrik/IBM-dials-retrofit)
 
+<img src="https://raw.githubusercontent.com/Jan--Henrik/IBM-dials-retrofit/4c27e5c5fda3bd528e12d15f71b0f5aaa8c24b97/images/1.jpeg" width="600">
+
+
 ## Shields and addons
 
 Most Arduino shields should be compatible.
