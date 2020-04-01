@@ -53,6 +53,10 @@ This is a working USB-PD example using ChibiOS, a new voltage can be requested b
 
 [https://github.com/Jan--Henrik/USB-PD-Firmware](https://github.com/Jan--Henrik/USB-PD-Firmware)
 
+## IBM dials retrofit
+
+[https://github.com/Jan--Henrik/IBM-dials-retrofit](https://github.com/Jan--Henrik/IBM-dials-retrofit)
+
 ## Shields and addons
 
 Most Arduino shields should be compatible.
