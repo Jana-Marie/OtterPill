@@ -4,8 +4,6 @@ OtterPill is a 3$ STM32F072 devboard featuring USB 2.0 full-speed, a DFU Bootloa
 
 Changelog V1.2: BOM cost reduction by ~40%, PCB can be fully populated by JLCSMT, more efficient buck converter (PCB gets less warm at 20V), GND-hook for probing, Reset-Pin exposed as pad, power pads for 20V/5A
 
-More documentation and firmware examples will be aviable soon. 
-
 **How do I get an OtterPill?** 
 I have made a small production run, OtterPills will be available soon! More details will be announced via [Twitter](https://twitter.com/janhenrikh/) :3
 
