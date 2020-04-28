@@ -12,6 +12,10 @@ I have made a small production run, OtterPills will be available soon! More deta
 
 [You can build and flash the firmware via Arduino as described here.](https://github.com/stm32duino/Arduino_Core_STM32)
 
+### Via PlatformIO
+
+[https://gist.github.com/ansemjo/ab1c12f7c78abb140f7272501aff2a55](https://gist.github.com/ansemjo/ab1c12f7c78abb140f7272501aff2a55) Thank you [ansemjo](https://github.com/ansemjo) :3
+
 ### Via Makefile and DFU
 
 Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. The binary can then be build with make and flashed with dfu-utils. To enter DFU mode, press and hold the Button while plugging in power.
