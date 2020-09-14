@@ -9,13 +9,6 @@ Changelog V1.2: BOM cost reduction by ~40%, PCB can be fully populated by JLCSMT
 Via [tindie](https://www.tindie.com/products/jan_henrik/otterpill/) (if sold out DM via Twitter, I might have a few left ;))
 
 ## Building and Flashing
-### Via Arduino
-
-[You can build and flash the firmware via Arduino as described here.](https://github.com/stm32duino/Arduino_Core_STM32)
-
-### Via PlatformIO
-
-[https://gist.github.com/ansemjo/ab1c12f7c78abb140f7272501aff2a55](https://gist.github.com/ansemjo/ab1c12f7c78abb140f7272501aff2a55) Thank you [ansemjo](https://github.com/ansemjo) :3
 
 ### Via Makefile and DFU
 
@@ -23,6 +16,14 @@ Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. T
 
     $ make
     $ dfu-util -a 0 -s 0x08000000:leave -D build/firmware.bin
+
+### Via Arduino
+
+[You can build and flash the firmware via Arduino as described here.](https://github.com/stm32duino/Arduino_Core_STM32)
+
+### Via PlatformIO
+
+[https://gist.github.com/ansemjo/ab1c12f7c78abb140f7272501aff2a55](https://gist.github.com/ansemjo/ab1c12f7c78abb140f7272501aff2a55) Thank you [ansemjo](https://github.com/ansemjo) :3
 
 ## Schematic
 
