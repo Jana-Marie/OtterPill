@@ -5,12 +5,10 @@ OtterPill is a 3$ STM32F072 devboard featuring USB 2.0 full-speed, a DFU Bootloa
 Changelog V1.2: BOM cost reduction by ~40%, PCB can be fully populated by JLCSMT, more efficient buck converter (PCB gets less warm at 20V), GND-hook for probing, Reset-Pin exposed as pad, power pads for 20V/5A
 
 **How do I get an OtterPill?** 
-I have made a small production run, OtterPills will be available soon! More details will be announced via [Twitter](https://twitter.com/janhenrikh/) :3
+
+Via [tindie](https://www.tindie.com/products/jan_henrik/otterpill/) (if sold out DM via Twitter, I might have a few left ;))
 
 ## Building and Flashing
-### Via Arduino
-
-[You can build and flash the firmware via Arduino as described here.](https://github.com/stm32duino/Arduino_Core_STM32)
 
 ### Via Makefile and DFU
 
@@ -18,6 +16,14 @@ Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. T
 
     $ make
     $ dfu-util -a 0 -s 0x08000000:leave -D build/firmware.bin
+
+### Via Arduino
+
+[You can build and flash the firmware via Arduino as described here.](https://github.com/stm32duino/Arduino_Core_STM32)
+
+### Via PlatformIO
+
+[https://gist.github.com/ansemjo/ab1c12f7c78abb140f7272501aff2a55](https://gist.github.com/ansemjo/ab1c12f7c78abb140f7272501aff2a55) Thank you [ansemjo](https://github.com/ansemjo) :3
 
 ## Schematic
 
@@ -63,6 +69,14 @@ This is a working USB-PD example using ChibiOS, a new voltage can be requested b
 Most Arduino shields should be compatible.
 
 #### [USB-to-CAN-adapter](https://github.com/Jan--Henrik/OtterPill-CAN-Adapter)
+
+## Todo for HW v1.3
+
+ - [ ] Replace U1 with ESDU5V0H4
+ - [ ] Add a TVS Diode to VBUS (e.g. SJD12A22L01)
+ - [ ] Remove R8, R9
+ - [ ] Redraw the FUSB302B Symbol
+ - [ ] Consider switching to STUSB4500 (Easier PD requesting, same price)
 
 ## Images
 
