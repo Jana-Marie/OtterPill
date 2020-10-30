@@ -25,6 +25,10 @@ Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. T
 
 [https://gist.github.com/ansemjo/ab1c12f7c78abb140f7272501aff2a55](https://gist.github.com/ansemjo/ab1c12f7c78abb140f7272501aff2a55) Thank you [ansemjo](https://github.com/ansemjo) :3
 
+### Via Nodate (野点)
+
+[https://github.com/MayaPosch/Nodate](https://github.com/MayaPosch/Nodate)
+
 ## Schematic
 
 [HW v1.2/OtterPill.pdf](HW%20v1.2/OtterPill.pdf)
