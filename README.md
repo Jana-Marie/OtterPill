@@ -8,9 +8,9 @@ Changelog V1.2: BOM cost reduction by ~40%, PCB can be fully populated by JLCSMT
 
 Via [tindie](https://www.tindie.com/products/jan_henrik/otterpill/) (if sold out DM via Twitter, I might have a few left ;))
 
-## Building and Flashing
+## Building, Flashing and Frameworks
 
-### Via Makefile and DFU
+### Via Makefile and DFU (C, C++)
 
 Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. The binary can then be build with make and flashed with dfu-utils. To enter DFU mode, press and hold the Button while plugging in power.
 
@@ -25,9 +25,15 @@ Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. T
 
 [https://gist.github.com/ansemjo/ab1c12f7c78abb140f7272501aff2a55](https://gist.github.com/ansemjo/ab1c12f7c78abb140f7272501aff2a55) Thank you [ansemjo](https://github.com/ansemjo) :3
 
-### Via Nodate (野点)
+### Via Nodate (野点) (C++, Ada)
 
 [https://github.com/MayaPosch/Nodate](https://github.com/MayaPosch/Nodate)
+
+## Rust
+
+Thank you [@jamesmunns](https://github.com/jamesmunns)! :3
+
+[https://github.com/jamesmunns/OtterPill-rs](https://github.com/jamesmunns/OtterPill-rs)
 
 ## Schematic
 
