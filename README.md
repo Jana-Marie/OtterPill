@@ -45,9 +45,9 @@ Thank you [@jamesmunns](https://github.com/jamesmunns)! :3
 
 Pinout by [SarahhhhFoster](https://github.com/SarahhhhFoster) :)
 
-### Examples and projects
+## Examples and projects
 
-## Blink example firmware
+### Blink example firmware
 
 [Blink/](Blink/)
 
