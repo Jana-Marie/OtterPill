@@ -29,7 +29,7 @@ Or you can generate a basic firmware, with HAL init and Makefile, with CubeMX. T
 
 [https://github.com/MayaPosch/Nodate](https://github.com/MayaPosch/Nodate)
 
-## Rust
+### Rust
 
 Thank you [@jamesmunns](https://github.com/jamesmunns)! :3
 
@@ -45,34 +45,29 @@ Thank you [@jamesmunns](https://github.com/jamesmunns)! :3
 
 Pinout by [SarahhhhFoster](https://github.com/SarahhhhFoster) :)
 
+### Examples and projects
+
 ## Blink example firmware
 
 [Blink/](Blink/)
 
-## Rust example
-
-Thank you [@jamesmunns](https://github.com/jamesmunns)! :3
-
-[https://github.com/jamesmunns/OtterPill-rs](https://github.com/jamesmunns/OtterPill-rs)
-
-## STM workshop based on OtterPill
+### STM workshop based on OtterPill
 
 [https://github.com/Jan--Henrik/hackerhotel-stm-workshop](https://github.com/Jan--Henrik/hackerhotel-stm-workshop)
 
 ![](https://github.com/Jan--Henrik/hackerhotel-stm-workshop/blob/master/monochrome_c.gif)
 
-## USB-PD example firmware
+### USB-PD example firmware
 
 This is a working USB-PD example using ChibiOS, a new voltage can be requested by pressing the Button.
 
 [https://github.com/Jan--Henrik/USB-PD-Firmware](https://github.com/Jan--Henrik/USB-PD-Firmware)
 
-## IBM dials retrofit
+### IBM dials retrofit
 
 [https://github.com/Jan--Henrik/IBM-dials-retrofit](https://github.com/Jan--Henrik/IBM-dials-retrofit)
 
 <img src="https://raw.githubusercontent.com/Jan--Henrik/IBM-dials-retrofit/4c27e5c5fda3bd528e12d15f71b0f5aaa8c24b97/images/1.jpeg" width="600">
-
 
 ## Shields and addons
 
@@ -87,6 +82,18 @@ Most Arduino shields should be compatible.
  - [ ] Remove R8, R9
  - [ ] Redraw the FUSB302B Symbol
  - [ ] Consider switching to STUSB4500 (Easier PD requesting, same price)
+ 
+ 
+## Special thanks
+
+[@jamesmunns](https://github.com/jamesmunns) for creating the Rust examples.
+
+[@MayaPosch](https://github.com/MayaPosch) for creating the Nodate framework and adding the OtterPill.
+
+[@ansemjo](https://github.com/ansemjo) for creating a PlatformIO configuration.
+
+[@SarahhhhFoster](https://github.com/SarahhhhFoster) for creating the awesome pinout diagram.
+
 
 ## Images
 
