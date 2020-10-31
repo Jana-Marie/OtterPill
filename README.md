@@ -77,11 +77,12 @@ Most Arduino shields should be compatible.
 
 ## Todo for HW v1.3
 
- - [ ] Replace U1 with ESDU5V0H4
- - [ ] Add a TVS Diode to VBUS (e.g. SJD12A22L01)
+ - [x] Replace U1 with ESDU5V0H4
+ - [x] ~~Add a TVS Diode to VBUS (e.g. SJD12A22L01)~~ -> Added series resistor to reduce ringing
  - [ ] Remove R8, R9
- - [ ] Redraw the FUSB302B Symbol
- - [ ] Consider switching to STUSB4500 (Easier PD requesting, same price)
+ - [x] ~~Redraw the FUSB302B Symbol~~ -> forgot why, works great
+ - [x] ~~Consider switching to STUSB4500 (Easier PD requesting, same price)~~ -> FUSB works great, no need to change
+ - [x] Add VBUS ADC
  
  
 ## Special thanks
