@@ -1,0 +1,1863 @@
+ARM GAS  /tmp/cchcd7QB.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 4
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"usbpd_dpm_core.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.USBPD_PE_TaskWakeUp,"ax",%progbits
+  16              		.align	1
+  17              		.arch armv6s-m
+  18              		.syntax unified
+  19              		.code	16
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	USBPD_PE_TaskWakeUp:
+  24              	.LVL0:
+  25              	.LFB867:
+  26              		.file 1 "Src/usbpd_dpm_core.c"
+   1:Src/usbpd_dpm_core.c **** /* USER CODE BEGIN Header */
+   2:Src/usbpd_dpm_core.c **** /**
+   3:Src/usbpd_dpm_core.c ****   ******************************************************************************
+   4:Src/usbpd_dpm_core.c ****   * @file    usbpd_dpm_core.c
+   5:Src/usbpd_dpm_core.c ****   * @author  MCD Application Team
+   6:Src/usbpd_dpm_core.c ****   * @brief   USBPD dpm core file
+   7:Src/usbpd_dpm_core.c ****   ******************************************************************************
+   8:Src/usbpd_dpm_core.c ****   * @attention
+   9:Src/usbpd_dpm_core.c ****   *
+  10:Src/usbpd_dpm_core.c ****   * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+  11:Src/usbpd_dpm_core.c ****   * All rights reserved.</center></h2>
+  12:Src/usbpd_dpm_core.c ****   *
+  13:Src/usbpd_dpm_core.c ****   * This software component is licensed by ST under Ultimate Liberty license
+  14:Src/usbpd_dpm_core.c ****   * SLA0044, the "License"; You may not use this file except in compliance with
+  15:Src/usbpd_dpm_core.c ****   * the License. You may obtain a copy of the License at:
+  16:Src/usbpd_dpm_core.c ****   *                             www.st.com/SLA0044
+  17:Src/usbpd_dpm_core.c ****   *
+  18:Src/usbpd_dpm_core.c ****   ******************************************************************************
+  19:Src/usbpd_dpm_core.c ****   */
+  20:Src/usbpd_dpm_core.c **** /* USER CODE END Header */
+  21:Src/usbpd_dpm_core.c **** 
+  22:Src/usbpd_dpm_core.c **** #define __USBPD_DPM_CORE_C
+  23:Src/usbpd_dpm_core.c **** 
+  24:Src/usbpd_dpm_core.c **** /* Includes ------------------------------------------------------------------*/
+  25:Src/usbpd_dpm_core.c **** #include "usbpd_core.h"
+  26:Src/usbpd_dpm_core.c **** #include "usbpd_trace.h"
+  27:Src/usbpd_dpm_core.c **** #include "usbpd_dpm_core.h"
+  28:Src/usbpd_dpm_core.c **** #include "usbpd_dpm_user.h"
+  29:Src/usbpd_dpm_core.c **** #include "usbpd_dpm_conf.h"
+  30:Src/usbpd_dpm_core.c **** #include "cmsis_os.h"
+  31:Src/usbpd_dpm_core.c **** #if (osCMSIS >= 0x20000U)
+  32:Src/usbpd_dpm_core.c **** #include "task.h"
+ARM GAS  /tmp/cchcd7QB.s 			page 2
+
+
+  33:Src/usbpd_dpm_core.c **** #endif /* osCMSIS >= 0x20000U */
+  34:Src/usbpd_dpm_core.c **** 
+  35:Src/usbpd_dpm_core.c **** /* Private enum */
+  36:Src/usbpd_dpm_core.c **** enum
+  37:Src/usbpd_dpm_core.c **** {
+  38:Src/usbpd_dpm_core.c ****   USBPD_THREAD_PORT_0 = USBPD_PORT_0,
+  39:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+  40:Src/usbpd_dpm_core.c ****   USBPD_THREAD_PORT_1 = USBPD_PORT_1,
+  41:Src/usbpd_dpm_core.c **** #endif
+  42:Src/usbpd_dpm_core.c ****   USBPD_THREAD_CAD
+  43:Src/usbpd_dpm_core.c **** };
+  44:Src/usbpd_dpm_core.c **** 
+  45:Src/usbpd_dpm_core.c **** /* Generic STM32 prototypes */
+  46:Src/usbpd_dpm_core.c **** extern uint32_t HAL_GetTick(void);
+  47:Src/usbpd_dpm_core.c **** 
+  48:Src/usbpd_dpm_core.c **** /* Private function prototypes -----------------------------------------------*/
+  49:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+  50:Src/usbpd_dpm_core.c **** 
+  51:Src/usbpd_dpm_core.c **** void USBPD_PE_Task(void const *argument);
+  52:Src/usbpd_dpm_core.c **** void USBPD_CAD_Task(void const *argument);
+  53:Src/usbpd_dpm_core.c **** void USBPD_TRACE_TX_Task(void const *argument);
+  54:Src/usbpd_dpm_core.c **** #else /* osCMSIS >= 0x20000U */
+  55:Src/usbpd_dpm_core.c **** 
+  56:Src/usbpd_dpm_core.c **** void USBPD_PE_Task_P0(void *argument);
+  57:Src/usbpd_dpm_core.c **** void USBPD_PE_Task_P1(void *argument);
+  58:Src/usbpd_dpm_core.c **** static void PE_Task(uint32_t PortNum);
+  59:Src/usbpd_dpm_core.c **** void USBPD_CAD_Task(void *argument);
+  60:Src/usbpd_dpm_core.c **** void USBPD_TRACE_TX_Task(void *argument);
+  61:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+  62:Src/usbpd_dpm_core.c **** 
+  63:Src/usbpd_dpm_core.c **** /* Private typedef -----------------------------------------------------------*/
+  64:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+  65:Src/usbpd_dpm_core.c **** #define DPM_STACK_SIZE_ADDON_FOR_CMSIS              1
+  66:Src/usbpd_dpm_core.c **** #else
+  67:Src/usbpd_dpm_core.c **** #define DPM_STACK_SIZE_ADDON_FOR_CMSIS              3
+  68:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+  69:Src/usbpd_dpm_core.c **** #define FREERTOS_PE_PRIORITY                    osPriorityAboveNormal
+  70:Src/usbpd_dpm_core.c **** #define FREERTOS_PE_STACK_SIZE                  (200 * DPM_STACK_SIZE_ADDON_FOR_CMSIS)
+  71:Src/usbpd_dpm_core.c **** #define FREERTOS_CAD_PRIORITY                   osPriorityRealtime
+  72:Src/usbpd_dpm_core.c **** #define FREERTOS_CAD_STACK_SIZE                 (300 * DPM_STACK_SIZE_ADDON_FOR_CMSIS)
+  73:Src/usbpd_dpm_core.c **** #define FREERTOS_TRACE_PRIORITY                 osPriorityLow
+  74:Src/usbpd_dpm_core.c **** #define FREERTOS_TRACE_STACK_SIZE               (60 * DPM_STACK_SIZE_ADDON_FOR_CMSIS)
+  75:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+  76:Src/usbpd_dpm_core.c **** osThreadDef(PE_0, USBPD_PE_Task, FREERTOS_PE_PRIORITY, 0, FREERTOS_PE_STACK_SIZE);
+  77:Src/usbpd_dpm_core.c **** osThreadDef(PE_1, USBPD_PE_Task, FREERTOS_PE_PRIORITY, 0, FREERTOS_PE_STACK_SIZE);
+  78:Src/usbpd_dpm_core.c **** osMessageQDef(queuePE, 1, uint16_t);
+  79:Src/usbpd_dpm_core.c **** osThreadDef(CAD, USBPD_CAD_Task, FREERTOS_CAD_PRIORITY, 0, FREERTOS_CAD_STACK_SIZE);
+  80:Src/usbpd_dpm_core.c **** osMessageQDef(queueCAD, 2, uint16_t);
+  81:Src/usbpd_dpm_core.c **** osThreadDef(TRA_TX, USBPD_TRACE_TX_Task, FREERTOS_TRACE_PRIORITY, 0, FREERTOS_TRACE_STACK_SIZE);
+  82:Src/usbpd_dpm_core.c **** osMessageQDef(queueTRACE, 1, uint16_t);
+  83:Src/usbpd_dpm_core.c **** 
+  84:Src/usbpd_dpm_core.c **** #else /* osCMSIS >= 0x20000U */
+  85:Src/usbpd_dpm_core.c **** 
+  86:Src/usbpd_dpm_core.c **** osThreadAttr_t PE0_Thread_Atrr = {
+  87:Src/usbpd_dpm_core.c ****   .name       = "PE_0",
+  88:Src/usbpd_dpm_core.c ****   .priority   = FREERTOS_PE_PRIORITY, /*osPriorityAboveNormal,*/
+  89:Src/usbpd_dpm_core.c ****   .stack_size = FREERTOS_PE_STACK_SIZE
+ARM GAS  /tmp/cchcd7QB.s 			page 3
+
+
+  90:Src/usbpd_dpm_core.c **** };
+  91:Src/usbpd_dpm_core.c **** osThreadAttr_t PE1_Thread_Atrr = {
+  92:Src/usbpd_dpm_core.c ****   .name       = "PE_1",
+  93:Src/usbpd_dpm_core.c ****   .priority   = FREERTOS_PE_PRIORITY,
+  94:Src/usbpd_dpm_core.c ****   .stack_size = FREERTOS_PE_STACK_SIZE
+  95:Src/usbpd_dpm_core.c **** };
+  96:Src/usbpd_dpm_core.c **** 
+  97:Src/usbpd_dpm_core.c **** osThreadAttr_t CAD_Thread_Atrr = {
+  98:Src/usbpd_dpm_core.c ****   .name       = "CAD",
+  99:Src/usbpd_dpm_core.c ****   .priority   = FREERTOS_CAD_PRIORITY, /*osPriorityRealtime,*/
+ 100:Src/usbpd_dpm_core.c ****   .stack_size = FREERTOS_CAD_STACK_SIZE
+ 101:Src/usbpd_dpm_core.c **** };
+ 102:Src/usbpd_dpm_core.c **** 
+ 103:Src/usbpd_dpm_core.c **** osThreadAttr_t TRA_Thread_Atrr = {
+ 104:Src/usbpd_dpm_core.c ****   .name       = "TRA_TX",
+ 105:Src/usbpd_dpm_core.c ****   .priority   = FREERTOS_TRACE_PRIORITY, /*osPriorityLow,*/
+ 106:Src/usbpd_dpm_core.c ****   .stack_size = FREERTOS_TRACE_STACK_SIZE
+ 107:Src/usbpd_dpm_core.c **** };
+ 108:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+ 109:Src/usbpd_dpm_core.c **** 
+ 110:Src/usbpd_dpm_core.c **** /* Private define ------------------------------------------------------------*/
+ 111:Src/usbpd_dpm_core.c **** #define MAX_THREAD_NB   (USBPD_PORT_COUNT + 1)          /* 1 entry per port + 1 for CAD */
+ 112:Src/usbpd_dpm_core.c **** 
+ 113:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+ 114:Src/usbpd_dpm_core.c **** #define OSTHREAD_PE(__PORT__)       (((__PORT__) == USBPD_PORT_0) ? osThread(PE_0) : osThread(PE_1)
+ 115:Src/usbpd_dpm_core.c **** #else
+ 116:Src/usbpd_dpm_core.c **** #define OSTHREAD_PE(__PORT__)       (((__PORT__) == USBPD_PORT_0) ? USBPD_PE_Task_P0 : USBPD_PE_Tas
+ 117:Src/usbpd_dpm_core.c **** #define OSTHREAD_PE_ATTR(__PORT__)  (((__PORT__) == USBPD_PORT_0) ? &PE0_Thread_Atrr : &PE1_Thread_
+ 118:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+ 119:Src/usbpd_dpm_core.c **** 
+ 120:Src/usbpd_dpm_core.c **** /* Private macro -------------------------------------------------------------*/
+ 121:Src/usbpd_dpm_core.c **** #define CHECK_PE_FUNCTION_CALL(_function_)  _retr = _function_;                  \
+ 122:Src/usbpd_dpm_core.c ****                                             if(USBPD_OK != _retr) {return _retr;}
+ 123:Src/usbpd_dpm_core.c **** #define CHECK_CAD_FUNCTION_CALL(_function_) if(USBPD_CAD_OK != _function_) {return USBPD_ERROR;}
+ 124:Src/usbpd_dpm_core.c **** 
+ 125:Src/usbpd_dpm_core.c **** #if defined(_DEBUG_TRACE)
+ 126:Src/usbpd_dpm_core.c **** #define DPM_CORE_DEBUG_TRACE(_PORTNUM_, __MESSAGE__)  USBPD_TRACE_Add(USBPD_TRACE_DEBUG, _PORTNUM_,
+ 127:Src/usbpd_dpm_core.c **** #else
+ 128:Src/usbpd_dpm_core.c **** #define DPM_CORE_DEBUG_TRACE(_PORTNUM_, __MESSAGE__)
+ 129:Src/usbpd_dpm_core.c **** #endif /* _DEBUG_TRACE */
+ 130:Src/usbpd_dpm_core.c **** 
+ 131:Src/usbpd_dpm_core.c **** /* Private variables ---------------------------------------------------------*/
+ 132:Src/usbpd_dpm_core.c **** static osThreadId DPM_Thread_Table[MAX_THREAD_NB];
+ 133:Src/usbpd_dpm_core.c **** static osMessageQId PEQueueId[USBPD_PORT_COUNT], CADQueueId;
+ 134:Src/usbpd_dpm_core.c **** static osMessageQId TraceQueueId;
+ 135:Src/usbpd_dpm_core.c **** 
+ 136:Src/usbpd_dpm_core.c **** USBPD_ParamsTypeDef   DPM_Params[USBPD_PORT_COUNT];
+ 137:Src/usbpd_dpm_core.c **** 
+ 138:Src/usbpd_dpm_core.c **** /* Private function prototypes -----------------------------------------------*/
+ 139:Src/usbpd_dpm_core.c **** void USBPD_DPM_CADCallback(uint8_t PortNum, USBPD_CAD_EVENT State, CCxPin_TypeDef Cc);
+ 140:Src/usbpd_dpm_core.c **** static void USBPD_PE_TaskWakeUp(uint8_t PortNum);
+ 141:Src/usbpd_dpm_core.c **** static void USBPD_DPM_CADTaskWakeUp(void);
+ 142:Src/usbpd_dpm_core.c **** void USBPD_DPM_TraceWakeUp(void);
+ 143:Src/usbpd_dpm_core.c **** static void DPM_ManageAttachedState(uint8_t PortNum, USBPD_CAD_EVENT State, CCxPin_TypeDef Cc);
+ 144:Src/usbpd_dpm_core.c **** 
+ 145:Src/usbpd_dpm_core.c **** /**
+ 146:Src/usbpd_dpm_core.c ****   * @brief  Initialize the core stack (port power role, PWR_IF, CAD and PE Init procedures)
+ARM GAS  /tmp/cchcd7QB.s 			page 4
+
+
+ 147:Src/usbpd_dpm_core.c ****   * @retval USBPD status
+ 148:Src/usbpd_dpm_core.c ****   */
+ 149:Src/usbpd_dpm_core.c **** USBPD_StatusTypeDef USBPD_DPM_InitCore(void)
+ 150:Src/usbpd_dpm_core.c **** {
+ 151:Src/usbpd_dpm_core.c ****   /* variable to get dynamique memory allocated by usbpd stack */
+ 152:Src/usbpd_dpm_core.c ****   uint32_t stack_dynamemsize;
+ 153:Src/usbpd_dpm_core.c ****   USBPD_StatusTypeDef _retr;
+ 154:Src/usbpd_dpm_core.c **** 
+ 155:Src/usbpd_dpm_core.c ****   static const USBPD_PE_Callbacks dpmCallbacks =
+ 156:Src/usbpd_dpm_core.c ****   {
+ 157:Src/usbpd_dpm_core.c ****     NULL,
+ 158:Src/usbpd_dpm_core.c ****     USBPD_DPM_HardReset,
+ 159:Src/usbpd_dpm_core.c ****     USBPD_DPM_EvaluatePowerRoleSwap,
+ 160:Src/usbpd_dpm_core.c ****     USBPD_DPM_Notification,
+ 161:Src/usbpd_dpm_core.c ****     USBPD_DPM_ExtendedMessageReceived,
+ 162:Src/usbpd_dpm_core.c ****     USBPD_DPM_GetDataInfo,
+ 163:Src/usbpd_dpm_core.c ****     USBPD_DPM_SetDataInfo,
+ 164:Src/usbpd_dpm_core.c ****     NULL,
+ 165:Src/usbpd_dpm_core.c ****     USBPD_DPM_SNK_EvaluateCapabilities,
+ 166:Src/usbpd_dpm_core.c ****     NULL,
+ 167:Src/usbpd_dpm_core.c ****     USBPD_PE_TaskWakeUp,
+ 168:Src/usbpd_dpm_core.c ****     NULL,
+ 169:Src/usbpd_dpm_core.c ****     NULL,
+ 170:Src/usbpd_dpm_core.c ****     NULL,
+ 171:Src/usbpd_dpm_core.c ****     USBPD_DPM_EvaluateDataRoleSwap,
+ 172:Src/usbpd_dpm_core.c ****     USBPD_DPM_IsPowerReady
+ 173:Src/usbpd_dpm_core.c ****   };
+ 174:Src/usbpd_dpm_core.c **** 
+ 175:Src/usbpd_dpm_core.c ****   static const USBPD_CAD_Callbacks CAD_cbs = { USBPD_DPM_CADCallback, USBPD_DPM_CADTaskWakeUp };
+ 176:Src/usbpd_dpm_core.c **** 
+ 177:Src/usbpd_dpm_core.c ****   /* Check the lib selected */
+ 178:Src/usbpd_dpm_core.c ****   if(USBPD_TRUE != USBPD_PE_CheckLIB(_LIB_ID))
+ 179:Src/usbpd_dpm_core.c ****   {
+ 180:Src/usbpd_dpm_core.c ****     return USBPD_ERROR;
+ 181:Src/usbpd_dpm_core.c ****   }
+ 182:Src/usbpd_dpm_core.c **** 
+ 183:Src/usbpd_dpm_core.c ****   /* to get how much memory are dynamically allocated by the stack
+ 184:Src/usbpd_dpm_core.c ****      the memory return is corresponding to 2 ports so if the application
+ 185:Src/usbpd_dpm_core.c ****      managed only one port divide the value return by 2                   */
+ 186:Src/usbpd_dpm_core.c ****   stack_dynamemsize = USBPD_PE_GetMemoryConsumption();
+ 187:Src/usbpd_dpm_core.c **** 
+ 188:Src/usbpd_dpm_core.c ****   /* done to avoid warning */
+ 189:Src/usbpd_dpm_core.c ****   stack_dynamemsize--;
+ 190:Src/usbpd_dpm_core.c **** 
+ 191:Src/usbpd_dpm_core.c ****   /* Variable to be sure that DPM is correctly initialized */
+ 192:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].DPM_Initialized = USBPD_FALSE;
+ 193:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 194:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_1].DPM_Initialized = USBPD_FALSE;
+ 195:Src/usbpd_dpm_core.c **** #endif /* USBPD_PORT_COUNT == 2 */
+ 196:Src/usbpd_dpm_core.c **** 
+ 197:Src/usbpd_dpm_core.c ****   /* check the stack settings */
+ 198:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].PE_SpecRevision  = DPM_Settings[USBPD_PORT_0].PE_SpecRevision;
+ 199:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].PE_PowerRole     = DPM_Settings[USBPD_PORT_0].PE_DefaultRole;
+ 200:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].PE_SwapOngoing   = USBPD_FALSE;
+ 201:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].ActiveCCIs       = CCNONE;
+ 202:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].VconnCCIs        = CCNONE;
+ 203:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].VconnStatus      = USBPD_FALSE;
+ARM GAS  /tmp/cchcd7QB.s 			page 5
+
+
+ 204:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 205:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_1].PE_SpecRevision  = DPM_Settings[USBPD_PORT_1].PE_SpecRevision;
+ 206:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_1].PE_PowerRole     = DPM_Settings[USBPD_PORT_1].PE_DefaultRole;
+ 207:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_1].PE_SwapOngoing   = USBPD_FALSE;
+ 208:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_1].ActiveCCIs       = CCNONE;
+ 209:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_1].VconnCCIs        = CCNONE;
+ 210:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_1].VconnStatus      = USBPD_FALSE;
+ 211:Src/usbpd_dpm_core.c **** #endif /* USBPD_PORT_COUNT == 2 */
+ 212:Src/usbpd_dpm_core.c **** 
+ 213:Src/usbpd_dpm_core.c ****   /* Initialise the TRACE */
+ 214:Src/usbpd_dpm_core.c ****   USBPD_TRACE_Init();
+ 215:Src/usbpd_dpm_core.c **** 
+ 216:Src/usbpd_dpm_core.c ****   /* CAD SET UP : Port 0 */
+ 217:Src/usbpd_dpm_core.c ****   CHECK_CAD_FUNCTION_CALL(USBPD_CAD_Init(USBPD_PORT_0, (USBPD_CAD_Callbacks *)&CAD_cbs, (USBPD_Sett
+ 218:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 219:Src/usbpd_dpm_core.c ****   CHECK_CAD_FUNCTION_CALL(USBPD_CAD_Init(USBPD_PORT_1, (USBPD_CAD_Callbacks *)&CAD_cbs, (USBPD_Sett
+ 220:Src/usbpd_dpm_core.c **** #endif /* USBPD_PORT_COUNT == 2 */
+ 221:Src/usbpd_dpm_core.c **** 
+ 222:Src/usbpd_dpm_core.c ****   /* PE SET UP : Port 0 */
+ 223:Src/usbpd_dpm_core.c ****   CHECK_PE_FUNCTION_CALL(USBPD_PE_Init(USBPD_PORT_0, (USBPD_SettingsTypeDef *)&DPM_Settings[USBPD_P
+ 224:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 225:Src/usbpd_dpm_core.c ****   CHECK_PE_FUNCTION_CALL(USBPD_PE_Init(USBPD_PORT_1, (USBPD_SettingsTypeDef *)&DPM_Settings[USBPD_P
+ 226:Src/usbpd_dpm_core.c **** #endif /* USBPD_PORT_COUNT == 2 */
+ 227:Src/usbpd_dpm_core.c **** 
+ 228:Src/usbpd_dpm_core.c ****   /* DPM is correctly initialized */
+ 229:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].DPM_Initialized = USBPD_TRUE;
+ 230:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 231:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_1].DPM_Initialized = USBPD_TRUE;
+ 232:Src/usbpd_dpm_core.c **** #endif /* USBPD_PORT_COUNT == 2 */
+ 233:Src/usbpd_dpm_core.c **** 
+ 234:Src/usbpd_dpm_core.c ****   /* Enable CAD on Port 0 */
+ 235:Src/usbpd_dpm_core.c ****   USBPD_CAD_PortEnable(USBPD_PORT_0, USBPD_CAD_ENABLE);
+ 236:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 237:Src/usbpd_dpm_core.c ****   USBPD_CAD_PortEnable(USBPD_PORT_1, USBPD_CAD_ENABLE);
+ 238:Src/usbpd_dpm_core.c **** #endif /* USBPD_PORT_COUNT == 2 */
+ 239:Src/usbpd_dpm_core.c **** 
+ 240:Src/usbpd_dpm_core.c ****   return USBPD_OK;
+ 241:Src/usbpd_dpm_core.c **** }
+ 242:Src/usbpd_dpm_core.c **** 
+ 243:Src/usbpd_dpm_core.c **** /**
+ 244:Src/usbpd_dpm_core.c ****   * @brief  Initialize the OS parts (task, queue,... )
+ 245:Src/usbpd_dpm_core.c ****   * @retval USBPD status
+ 246:Src/usbpd_dpm_core.c ****   */
+ 247:Src/usbpd_dpm_core.c **** USBPD_StatusTypeDef USBPD_DPM_InitOS(void)
+ 248:Src/usbpd_dpm_core.c **** {
+ 249:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+ 250:Src/usbpd_dpm_core.c ****   CADQueueId = osMessageCreate(osMessageQ(queueCAD), NULL);
+ 251:Src/usbpd_dpm_core.c ****   if((DPM_Thread_Table[USBPD_THREAD_CAD] = osThreadCreate(osThread(CAD), NULL)) == NULL)
+ 252:Src/usbpd_dpm_core.c **** #else
+ 253:Src/usbpd_dpm_core.c ****   CADQueueId = osMessageQueueNew (2, sizeof(uint16_t), NULL);
+ 254:Src/usbpd_dpm_core.c ****   if (NULL == osThreadNew(USBPD_CAD_Task, &CADQueueId, &CAD_Thread_Atrr))
+ 255:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+ 256:Src/usbpd_dpm_core.c ****   {
+ 257:Src/usbpd_dpm_core.c ****     return USBPD_ERROR;
+ 258:Src/usbpd_dpm_core.c ****   }
+ 259:Src/usbpd_dpm_core.c **** 
+ 260:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+ARM GAS  /tmp/cchcd7QB.s 			page 6
+
+
+ 261:Src/usbpd_dpm_core.c ****   TraceQueueId = osMessageCreate(osMessageQ(queueTRACE), NULL);
+ 262:Src/usbpd_dpm_core.c ****   if(NULL == osThreadCreate(osThread(TRA_TX), NULL))
+ 263:Src/usbpd_dpm_core.c **** #else
+ 264:Src/usbpd_dpm_core.c ****   TraceQueueId = osMessageQueueNew (1, sizeof(uint16_t), NULL);
+ 265:Src/usbpd_dpm_core.c ****   if (NULL == osThreadNew(USBPD_TRACE_TX_Task, &TraceQueueId, &TRA_Thread_Atrr))
+ 266:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+ 267:Src/usbpd_dpm_core.c ****   {
+ 268:Src/usbpd_dpm_core.c ****     return USBPD_ERROR;
+ 269:Src/usbpd_dpm_core.c ****   }
+ 270:Src/usbpd_dpm_core.c **** 
+ 271:Src/usbpd_dpm_core.c ****   /* Create the queue corresponding to PE task */
+ 272:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+ 273:Src/usbpd_dpm_core.c ****   PEQueueId[0] = osMessageCreate(osMessageQ(queuePE), NULL);
+ 274:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 275:Src/usbpd_dpm_core.c ****   PEQueueId[1] = osMessageCreate(osMessageQ(queuePE), NULL);
+ 276:Src/usbpd_dpm_core.c **** #endif /* USBPD_PORT_COUNT == 2 */
+ 277:Src/usbpd_dpm_core.c **** #else
+ 278:Src/usbpd_dpm_core.c ****   PEQueueId[0] = osMessageQueueNew (1, sizeof(uint16_t), NULL);
+ 279:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 280:Src/usbpd_dpm_core.c ****   PEQueueId[1] = osMessageQueueNew (1, sizeof(uint16_t), NULL);
+ 281:Src/usbpd_dpm_core.c **** #endif /* USBPD_PORT_COUNT == 2 */
+ 282:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+ 283:Src/usbpd_dpm_core.c **** 
+ 284:Src/usbpd_dpm_core.c ****   /* PE task to be created on attachment */
+ 285:Src/usbpd_dpm_core.c ****   DPM_Thread_Table[USBPD_THREAD_PORT_0] = NULL;
+ 286:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 287:Src/usbpd_dpm_core.c ****   DPM_Thread_Table[USBPD_THREAD_PORT_1] = NULL;
+ 288:Src/usbpd_dpm_core.c **** #endif /* USBPD_PORT_COUNT == 2 */
+ 289:Src/usbpd_dpm_core.c **** 
+ 290:Src/usbpd_dpm_core.c ****   return USBPD_OK;
+ 291:Src/usbpd_dpm_core.c **** }
+ 292:Src/usbpd_dpm_core.c **** 
+ 293:Src/usbpd_dpm_core.c **** /**
+ 294:Src/usbpd_dpm_core.c ****   * @brief  Initialize the OS parts (port power role, PWR_IF, CAD and PE Init procedures)
+ 295:Src/usbpd_dpm_core.c ****   * @retval None
+ 296:Src/usbpd_dpm_core.c ****   */
+ 297:Src/usbpd_dpm_core.c **** void USBPD_DPM_Run(void)
+ 298:Src/usbpd_dpm_core.c **** {
+ 299:Src/usbpd_dpm_core.c **** #if (osCMSIS >= 0x20000U)
+ 300:Src/usbpd_dpm_core.c ****   osKernelInitialize();
+ 301:Src/usbpd_dpm_core.c **** #endif /* osCMSIS >= 0x20000U */
+ 302:Src/usbpd_dpm_core.c ****   osKernelStart();
+ 303:Src/usbpd_dpm_core.c **** }
+ 304:Src/usbpd_dpm_core.c **** 
+ 305:Src/usbpd_dpm_core.c **** /**
+ 306:Src/usbpd_dpm_core.c ****   * @brief  Initialize DPM (port power role, PWR_IF, CAD and PE Init procedures)
+ 307:Src/usbpd_dpm_core.c ****   * @retval USBPD status
+ 308:Src/usbpd_dpm_core.c ****   */
+ 309:Src/usbpd_dpm_core.c **** void USBPD_DPM_TimerCounter(void)
+ 310:Src/usbpd_dpm_core.c **** {
+ 311:Src/usbpd_dpm_core.c ****   /* Call PE/PRL timers functions only if DPM is initialized */
+ 312:Src/usbpd_dpm_core.c ****   if (USBPD_TRUE == DPM_Params[USBPD_PORT_0].DPM_Initialized)
+ 313:Src/usbpd_dpm_core.c ****   {
+ 314:Src/usbpd_dpm_core.c ****     USBPD_DPM_UserTimerCounter(USBPD_PORT_0);
+ 315:Src/usbpd_dpm_core.c ****     USBPD_PE_TimerCounter(USBPD_PORT_0);
+ 316:Src/usbpd_dpm_core.c ****     USBPD_PRL_TimerCounter(USBPD_PORT_0);
+ 317:Src/usbpd_dpm_core.c ****   }
+ARM GAS  /tmp/cchcd7QB.s 			page 7
+
+
+ 318:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT==2
+ 319:Src/usbpd_dpm_core.c ****   if (USBPD_TRUE == DPM_Params[USBPD_PORT_1].DPM_Initialized)
+ 320:Src/usbpd_dpm_core.c ****   {
+ 321:Src/usbpd_dpm_core.c ****     USBPD_DPM_UserTimerCounter(USBPD_PORT_1);
+ 322:Src/usbpd_dpm_core.c ****     USBPD_PE_TimerCounter(USBPD_PORT_1);
+ 323:Src/usbpd_dpm_core.c ****     USBPD_PRL_TimerCounter(USBPD_PORT_1);
+ 324:Src/usbpd_dpm_core.c ****   }
+ 325:Src/usbpd_dpm_core.c **** #endif /* USBPD_PORT_COUNT == 2 */
+ 326:Src/usbpd_dpm_core.c **** 
+ 327:Src/usbpd_dpm_core.c **** }
+ 328:Src/usbpd_dpm_core.c **** 
+ 329:Src/usbpd_dpm_core.c **** /**
+ 330:Src/usbpd_dpm_core.c ****   * @brief  WakeUp PE task
+ 331:Src/usbpd_dpm_core.c ****   * @param  PortNum port number
+ 332:Src/usbpd_dpm_core.c ****   * @retval None
+ 333:Src/usbpd_dpm_core.c ****   */
+ 334:Src/usbpd_dpm_core.c **** static void USBPD_PE_TaskWakeUp(uint8_t PortNum)
+ 335:Src/usbpd_dpm_core.c **** {
+  27              		.loc 1 335 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+ 336:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+ 337:Src/usbpd_dpm_core.c ****   (void)osMessagePut(PEQueueId[PortNum], 0xFFFF, 0);
+  31              		.loc 1 337 3 view .LVU1
+ 335:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+  32              		.loc 1 335 1 is_stmt 0 view .LVU2
+  33 0000 10B5     		push	{r4, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 4, -8
+  37              		.cfi_offset 14, -4
+  38              		.loc 1 337 9 view .LVU3
+  39 0002 044B     		ldr	r3, .L2
+  40 0004 8000     		lsls	r0, r0, #2
+  41              	.LVL1:
+  42              		.loc 1 337 9 view .LVU4
+  43 0006 0022     		movs	r2, #0
+  44 0008 0349     		ldr	r1, .L2+4
+  45 000a C058     		ldr	r0, [r0, r3]
+  46 000c FFF7FEFF 		bl	osMessagePut
+  47              	.LVL2:
+ 338:Src/usbpd_dpm_core.c **** #else
+ 339:Src/usbpd_dpm_core.c ****   uint32_t event = 0xFFFFU;
+ 340:Src/usbpd_dpm_core.c ****   (void)osMessageQueuePut(PEQueueId[PortNum], &event, 0U, 0U);
+ 341:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+ 342:Src/usbpd_dpm_core.c **** }
+  48              		.loc 1 342 1 view .LVU5
+  49              		@ sp needed
+  50 0010 10BD     		pop	{r4, pc}
+  51              	.L3:
+  52 0012 C046     		.align	2
+  53              	.L2:
+  54 0014 00000000 		.word	.LANCHOR0
+  55 0018 FFFF0000 		.word	65535
+  56              		.cfi_endproc
+  57              	.LFE867:
+ARM GAS  /tmp/cchcd7QB.s 			page 8
+
+
+  59              		.section	.text.USBPD_DPM_CADTaskWakeUp,"ax",%progbits
+  60              		.align	1
+  61              		.syntax unified
+  62              		.code	16
+  63              		.thumb_func
+  64              		.fpu softvfp
+  66              	USBPD_DPM_CADTaskWakeUp:
+  67              	.LFB868:
+ 343:Src/usbpd_dpm_core.c **** 
+ 344:Src/usbpd_dpm_core.c **** /**
+ 345:Src/usbpd_dpm_core.c ****   * @brief  WakeUp CAD task
+ 346:Src/usbpd_dpm_core.c ****   * @retval None
+ 347:Src/usbpd_dpm_core.c ****   */
+ 348:Src/usbpd_dpm_core.c **** static void USBPD_DPM_CADTaskWakeUp(void)
+ 349:Src/usbpd_dpm_core.c **** {
+  68              		.loc 1 349 1 is_stmt 1 view -0
+  69              		.cfi_startproc
+  70              		@ args = 0, pretend = 0, frame = 0
+  71              		@ frame_needed = 0, uses_anonymous_args = 0
+ 350:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+ 351:Src/usbpd_dpm_core.c ****   (void)osMessagePut(CADQueueId, 0xFFFF, 0);
+  72              		.loc 1 351 3 view .LVU7
+ 349:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+  73              		.loc 1 349 1 is_stmt 0 view .LVU8
+  74 0000 10B5     		push	{r4, lr}
+  75              	.LCFI1:
+  76              		.cfi_def_cfa_offset 8
+  77              		.cfi_offset 4, -8
+  78              		.cfi_offset 14, -4
+  79              		.loc 1 351 9 view .LVU9
+  80 0002 034B     		ldr	r3, .L5
+  81 0004 0022     		movs	r2, #0
+  82 0006 0349     		ldr	r1, .L5+4
+  83 0008 1868     		ldr	r0, [r3]
+  84 000a FFF7FEFF 		bl	osMessagePut
+  85              	.LVL3:
+ 352:Src/usbpd_dpm_core.c **** #else
+ 353:Src/usbpd_dpm_core.c ****   uint32_t event = 0xFFFFU;
+ 354:Src/usbpd_dpm_core.c ****   (void)osMessageQueuePut(CADQueueId, &event, 0U, 0U);
+ 355:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+ 356:Src/usbpd_dpm_core.c **** }
+  86              		.loc 1 356 1 view .LVU10
+  87              		@ sp needed
+  88 000e 10BD     		pop	{r4, pc}
+  89              	.L6:
+  90              		.align	2
+  91              	.L5:
+  92 0010 00000000 		.word	.LANCHOR1
+  93 0014 FFFF0000 		.word	65535
+  94              		.cfi_endproc
+  95              	.LFE868:
+  97              		.section	.text.USBPD_PE_Task,"ax",%progbits
+  98              		.align	1
+  99              		.global	USBPD_PE_Task
+ 100              		.syntax unified
+ 101              		.code	16
+ 102              		.thumb_func
+ARM GAS  /tmp/cchcd7QB.s 			page 9
+
+
+ 103              		.fpu softvfp
+ 105              	USBPD_PE_Task:
+ 106              	.LVL4:
+ 107              	.LFB869:
+ 357:Src/usbpd_dpm_core.c **** 
+ 358:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+ 359:Src/usbpd_dpm_core.c **** /**
+ 360:Src/usbpd_dpm_core.c ****   * @brief  Main task for PE layer
+ 361:Src/usbpd_dpm_core.c ****   * @param  argument Not used
+ 362:Src/usbpd_dpm_core.c ****   * @retval None
+ 363:Src/usbpd_dpm_core.c ****   */
+ 364:Src/usbpd_dpm_core.c **** void USBPD_PE_Task(void const *argument)
+ 365:Src/usbpd_dpm_core.c **** {
+ 108              		.loc 1 365 1 is_stmt 1 view -0
+ 109              		.cfi_startproc
+ 110              		@ args = 0, pretend = 0, frame = 16
+ 111              		@ frame_needed = 0, uses_anonymous_args = 0
+ 366:Src/usbpd_dpm_core.c ****   uint8_t _port = (uint32_t)argument;
+ 112              		.loc 1 366 3 view .LVU12
+ 365:Src/usbpd_dpm_core.c ****   uint8_t _port = (uint32_t)argument;
+ 113              		.loc 1 365 1 is_stmt 0 view .LVU13
+ 114 0000 7FB5     		push	{r0, r1, r2, r3, r4, r5, r6, lr}
+ 115              	.LCFI2:
+ 116              		.cfi_def_cfa_offset 32
+ 117              		.cfi_offset 0, -32
+ 118              		.cfi_offset 1, -28
+ 119              		.cfi_offset 2, -24
+ 120              		.cfi_offset 3, -20
+ 121              		.cfi_offset 4, -16
+ 122              		.cfi_offset 5, -12
+ 123              		.cfi_offset 6, -8
+ 124              		.cfi_offset 14, -4
+ 367:Src/usbpd_dpm_core.c **** 
+ 368:Src/usbpd_dpm_core.c ****   for(;;)
+ 369:Src/usbpd_dpm_core.c ****   {
+ 370:Src/usbpd_dpm_core.c ****     osMessageGet(PEQueueId[_port], 
+ 125              		.loc 1 370 5 view .LVU14
+ 126 0002 C4B2     		uxtb	r4, r0
+ 366:Src/usbpd_dpm_core.c **** 
+ 127              		.loc 1 366 11 view .LVU15
+ 128 0004 C5B2     		uxtb	r5, r0
+ 129              	.LVL5:
+ 130              		.loc 1 370 5 view .LVU16
+ 131 0006 A400     		lsls	r4, r4, #2
+ 132              	.LVL6:
+ 133              	.L8:
+ 368:Src/usbpd_dpm_core.c ****   {
+ 134              		.loc 1 368 3 is_stmt 1 discriminator 1 view .LVU17
+ 135              		.loc 1 370 5 discriminator 1 view .LVU18
+ 136 0008 054B     		ldr	r3, .L9
+ 137 000a 2800     		movs	r0, r5
+ 138 000c E658     		ldr	r6, [r4, r3]
+ 139 000e FFF7FEFF 		bl	USBPD_PE_StateMachine_SNK
+ 140              	.LVL7:
+ 141 0012 3100     		movs	r1, r6
+ 142 0014 0200     		movs	r2, r0
+ 143 0016 6846     		mov	r0, sp
+ARM GAS  /tmp/cchcd7QB.s 			page 10
+
+
+ 144 0018 FFF7FEFF 		bl	osMessageGet
+ 145              	.LVL8:
+ 368:Src/usbpd_dpm_core.c ****   {
+ 146              		.loc 1 368 8 discriminator 1 view .LVU19
+ 147 001c F4E7     		b	.L8
+ 148              	.L10:
+ 149 001e C046     		.align	2
+ 150              	.L9:
+ 151 0020 00000000 		.word	.LANCHOR0
+ 152              		.cfi_endproc
+ 153              	.LFE869:
+ 155              		.section	.text.USBPD_CAD_Task,"ax",%progbits
+ 156              		.align	1
+ 157              		.global	USBPD_CAD_Task
+ 158              		.syntax unified
+ 159              		.code	16
+ 160              		.thumb_func
+ 161              		.fpu softvfp
+ 163              	USBPD_CAD_Task:
+ 164              	.LFB870:
+ 371:Src/usbpd_dpm_core.c ****     USBPD_PE_StateMachine_SNK(_port));
+ 372:Src/usbpd_dpm_core.c ****   }
+ 373:Src/usbpd_dpm_core.c **** }
+ 374:Src/usbpd_dpm_core.c **** 
+ 375:Src/usbpd_dpm_core.c **** #else /* osCMSIS > 0x20000U */
+ 376:Src/usbpd_dpm_core.c **** 
+ 377:Src/usbpd_dpm_core.c **** /**
+ 378:Src/usbpd_dpm_core.c ****   * @brief  Main task for PE layer on Port0
+ 379:Src/usbpd_dpm_core.c ****   * @param  argument Not used
+ 380:Src/usbpd_dpm_core.c ****   * @retval None
+ 381:Src/usbpd_dpm_core.c ****   */
+ 382:Src/usbpd_dpm_core.c **** void USBPD_PE_Task_P0(void *argument)
+ 383:Src/usbpd_dpm_core.c **** {
+ 384:Src/usbpd_dpm_core.c ****   PE_Task(USBPD_PORT_0);
+ 385:Src/usbpd_dpm_core.c **** }
+ 386:Src/usbpd_dpm_core.c **** 
+ 387:Src/usbpd_dpm_core.c **** /**
+ 388:Src/usbpd_dpm_core.c ****   * @brief  Main task for PE layer on Port1
+ 389:Src/usbpd_dpm_core.c ****   * @param  argument Not used
+ 390:Src/usbpd_dpm_core.c ****   * @retval None
+ 391:Src/usbpd_dpm_core.c ****   */
+ 392:Src/usbpd_dpm_core.c **** void USBPD_PE_Task_P1(void *argument)
+ 393:Src/usbpd_dpm_core.c **** {
+ 394:Src/usbpd_dpm_core.c ****   PE_Task(USBPD_PORT_1);
+ 395:Src/usbpd_dpm_core.c **** }
+ 396:Src/usbpd_dpm_core.c **** 
+ 397:Src/usbpd_dpm_core.c **** /**
+ 398:Src/usbpd_dpm_core.c ****   * @brief  Main task for PE layer
+ 399:Src/usbpd_dpm_core.c ****   * @param  argument Not used
+ 400:Src/usbpd_dpm_core.c ****   * @retval None
+ 401:Src/usbpd_dpm_core.c ****   */
+ 402:Src/usbpd_dpm_core.c **** static void PE_Task(uint32_t PortNum)
+ 403:Src/usbpd_dpm_core.c **** {
+ 404:Src/usbpd_dpm_core.c **** #ifdef _LOW_POWER
+ 405:Src/usbpd_dpm_core.c ****   LPM_SetOffMode((LPM_Id_t)(LPM_PE_0 + PortNum), LPM_Disable);
+ 406:Src/usbpd_dpm_core.c **** #endif
+ 407:Src/usbpd_dpm_core.c **** 
+ARM GAS  /tmp/cchcd7QB.s 			page 11
+
+
+ 408:Src/usbpd_dpm_core.c ****   for (;;)
+ 409:Src/usbpd_dpm_core.c ****   {
+ 410:Src/usbpd_dpm_core.c ****     uint32_t event;
+ 411:Src/usbpd_dpm_core.c ****     (void)osMessageQueueGet(PEQueueId[PortNum], &event, NULL,
+ 412:Src/usbpd_dpm_core.c ****     USBPD_PE_StateMachine_SNK(PortNum));
+ 413:Src/usbpd_dpm_core.c ****   }
+ 414:Src/usbpd_dpm_core.c **** }
+ 415:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+ 416:Src/usbpd_dpm_core.c **** 
+ 417:Src/usbpd_dpm_core.c **** /**
+ 418:Src/usbpd_dpm_core.c ****   * @brief  Main task for CAD layer
+ 419:Src/usbpd_dpm_core.c ****   * @param  argument Not used
+ 420:Src/usbpd_dpm_core.c ****   * @retval None
+ 421:Src/usbpd_dpm_core.c ****   */
+ 422:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+ 423:Src/usbpd_dpm_core.c **** void USBPD_CAD_Task(void const *argument)
+ 424:Src/usbpd_dpm_core.c **** #else
+ 425:Src/usbpd_dpm_core.c **** void USBPD_CAD_Task(void *argument)
+ 426:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+ 427:Src/usbpd_dpm_core.c **** {
+ 165              		.loc 1 427 1 view -0
+ 166              		.cfi_startproc
+ 167              		@ Volatile: function does not return.
+ 168              		@ args = 0, pretend = 0, frame = 16
+ 169              		@ frame_needed = 0, uses_anonymous_args = 0
+ 170              	.LVL9:
+ 171              		.loc 1 427 1 is_stmt 0 view .LVU21
+ 172 0000 1FB5     		push	{r0, r1, r2, r3, r4, lr}
+ 173              	.LCFI3:
+ 174              		.cfi_def_cfa_offset 24
+ 175              		.cfi_offset 0, -24
+ 176              		.cfi_offset 1, -20
+ 177              		.cfi_offset 2, -16
+ 178              		.cfi_offset 3, -12
+ 179              		.cfi_offset 4, -8
+ 180              		.cfi_offset 14, -4
+ 181              	.LVL10:
+ 182              	.L12:
+ 428:Src/usbpd_dpm_core.c ****   for(;;)
+ 183              		.loc 1 428 3 is_stmt 1 discriminator 1 view .LVU22
+ 429:Src/usbpd_dpm_core.c ****   {
+ 430:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+ 431:Src/usbpd_dpm_core.c ****     osMessageGet(CADQueueId, USBPD_CAD_Process());
+ 184              		.loc 1 431 5 discriminator 1 view .LVU23
+ 185 0002 054B     		ldr	r3, .L13
+ 186 0004 1C68     		ldr	r4, [r3]
+ 187 0006 FFF7FEFF 		bl	USBPD_CAD_Process
+ 188              	.LVL11:
+ 189 000a 2100     		movs	r1, r4
+ 190 000c 0200     		movs	r2, r0
+ 191 000e 6846     		mov	r0, sp
+ 192 0010 FFF7FEFF 		bl	osMessageGet
+ 193              	.LVL12:
+ 428:Src/usbpd_dpm_core.c ****   for(;;)
+ 194              		.loc 1 428 8 discriminator 1 view .LVU24
+ 195 0014 F5E7     		b	.L12
+ 196              	.L14:
+ARM GAS  /tmp/cchcd7QB.s 			page 12
+
+
+ 197 0016 C046     		.align	2
+ 198              	.L13:
+ 199 0018 00000000 		.word	.LANCHOR1
+ 200              		.cfi_endproc
+ 201              	.LFE870:
+ 203              		.section	.text.USBPD_TRACE_TX_Task,"ax",%progbits
+ 204              		.align	1
+ 205              		.global	USBPD_TRACE_TX_Task
+ 206              		.syntax unified
+ 207              		.code	16
+ 208              		.thumb_func
+ 209              		.fpu softvfp
+ 211              	USBPD_TRACE_TX_Task:
+ 212              	.LFB871:
+ 432:Src/usbpd_dpm_core.c **** #else
+ 433:Src/usbpd_dpm_core.c ****     uint32_t event;
+ 434:Src/usbpd_dpm_core.c ****     (void)osMessageQueueGet(CADQueueId, &event, NULL, USBPD_CAD_Process());
+ 435:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+ 436:Src/usbpd_dpm_core.c ****   }
+ 437:Src/usbpd_dpm_core.c **** }
+ 438:Src/usbpd_dpm_core.c **** 
+ 439:Src/usbpd_dpm_core.c **** /**
+ 440:Src/usbpd_dpm_core.c ****   * @brief  Main task for TRACE TX layer
+ 441:Src/usbpd_dpm_core.c ****   * @param  argument Not used
+ 442:Src/usbpd_dpm_core.c ****   * @retval None
+ 443:Src/usbpd_dpm_core.c ****   */
+ 444:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+ 445:Src/usbpd_dpm_core.c **** void USBPD_TRACE_TX_Task(void const *argument)
+ 446:Src/usbpd_dpm_core.c **** #else
+ 447:Src/usbpd_dpm_core.c **** void USBPD_TRACE_TX_Task(void *argument)
+ 448:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+ 449:Src/usbpd_dpm_core.c **** {
+ 213              		.loc 1 449 1 view -0
+ 214              		.cfi_startproc
+ 215              		@ Volatile: function does not return.
+ 216              		@ args = 0, pretend = 0, frame = 16
+ 217              		@ frame_needed = 0, uses_anonymous_args = 0
+ 218              	.LVL13:
+ 219              		.loc 1 449 1 is_stmt 0 view .LVU26
+ 220 0000 1FB5     		push	{r0, r1, r2, r3, r4, lr}
+ 221              	.LCFI4:
+ 222              		.cfi_def_cfa_offset 24
+ 223              		.cfi_offset 0, -24
+ 224              		.cfi_offset 1, -20
+ 225              		.cfi_offset 2, -16
+ 226              		.cfi_offset 3, -12
+ 227              		.cfi_offset 4, -8
+ 228              		.cfi_offset 14, -4
+ 229              	.LVL14:
+ 230              	.L16:
+ 450:Src/usbpd_dpm_core.c ****   for(;;)
+ 231              		.loc 1 450 3 is_stmt 1 discriminator 1 view .LVU27
+ 451:Src/usbpd_dpm_core.c ****   {
+ 452:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+ 453:Src/usbpd_dpm_core.c ****     osMessageGet(TraceQueueId,USBPD_TRACE_TX_Process());
+ 232              		.loc 1 453 5 discriminator 1 view .LVU28
+ 233 0002 054B     		ldr	r3, .L17
+ARM GAS  /tmp/cchcd7QB.s 			page 13
+
+
+ 234 0004 1C68     		ldr	r4, [r3]
+ 235 0006 FFF7FEFF 		bl	USBPD_TRACE_TX_Process
+ 236              	.LVL15:
+ 237 000a 2100     		movs	r1, r4
+ 238 000c 0200     		movs	r2, r0
+ 239 000e 6846     		mov	r0, sp
+ 240 0010 FFF7FEFF 		bl	osMessageGet
+ 241              	.LVL16:
+ 450:Src/usbpd_dpm_core.c ****   for(;;)
+ 242              		.loc 1 450 8 discriminator 1 view .LVU29
+ 243 0014 F5E7     		b	.L16
+ 244              	.L18:
+ 245 0016 C046     		.align	2
+ 246              	.L17:
+ 247 0018 00000000 		.word	.LANCHOR2
+ 248              		.cfi_endproc
+ 249              	.LFE871:
+ 251              		.section	.text.DPM_ManageAttachedState,"ax",%progbits
+ 252              		.align	1
+ 253              		.syntax unified
+ 254              		.code	16
+ 255              		.thumb_func
+ 256              		.fpu softvfp
+ 258              	DPM_ManageAttachedState:
+ 259              	.LVL17:
+ 260              	.LFB874:
+ 454:Src/usbpd_dpm_core.c **** #else
+ 455:Src/usbpd_dpm_core.c ****     uint32_t event;
+ 456:Src/usbpd_dpm_core.c ****     (void)osMessageQueueGet(TraceQueueId, &event, NULL, USBPD_TRACE_TX_Process());
+ 457:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+ 458:Src/usbpd_dpm_core.c ****   }
+ 459:Src/usbpd_dpm_core.c **** }
+ 460:Src/usbpd_dpm_core.c **** 
+ 461:Src/usbpd_dpm_core.c **** /**
+ 462:Src/usbpd_dpm_core.c ****   * @brief  WakeUp TRACE task
+ 463:Src/usbpd_dpm_core.c ****   * @retval None
+ 464:Src/usbpd_dpm_core.c ****   */
+ 465:Src/usbpd_dpm_core.c **** void USBPD_DPM_TraceWakeUp(void)
+ 466:Src/usbpd_dpm_core.c **** {
+ 467:Src/usbpd_dpm_core.c ****   if (NULL != TraceQueueId)
+ 468:Src/usbpd_dpm_core.c ****   {
+ 469:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+ 470:Src/usbpd_dpm_core.c ****     (void)osMessagePut(TraceQueueId, 0xFFFF, 0);
+ 471:Src/usbpd_dpm_core.c **** #else
+ 472:Src/usbpd_dpm_core.c ****   uint32_t event = 0xFFFFU;
+ 473:Src/usbpd_dpm_core.c ****     (void)osMessageQueuePut(TraceQueueId, &event, 0U, 0U);
+ 474:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+ 475:Src/usbpd_dpm_core.c ****   }
+ 476:Src/usbpd_dpm_core.c **** }
+ 477:Src/usbpd_dpm_core.c **** 
+ 478:Src/usbpd_dpm_core.c **** /**
+ 479:Src/usbpd_dpm_core.c ****   * @brief  CallBack reporting events on a specified port from CAD layer.
+ 480:Src/usbpd_dpm_core.c ****   * @param  PortNum   The handle of the port
+ 481:Src/usbpd_dpm_core.c ****   * @param  State     CAD state
+ 482:Src/usbpd_dpm_core.c ****   * @param  Cc        The Communication Channel for the USBPD communication
+ 483:Src/usbpd_dpm_core.c ****   * @retval None
+ 484:Src/usbpd_dpm_core.c ****   */
+ARM GAS  /tmp/cchcd7QB.s 			page 14
+
+
+ 485:Src/usbpd_dpm_core.c **** void USBPD_DPM_CADCallback(uint8_t PortNum, USBPD_CAD_EVENT State, CCxPin_TypeDef Cc)
+ 486:Src/usbpd_dpm_core.c **** {
+ 487:Src/usbpd_dpm_core.c ****   USBPD_TRACE_Add(USBPD_TRACE_CADEVENT, PortNum, (uint8_t)State, NULL, 0);
+ 488:Src/usbpd_dpm_core.c **** 
+ 489:Src/usbpd_dpm_core.c ****   switch(State)
+ 490:Src/usbpd_dpm_core.c ****   {
+ 491:Src/usbpd_dpm_core.c ****     case USBPD_CAD_EVENT_ATTEMC :
+ 492:Src/usbpd_dpm_core.c ****     {
+ 493:Src/usbpd_dpm_core.c ****       DPM_ManageAttachedState(PortNum, State, Cc);
+ 494:Src/usbpd_dpm_core.c ****       break;
+ 495:Src/usbpd_dpm_core.c ****     }
+ 496:Src/usbpd_dpm_core.c ****     case USBPD_CAD_EVENT_ATTACHED :
+ 497:Src/usbpd_dpm_core.c ****       DPM_ManageAttachedState(PortNum, State, Cc);
+ 498:Src/usbpd_dpm_core.c ****       break;
+ 499:Src/usbpd_dpm_core.c ****     case USBPD_CAD_EVENT_DETACHED :
+ 500:Src/usbpd_dpm_core.c ****     case USBPD_CAD_EVENT_EMC :
+ 501:Src/usbpd_dpm_core.c ****     {
+ 502:Src/usbpd_dpm_core.c ****       /* The ufp is detached */
+ 503:Src/usbpd_dpm_core.c ****       (void)USBPD_PE_IsCableConnected(PortNum, 0);
+ 504:Src/usbpd_dpm_core.c ****       /* Terminate PE task */
+ 505:Src/usbpd_dpm_core.c ****       if (DPM_Thread_Table[PortNum] != NULL)
+ 506:Src/usbpd_dpm_core.c ****       {
+ 507:Src/usbpd_dpm_core.c ****         osThreadTerminate(DPM_Thread_Table[PortNum]);
+ 508:Src/usbpd_dpm_core.c ****         DPM_Thread_Table[PortNum] = NULL;
+ 509:Src/usbpd_dpm_core.c ****       }
+ 510:Src/usbpd_dpm_core.c ****       USBPD_DPM_UserCableDetection(PortNum, State);
+ 511:Src/usbpd_dpm_core.c ****       DPM_Params[PortNum].PE_SwapOngoing = USBPD_FALSE;
+ 512:Src/usbpd_dpm_core.c ****       DPM_Params[PortNum].ActiveCCIs = CCNONE;
+ 513:Src/usbpd_dpm_core.c ****       DPM_Params[PortNum].PE_Power   = USBPD_POWER_NO;
+ 514:Src/usbpd_dpm_core.c ****     break;
+ 515:Src/usbpd_dpm_core.c ****     }
+ 516:Src/usbpd_dpm_core.c ****   default :
+ 517:Src/usbpd_dpm_core.c ****     /* nothing to do */
+ 518:Src/usbpd_dpm_core.c ****     break;
+ 519:Src/usbpd_dpm_core.c ****   }
+ 520:Src/usbpd_dpm_core.c **** }
+ 521:Src/usbpd_dpm_core.c **** 
+ 522:Src/usbpd_dpm_core.c **** static void DPM_ManageAttachedState(uint8_t PortNum, USBPD_CAD_EVENT State, CCxPin_TypeDef Cc)
+ 523:Src/usbpd_dpm_core.c **** {
+ 261              		.loc 1 523 1 view -0
+ 262              		.cfi_startproc
+ 263              		@ args = 0, pretend = 0, frame = 0
+ 264              		@ frame_needed = 0, uses_anonymous_args = 0
+ 524:Src/usbpd_dpm_core.c ****   DPM_Params[PortNum].ActiveCCIs = Cc;
+ 265              		.loc 1 524 3 view .LVU31
+ 523:Src/usbpd_dpm_core.c ****   DPM_Params[PortNum].ActiveCCIs = Cc;
+ 266              		.loc 1 523 1 is_stmt 0 view .LVU32
+ 267 0000 70B5     		push	{r4, r5, r6, lr}
+ 268              	.LCFI5:
+ 269              		.cfi_def_cfa_offset 16
+ 270              		.cfi_offset 4, -16
+ 271              		.cfi_offset 5, -12
+ 272              		.cfi_offset 6, -8
+ 273              		.cfi_offset 14, -4
+ 274              		.loc 1 524 34 view .LVU33
+ 275 0002 8500     		lsls	r5, r0, #2
+ 523:Src/usbpd_dpm_core.c ****   DPM_Params[PortNum].ActiveCCIs = Cc;
+ARM GAS  /tmp/cchcd7QB.s 			page 15
+
+
+ 276              		.loc 1 523 1 view .LVU34
+ 277 0004 0400     		movs	r4, r0
+ 278              		.loc 1 524 34 view .LVU35
+ 279 0006 3F20     		movs	r0, #63
+ 280              	.LVL18:
+ 523:Src/usbpd_dpm_core.c ****   DPM_Params[PortNum].ActiveCCIs = Cc;
+ 281              		.loc 1 523 1 view .LVU36
+ 282 0008 0E00     		movs	r6, r1
+ 283              		.loc 1 524 34 view .LVU37
+ 284 000a 0F49     		ldr	r1, .L27
+ 285              	.LVL19:
+ 286              		.loc 1 524 34 view .LVU38
+ 287 000c 9301     		lsls	r3, r2, #6
+ 288 000e 6A5C     		ldrb	r2, [r5, r1]
+ 289              	.LVL20:
+ 290              		.loc 1 524 34 view .LVU39
+ 291 0010 0240     		ands	r2, r0
+ 292 0012 1A43     		orrs	r2, r3
+ 293 0014 6A54     		strb	r2, [r5, r1]
+ 525:Src/usbpd_dpm_core.c ****   (void)USBPD_PE_IsCableConnected(PortNum, 1);
+ 294              		.loc 1 525 3 is_stmt 1 view .LVU40
+ 295              		.loc 1 525 9 is_stmt 0 view .LVU41
+ 296 0016 2000     		movs	r0, r4
+ 297 0018 0121     		movs	r1, #1
+ 298 001a FFF7FEFF 		bl	USBPD_PE_IsCableConnected
+ 299              	.LVL21:
+ 526:Src/usbpd_dpm_core.c **** 
+ 527:Src/usbpd_dpm_core.c ****   USBPD_DPM_UserCableDetection(PortNum, State);
+ 300              		.loc 1 527 3 is_stmt 1 view .LVU42
+ 301 001e 3100     		movs	r1, r6
+ 302 0020 2000     		movs	r0, r4
+ 303 0022 FFF7FEFF 		bl	USBPD_DPM_UserCableDetection
+ 304              	.LVL22:
+ 528:Src/usbpd_dpm_core.c **** 
+ 529:Src/usbpd_dpm_core.c ****   /* Create PE task */
+ 530:Src/usbpd_dpm_core.c ****   if (DPM_Thread_Table[PortNum] == NULL)
+ 305              		.loc 1 530 3 view .LVU43
+ 306              		.loc 1 530 23 is_stmt 0 view .LVU44
+ 307 0026 094E     		ldr	r6, .L27+4
+ 308              		.loc 1 530 6 view .LVU45
+ 309 0028 AB59     		ldr	r3, [r5, r6]
+ 310 002a 002B     		cmp	r3, #0
+ 311 002c 09D1     		bne	.L19
+ 531:Src/usbpd_dpm_core.c ****   {
+ 532:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+ 533:Src/usbpd_dpm_core.c ****     DPM_Thread_Table[PortNum] = osThreadCreate(OSTHREAD_PE(PortNum), (void *)((uint32_t)PortNum));
+ 312              		.loc 1 533 5 is_stmt 1 view .LVU46
+ 313              		.loc 1 533 33 is_stmt 0 view .LVU47
+ 314 002e 0848     		ldr	r0, .L27+8
+ 315 0030 002C     		cmp	r4, #0
+ 316 0032 00D0     		beq	.L21
+ 317 0034 0748     		ldr	r0, .L27+12
+ 318              	.L21:
+ 319              		.loc 1 533 33 discriminator 4 view .LVU48
+ 320 0036 2100     		movs	r1, r4
+ 321 0038 FFF7FEFF 		bl	osThreadCreate
+ 322              	.LVL23:
+ARM GAS  /tmp/cchcd7QB.s 			page 16
+
+
+ 534:Src/usbpd_dpm_core.c **** #else
+ 535:Src/usbpd_dpm_core.c ****     DPM_Thread_Table[PortNum] = osThreadNew(OSTHREAD_PE(PortNum), NULL, OSTHREAD_PE_ATTR(PortNum));
+ 536:Src/usbpd_dpm_core.c **** #endif /* osCMSIS < 0x20000U */
+ 537:Src/usbpd_dpm_core.c ****     if (DPM_Thread_Table[PortNum] == NULL)
+ 323              		.loc 1 537 5 is_stmt 1 discriminator 4 view .LVU49
+ 324              		.loc 1 537 8 is_stmt 0 discriminator 4 view .LVU50
+ 325 003c 0028     		cmp	r0, #0
+ 326 003e 01D0     		beq	.L22
+ 533:Src/usbpd_dpm_core.c **** #else
+ 327              		.loc 1 533 31 view .LVU51
+ 328 0040 7051     		str	r0, [r6, r5]
+ 329              	.L19:
+ 538:Src/usbpd_dpm_core.c ****     {
+ 539:Src/usbpd_dpm_core.c ****       /* should not occurr. May be an issue with FreeRTOS heap size too small */
+ 540:Src/usbpd_dpm_core.c ****       while(1);
+ 541:Src/usbpd_dpm_core.c ****     }
+ 542:Src/usbpd_dpm_core.c ****   }
+ 543:Src/usbpd_dpm_core.c **** }
+ 330              		.loc 1 543 1 view .LVU52
+ 331              		@ sp needed
+ 332 0042 70BD     		pop	{r4, r5, r6, pc}
+ 333              	.L22:
+ 540:Src/usbpd_dpm_core.c ****     }
+ 334              		.loc 1 540 7 is_stmt 1 discriminator 1 view .LVU53
+ 540:Src/usbpd_dpm_core.c ****     }
+ 335              		.loc 1 540 15 discriminator 1 view .LVU54
+ 540:Src/usbpd_dpm_core.c ****     }
+ 336              		.loc 1 540 12 discriminator 1 view .LVU55
+ 337 0044 FEE7     		b	.L22
+ 338              	.L28:
+ 339 0046 C046     		.align	2
+ 340              	.L27:
+ 341 0048 00000000 		.word	DPM_Params
+ 342 004c 00000000 		.word	.LANCHOR5
+ 343 0050 00000000 		.word	.LANCHOR3
+ 344 0054 00000000 		.word	.LANCHOR4
+ 345              		.cfi_endproc
+ 346              	.LFE874:
+ 348              		.section	.text.USBPD_DPM_CADCallback,"ax",%progbits
+ 349              		.align	1
+ 350              		.global	USBPD_DPM_CADCallback
+ 351              		.syntax unified
+ 352              		.code	16
+ 353              		.thumb_func
+ 354              		.fpu softvfp
+ 356              	USBPD_DPM_CADCallback:
+ 357              	.LVL24:
+ 358              	.LFB873:
+ 486:Src/usbpd_dpm_core.c ****   USBPD_TRACE_Add(USBPD_TRACE_CADEVENT, PortNum, (uint8_t)State, NULL, 0);
+ 359              		.loc 1 486 1 view -0
+ 360              		.cfi_startproc
+ 361              		@ args = 0, pretend = 0, frame = 0
+ 362              		@ frame_needed = 0, uses_anonymous_args = 0
+ 487:Src/usbpd_dpm_core.c **** 
+ 363              		.loc 1 487 3 is_stmt 0 view .LVU57
+ 364 0000 0023     		movs	r3, #0
+ 486:Src/usbpd_dpm_core.c ****   USBPD_TRACE_Add(USBPD_TRACE_CADEVENT, PortNum, (uint8_t)State, NULL, 0);
+ARM GAS  /tmp/cchcd7QB.s 			page 17
+
+
+ 365              		.loc 1 486 1 view .LVU58
+ 366 0002 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
+ 367              	.LCFI6:
+ 368              		.cfi_def_cfa_offset 32
+ 369              		.cfi_offset 0, -32
+ 370              		.cfi_offset 1, -28
+ 371              		.cfi_offset 2, -24
+ 372              		.cfi_offset 4, -20
+ 373              		.cfi_offset 5, -16
+ 374              		.cfi_offset 6, -12
+ 375              		.cfi_offset 7, -8
+ 376              		.cfi_offset 14, -4
+ 486:Src/usbpd_dpm_core.c ****   USBPD_TRACE_Add(USBPD_TRACE_CADEVENT, PortNum, (uint8_t)State, NULL, 0);
+ 377              		.loc 1 486 1 view .LVU59
+ 378 0004 0D00     		movs	r5, r1
+ 487:Src/usbpd_dpm_core.c **** 
+ 379              		.loc 1 487 3 is_stmt 1 view .LVU60
+ 486:Src/usbpd_dpm_core.c ****   USBPD_TRACE_Add(USBPD_TRACE_CADEVENT, PortNum, (uint8_t)State, NULL, 0);
+ 380              		.loc 1 486 1 is_stmt 0 view .LVU61
+ 381 0006 0400     		movs	r4, r0
+ 382 0008 1600     		movs	r6, r2
+ 487:Src/usbpd_dpm_core.c **** 
+ 383              		.loc 1 487 3 view .LVU62
+ 384 000a 0093     		str	r3, [sp]
+ 385 000c 0A00     		movs	r2, r1
+ 386              	.LVL25:
+ 487:Src/usbpd_dpm_core.c **** 
+ 387              		.loc 1 487 3 view .LVU63
+ 388 000e 0100     		movs	r1, r0
+ 389              	.LVL26:
+ 487:Src/usbpd_dpm_core.c **** 
+ 390              		.loc 1 487 3 view .LVU64
+ 391 0010 0320     		movs	r0, #3
+ 392              	.LVL27:
+ 487:Src/usbpd_dpm_core.c **** 
+ 393              		.loc 1 487 3 view .LVU65
+ 394 0012 FFF7FEFF 		bl	USBPD_TRACE_Add
+ 395              	.LVL28:
+ 489:Src/usbpd_dpm_core.c ****   {
+ 396              		.loc 1 489 3 is_stmt 1 view .LVU66
+ 397 0016 681E     		subs	r0, r5, #1
+ 398 0018 0328     		cmp	r0, #3
+ 399 001a 08D8     		bhi	.L29
+ 400 001c FFF7FEFF 		bl	__gnu_thumb1_case_uqi
+ 401              	.L32:
+ 402 0020 0B       		.byte	(.L33-.L32)/2
+ 403 0021 08       		.byte	(.L34-.L32)/2
+ 404 0022 0B       		.byte	(.L33-.L32)/2
+ 405 0023 02       		.byte	(.L31-.L32)/2
+ 406              		.p2align 1
+ 407              	.L31:
+ 493:Src/usbpd_dpm_core.c ****       break;
+ 408              		.loc 1 493 7 view .LVU67
+ 409 0024 3200     		movs	r2, r6
+ 410 0026 0421     		movs	r1, #4
+ 411              	.LVL29:
+ 412              	.L39:
+ARM GAS  /tmp/cchcd7QB.s 			page 18
+
+
+ 497:Src/usbpd_dpm_core.c ****       break;
+ 413              		.loc 1 497 7 is_stmt 0 view .LVU68
+ 414 0028 2000     		movs	r0, r4
+ 415 002a FFF7FEFF 		bl	DPM_ManageAttachedState
+ 416              	.LVL30:
+ 498:Src/usbpd_dpm_core.c ****     case USBPD_CAD_EVENT_DETACHED :
+ 417              		.loc 1 498 7 is_stmt 1 view .LVU69
+ 418              	.L29:
+ 520:Src/usbpd_dpm_core.c **** 
+ 419              		.loc 1 520 1 is_stmt 0 view .LVU70
+ 420              		@ sp needed
+ 421 002e F7BD     		pop	{r0, r1, r2, r4, r5, r6, r7, pc}
+ 422              	.LVL31:
+ 423              	.L34:
+ 497:Src/usbpd_dpm_core.c ****       break;
+ 424              		.loc 1 497 7 is_stmt 1 view .LVU71
+ 425 0030 3200     		movs	r2, r6
+ 426 0032 0221     		movs	r1, #2
+ 427 0034 F8E7     		b	.L39
+ 428              	.L33:
+ 429              	.LVL32:
+ 430              	.LBB4:
+ 431              	.LBI4:
+ 485:Src/usbpd_dpm_core.c **** {
+ 432              		.loc 1 485 6 view .LVU72
+ 433              	.LBB5:
+ 503:Src/usbpd_dpm_core.c ****       /* Terminate PE task */
+ 434              		.loc 1 503 7 view .LVU73
+ 503:Src/usbpd_dpm_core.c ****       /* Terminate PE task */
+ 435              		.loc 1 503 13 is_stmt 0 view .LVU74
+ 436 0036 0021     		movs	r1, #0
+ 437 0038 2000     		movs	r0, r4
+ 438 003a FFF7FEFF 		bl	USBPD_PE_IsCableConnected
+ 439              	.LVL33:
+ 505:Src/usbpd_dpm_core.c ****       {
+ 440              		.loc 1 505 7 is_stmt 1 view .LVU75
+ 505:Src/usbpd_dpm_core.c ****       {
+ 441              		.loc 1 505 27 is_stmt 0 view .LVU76
+ 442 003e 094F     		ldr	r7, .L40
+ 443 0040 A600     		lsls	r6, r4, #2
+ 444              	.LVL34:
+ 505:Src/usbpd_dpm_core.c ****       {
+ 445              		.loc 1 505 27 view .LVU77
+ 446 0042 F059     		ldr	r0, [r6, r7]
+ 505:Src/usbpd_dpm_core.c ****       {
+ 447              		.loc 1 505 10 view .LVU78
+ 448 0044 0028     		cmp	r0, #0
+ 449 0046 03D0     		beq	.L35
+ 507:Src/usbpd_dpm_core.c ****         DPM_Thread_Table[PortNum] = NULL;
+ 450              		.loc 1 507 9 is_stmt 1 view .LVU79
+ 451 0048 FFF7FEFF 		bl	osThreadTerminate
+ 452              	.LVL35:
+ 508:Src/usbpd_dpm_core.c ****       }
+ 453              		.loc 1 508 9 view .LVU80
+ 508:Src/usbpd_dpm_core.c ****       }
+ 454              		.loc 1 508 35 is_stmt 0 view .LVU81
+ 455 004c 0023     		movs	r3, #0
+ARM GAS  /tmp/cchcd7QB.s 			page 19
+
+
+ 456 004e F351     		str	r3, [r6, r7]
+ 457              	.L35:
+ 510:Src/usbpd_dpm_core.c ****       DPM_Params[PortNum].PE_SwapOngoing = USBPD_FALSE;
+ 458              		.loc 1 510 7 is_stmt 1 view .LVU82
+ 459 0050 2900     		movs	r1, r5
+ 460 0052 2000     		movs	r0, r4
+ 461 0054 FFF7FEFF 		bl	USBPD_DPM_UserCableDetection
+ 462              	.LVL36:
+ 511:Src/usbpd_dpm_core.c ****       DPM_Params[PortNum].ActiveCCIs = CCNONE;
+ 463              		.loc 1 511 7 view .LVU83
+ 512:Src/usbpd_dpm_core.c ****       DPM_Params[PortNum].PE_Power   = USBPD_POWER_NO;
+ 464              		.loc 1 512 7 view .LVU84
+ 513:Src/usbpd_dpm_core.c ****     break;
+ 465              		.loc 1 513 7 view .LVU85
+ 466 0058 034A     		ldr	r2, .L40+4
+ 511:Src/usbpd_dpm_core.c ****       DPM_Params[PortNum].ActiveCCIs = CCNONE;
+ 467              		.loc 1 511 42 is_stmt 0 view .LVU86
+ 468 005a 0449     		ldr	r1, .L40+8
+ 469 005c 935B     		ldrh	r3, [r2, r6]
+ 470 005e 0B40     		ands	r3, r1
+ 471 0060 9353     		strh	r3, [r2, r6]
+ 514:Src/usbpd_dpm_core.c ****     }
+ 472              		.loc 1 514 5 is_stmt 1 view .LVU87
+ 473              	.LVL37:
+ 514:Src/usbpd_dpm_core.c ****     }
+ 474              		.loc 1 514 5 is_stmt 0 view .LVU88
+ 475              	.LBE5:
+ 476              	.LBE4:
+ 520:Src/usbpd_dpm_core.c **** 
+ 477              		.loc 1 520 1 view .LVU89
+ 478 0062 E4E7     		b	.L29
+ 479              	.L41:
+ 480              		.align	2
+ 481              	.L40:
+ 482 0064 00000000 		.word	.LANCHOR5
+ 483 0068 00000000 		.word	DPM_Params
+ 484 006c 2FF8FFFF 		.word	-2001
+ 485              		.cfi_endproc
+ 486              	.LFE873:
+ 488              		.section	.text.USBPD_DPM_InitCore,"ax",%progbits
+ 489              		.align	1
+ 490              		.global	USBPD_DPM_InitCore
+ 491              		.syntax unified
+ 492              		.code	16
+ 493              		.thumb_func
+ 494              		.fpu softvfp
+ 496              	USBPD_DPM_InitCore:
+ 497              	.LFB863:
+ 150:Src/usbpd_dpm_core.c ****   /* variable to get dynamique memory allocated by usbpd stack */
+ 498              		.loc 1 150 1 is_stmt 1 view -0
+ 499              		.cfi_startproc
+ 500              		@ args = 0, pretend = 0, frame = 0
+ 501              		@ frame_needed = 0, uses_anonymous_args = 0
+ 152:Src/usbpd_dpm_core.c ****   USBPD_StatusTypeDef _retr;
+ 502              		.loc 1 152 3 view .LVU91
+ 153:Src/usbpd_dpm_core.c **** 
+ 503              		.loc 1 153 3 view .LVU92
+ARM GAS  /tmp/cchcd7QB.s 			page 20
+
+
+ 155:Src/usbpd_dpm_core.c ****   {
+ 504              		.loc 1 155 3 view .LVU93
+ 175:Src/usbpd_dpm_core.c **** 
+ 505              		.loc 1 175 3 view .LVU94
+ 178:Src/usbpd_dpm_core.c ****   {
+ 506              		.loc 1 178 3 view .LVU95
+ 150:Src/usbpd_dpm_core.c ****   /* variable to get dynamique memory allocated by usbpd stack */
+ 507              		.loc 1 150 1 is_stmt 0 view .LVU96
+ 508 0000 70B5     		push	{r4, r5, r6, lr}
+ 509              	.LCFI7:
+ 510              		.cfi_def_cfa_offset 16
+ 511              		.cfi_offset 4, -16
+ 512              		.cfi_offset 5, -12
+ 513              		.cfi_offset 6, -8
+ 514              		.cfi_offset 14, -4
+ 178:Src/usbpd_dpm_core.c ****   {
+ 515              		.loc 1 178 20 view .LVU97
+ 516 0002 1848     		ldr	r0, .L46
+ 517 0004 FFF7FEFF 		bl	USBPD_PE_CheckLIB
+ 518              	.LVL38:
+ 519 0008 0500     		movs	r5, r0
+ 178:Src/usbpd_dpm_core.c ****   {
+ 520              		.loc 1 178 5 view .LVU98
+ 521 000a 0128     		cmp	r0, #1
+ 522 000c 02D0     		beq	.L43
+ 523              	.L45:
+ 180:Src/usbpd_dpm_core.c ****   }
+ 524              		.loc 1 180 12 view .LVU99
+ 525 000e 0226     		movs	r6, #2
+ 526              	.L44:
+ 241:Src/usbpd_dpm_core.c **** 
+ 527              		.loc 1 241 1 view .LVU100
+ 528 0010 3000     		movs	r0, r6
+ 529              		@ sp needed
+ 530 0012 70BD     		pop	{r4, r5, r6, pc}
+ 531              	.L43:
+ 186:Src/usbpd_dpm_core.c **** 
+ 532              		.loc 1 186 3 is_stmt 1 view .LVU101
+ 186:Src/usbpd_dpm_core.c **** 
+ 533              		.loc 1 186 23 is_stmt 0 view .LVU102
+ 534 0014 FFF7FEFF 		bl	USBPD_PE_GetMemoryConsumption
+ 535              	.LVL39:
+ 189:Src/usbpd_dpm_core.c **** 
+ 536              		.loc 1 189 3 is_stmt 1 view .LVU103
+ 192:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 537              		.loc 1 192 3 view .LVU104
+ 198:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].PE_PowerRole     = DPM_Settings[USBPD_PORT_0].PE_DefaultRole;
+ 538              		.loc 1 198 3 view .LVU105
+ 199:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].PE_SwapOngoing   = USBPD_FALSE;
+ 539              		.loc 1 199 3 view .LVU106
+ 200:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].ActiveCCIs       = CCNONE;
+ 540              		.loc 1 200 3 view .LVU107
+ 201:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].VconnCCIs        = CCNONE;
+ 541              		.loc 1 201 3 view .LVU108
+ 202:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].VconnStatus      = USBPD_FALSE;
+ 542              		.loc 1 202 3 view .LVU109
+ 203:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ARM GAS  /tmp/cchcd7QB.s 			page 21
+
+
+ 543              		.loc 1 203 3 view .LVU110
+ 198:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].PE_PowerRole     = DPM_Settings[USBPD_PORT_0].PE_DefaultRole;
+ 544              		.loc 1 198 45 is_stmt 0 view .LVU111
+ 545 0018 0422     		movs	r2, #4
+ 199:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].PE_SwapOngoing   = USBPD_FALSE;
+ 546              		.loc 1 199 73 view .LVU112
+ 547 001a 134E     		ldr	r6, .L46+4
+ 198:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].PE_PowerRole     = DPM_Settings[USBPD_PORT_0].PE_DefaultRole;
+ 548              		.loc 1 198 45 view .LVU113
+ 549 001c 134C     		ldr	r4, .L46+8
+ 199:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].PE_SwapOngoing   = USBPD_FALSE;
+ 550              		.loc 1 199 73 view .LVU114
+ 551 001e 3379     		ldrb	r3, [r6, #4]
+ 198:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].PE_PowerRole     = DPM_Settings[USBPD_PORT_0].PE_DefaultRole;
+ 552              		.loc 1 198 45 view .LVU115
+ 553 0020 1349     		ldr	r1, .L46+12
+ 554 0022 1A40     		ands	r2, r3
+ 198:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].PE_PowerRole     = DPM_Settings[USBPD_PORT_0].PE_DefaultRole;
+ 555              		.loc 1 198 73 view .LVU116
+ 556 0024 9B07     		lsls	r3, r3, #30
+ 198:Src/usbpd_dpm_core.c ****   DPM_Params[USBPD_PORT_0].PE_PowerRole     = DPM_Settings[USBPD_PORT_0].PE_DefaultRole;
+ 557              		.loc 1 198 45 view .LVU117
+ 558 0026 9B0F     		lsrs	r3, r3, #30
+ 559 0028 1343     		orrs	r3, r2
+ 560 002a 2288     		ldrh	r2, [r4]
+ 561 002c 0A40     		ands	r2, r1
+ 562 002e 1343     		orrs	r3, r2
+ 563 0030 2380     		strh	r3, [r4]
+ 214:Src/usbpd_dpm_core.c **** 
+ 564              		.loc 1 214 3 is_stmt 1 view .LVU118
+ 565 0032 FFF7FEFF 		bl	USBPD_TRACE_Init
+ 566              	.LVL40:
+ 217:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 567              		.loc 1 217 3 view .LVU119
+ 568 0036 2300     		movs	r3, r4
+ 569 0038 3200     		movs	r2, r6
+ 570 003a 0020     		movs	r0, #0
+ 571 003c 0D49     		ldr	r1, .L46+16
+ 572 003e FFF7FEFF 		bl	USBPD_CAD_Init
+ 573              	.LVL41:
+ 574 0042 0028     		cmp	r0, #0
+ 575 0044 E3D1     		bne	.L45
+ 217:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 576              		.loc 1 217 170 discriminator 2 view .LVU120
+ 223:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 577              		.loc 1 223 3 discriminator 2 view .LVU121
+ 578 0046 3100     		movs	r1, r6
+ 579 0048 2200     		movs	r2, r4
+ 580 004a 0B4B     		ldr	r3, .L46+20
+ 581 004c FFF7FEFF 		bl	USBPD_PE_Init
+ 582              	.LVL42:
+ 583 0050 061E     		subs	r6, r0, #0
+ 584              	.LVL43:
+ 223:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 585              		.loc 1 223 3 discriminator 2 view .LVU122
+ 586 0052 DDD1     		bne	.L44
+ 223:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ARM GAS  /tmp/cchcd7QB.s 			page 22
+
+
+ 587              		.loc 1 223 150 discriminator 2 view .LVU123
+ 229:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 588              		.loc 1 229 3 discriminator 2 view .LVU124
+ 229:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 589              		.loc 1 229 44 is_stmt 0 discriminator 2 view .LVU125
+ 590 0054 0823     		movs	r3, #8
+ 591 0056 6278     		ldrb	r2, [r4, #1]
+ 235:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 592              		.loc 1 235 3 discriminator 2 view .LVU126
+ 593 0058 2900     		movs	r1, r5
+ 229:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 594              		.loc 1 229 44 discriminator 2 view .LVU127
+ 595 005a 1343     		orrs	r3, r2
+ 596 005c 6370     		strb	r3, [r4, #1]
+ 235:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 597              		.loc 1 235 3 is_stmt 1 discriminator 2 view .LVU128
+ 598 005e FFF7FEFF 		bl	USBPD_CAD_PortEnable
+ 599              	.LVL44:
+ 240:Src/usbpd_dpm_core.c **** }
+ 600              		.loc 1 240 3 discriminator 2 view .LVU129
+ 240:Src/usbpd_dpm_core.c **** }
+ 601              		.loc 1 240 10 is_stmt 0 discriminator 2 view .LVU130
+ 602 0062 D5E7     		b	.L44
+ 603              	.L47:
+ 604              		.align	2
+ 605              	.L46:
+ 606 0064 00002530 		.word	807731200
+ 607 0068 00000000 		.word	.LANCHOR6
+ 608 006c 00000000 		.word	DPM_Params
+ 609 0070 28170000 		.word	5928
+ 610 0074 00000000 		.word	.LANCHOR7
+ 611 0078 00000000 		.word	.LANCHOR8
+ 612              		.cfi_endproc
+ 613              	.LFE863:
+ 615              		.section	.text.USBPD_DPM_InitOS,"ax",%progbits
+ 616              		.align	1
+ 617              		.global	USBPD_DPM_InitOS
+ 618              		.syntax unified
+ 619              		.code	16
+ 620              		.thumb_func
+ 621              		.fpu softvfp
+ 623              	USBPD_DPM_InitOS:
+ 624              	.LFB864:
+ 248:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+ 625              		.loc 1 248 1 is_stmt 1 view -0
+ 626              		.cfi_startproc
+ 627              		@ args = 0, pretend = 0, frame = 0
+ 628              		@ frame_needed = 0, uses_anonymous_args = 0
+ 250:Src/usbpd_dpm_core.c ****   if((DPM_Thread_Table[USBPD_THREAD_CAD] = osThreadCreate(osThread(CAD), NULL)) == NULL)
+ 629              		.loc 1 250 3 view .LVU132
+ 248:Src/usbpd_dpm_core.c **** #if (osCMSIS < 0x20000U)
+ 630              		.loc 1 248 1 is_stmt 0 view .LVU133
+ 631 0000 10B5     		push	{r4, lr}
+ 632              	.LCFI8:
+ 633              		.cfi_def_cfa_offset 8
+ 634              		.cfi_offset 4, -8
+ 635              		.cfi_offset 14, -4
+ARM GAS  /tmp/cchcd7QB.s 			page 23
+
+
+ 250:Src/usbpd_dpm_core.c ****   if((DPM_Thread_Table[USBPD_THREAD_CAD] = osThreadCreate(osThread(CAD), NULL)) == NULL)
+ 636              		.loc 1 250 16 view .LVU134
+ 637 0002 0021     		movs	r1, #0
+ 638 0004 1148     		ldr	r0, .L55
+ 639 0006 FFF7FEFF 		bl	osMessageCreate
+ 640              	.LVL45:
+ 250:Src/usbpd_dpm_core.c ****   if((DPM_Thread_Table[USBPD_THREAD_CAD] = osThreadCreate(osThread(CAD), NULL)) == NULL)
+ 641              		.loc 1 250 14 view .LVU135
+ 642 000a 114B     		ldr	r3, .L55+4
+ 251:Src/usbpd_dpm_core.c **** #else
+ 643              		.loc 1 251 44 view .LVU136
+ 644 000c 0021     		movs	r1, #0
+ 250:Src/usbpd_dpm_core.c ****   if((DPM_Thread_Table[USBPD_THREAD_CAD] = osThreadCreate(osThread(CAD), NULL)) == NULL)
+ 645              		.loc 1 250 14 view .LVU137
+ 646 000e 1860     		str	r0, [r3]
+ 251:Src/usbpd_dpm_core.c **** #else
+ 647              		.loc 1 251 3 is_stmt 1 view .LVU138
+ 251:Src/usbpd_dpm_core.c **** #else
+ 648              		.loc 1 251 44 is_stmt 0 view .LVU139
+ 649 0010 1048     		ldr	r0, .L55+8
+ 650 0012 FFF7FEFF 		bl	osThreadCreate
+ 651              	.LVL46:
+ 251:Src/usbpd_dpm_core.c **** #else
+ 652              		.loc 1 251 42 view .LVU140
+ 653 0016 104C     		ldr	r4, .L55+12
+ 654 0018 6060     		str	r0, [r4, #4]
+ 251:Src/usbpd_dpm_core.c **** #else
+ 655              		.loc 1 251 5 view .LVU141
+ 656 001a 0028     		cmp	r0, #0
+ 657 001c 01D1     		bne	.L49
+ 658              	.L51:
+ 257:Src/usbpd_dpm_core.c ****   }
+ 659              		.loc 1 257 12 view .LVU142
+ 660 001e 0220     		movs	r0, #2
+ 661              	.L50:
+ 291:Src/usbpd_dpm_core.c **** 
+ 662              		.loc 1 291 1 view .LVU143
+ 663              		@ sp needed
+ 664 0020 10BD     		pop	{r4, pc}
+ 665              	.L49:
+ 261:Src/usbpd_dpm_core.c ****   if(NULL == osThreadCreate(osThread(TRA_TX), NULL))
+ 666              		.loc 1 261 3 is_stmt 1 view .LVU144
+ 261:Src/usbpd_dpm_core.c ****   if(NULL == osThreadCreate(osThread(TRA_TX), NULL))
+ 667              		.loc 1 261 18 is_stmt 0 view .LVU145
+ 668 0022 0021     		movs	r1, #0
+ 669 0024 0D48     		ldr	r0, .L55+16
+ 670 0026 FFF7FEFF 		bl	osMessageCreate
+ 671              	.LVL47:
+ 261:Src/usbpd_dpm_core.c ****   if(NULL == osThreadCreate(osThread(TRA_TX), NULL))
+ 672              		.loc 1 261 16 view .LVU146
+ 673 002a 0D4B     		ldr	r3, .L55+20
+ 262:Src/usbpd_dpm_core.c **** #else
+ 674              		.loc 1 262 14 view .LVU147
+ 675 002c 0021     		movs	r1, #0
+ 261:Src/usbpd_dpm_core.c ****   if(NULL == osThreadCreate(osThread(TRA_TX), NULL))
+ 676              		.loc 1 261 16 view .LVU148
+ 677 002e 1860     		str	r0, [r3]
+ARM GAS  /tmp/cchcd7QB.s 			page 24
+
+
+ 262:Src/usbpd_dpm_core.c **** #else
+ 678              		.loc 1 262 3 is_stmt 1 view .LVU149
+ 262:Src/usbpd_dpm_core.c **** #else
+ 679              		.loc 1 262 14 is_stmt 0 view .LVU150
+ 680 0030 0C48     		ldr	r0, .L55+24
+ 681 0032 FFF7FEFF 		bl	osThreadCreate
+ 682              	.LVL48:
+ 262:Src/usbpd_dpm_core.c **** #else
+ 683              		.loc 1 262 5 view .LVU151
+ 684 0036 0028     		cmp	r0, #0
+ 685 0038 F1D0     		beq	.L51
+ 273:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 686              		.loc 1 273 3 is_stmt 1 view .LVU152
+ 273:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 687              		.loc 1 273 18 is_stmt 0 view .LVU153
+ 688 003a 0021     		movs	r1, #0
+ 689 003c 0A48     		ldr	r0, .L55+28
+ 690 003e FFF7FEFF 		bl	osMessageCreate
+ 691              	.LVL49:
+ 273:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 692              		.loc 1 273 16 view .LVU154
+ 693 0042 0A4B     		ldr	r3, .L55+32
+ 694 0044 1860     		str	r0, [r3]
+ 285:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 695              		.loc 1 285 3 is_stmt 1 view .LVU155
+ 285:Src/usbpd_dpm_core.c **** #if USBPD_PORT_COUNT == 2
+ 696              		.loc 1 285 41 is_stmt 0 view .LVU156
+ 697 0046 0020     		movs	r0, #0
+ 698 0048 2060     		str	r0, [r4]
+ 290:Src/usbpd_dpm_core.c **** }
+ 699              		.loc 1 290 3 is_stmt 1 view .LVU157
+ 290:Src/usbpd_dpm_core.c **** }
+ 700              		.loc 1 290 10 is_stmt 0 view .LVU158
+ 701 004a E9E7     		b	.L50
+ 702              	.L56:
+ 703              		.align	2
+ 704              	.L55:
+ 705 004c 00000000 		.word	.LANCHOR9
+ 706 0050 00000000 		.word	.LANCHOR1
+ 707 0054 00000000 		.word	.LANCHOR10
+ 708 0058 00000000 		.word	.LANCHOR5
+ 709 005c 00000000 		.word	.LANCHOR11
+ 710 0060 00000000 		.word	.LANCHOR2
+ 711 0064 00000000 		.word	.LANCHOR12
+ 712 0068 00000000 		.word	.LANCHOR13
+ 713 006c 00000000 		.word	.LANCHOR0
+ 714              		.cfi_endproc
+ 715              	.LFE864:
+ 717              		.section	.text.USBPD_DPM_Run,"ax",%progbits
+ 718              		.align	1
+ 719              		.global	USBPD_DPM_Run
+ 720              		.syntax unified
+ 721              		.code	16
+ 722              		.thumb_func
+ 723              		.fpu softvfp
+ 725              	USBPD_DPM_Run:
+ 726              	.LFB865:
+ARM GAS  /tmp/cchcd7QB.s 			page 25
+
+
+ 298:Src/usbpd_dpm_core.c **** #if (osCMSIS >= 0x20000U)
+ 727              		.loc 1 298 1 is_stmt 1 view -0
+ 728              		.cfi_startproc
+ 729              		@ args = 0, pretend = 0, frame = 0
+ 730              		@ frame_needed = 0, uses_anonymous_args = 0
+ 302:Src/usbpd_dpm_core.c **** }
+ 731              		.loc 1 302 3 view .LVU160
+ 298:Src/usbpd_dpm_core.c **** #if (osCMSIS >= 0x20000U)
+ 732              		.loc 1 298 1 is_stmt 0 view .LVU161
+ 733 0000 10B5     		push	{r4, lr}
+ 734              	.LCFI9:
+ 735              		.cfi_def_cfa_offset 8
+ 736              		.cfi_offset 4, -8
+ 737              		.cfi_offset 14, -4
+ 302:Src/usbpd_dpm_core.c **** }
+ 738              		.loc 1 302 3 view .LVU162
+ 739 0002 FFF7FEFF 		bl	osKernelStart
+ 740              	.LVL50:
+ 303:Src/usbpd_dpm_core.c **** 
+ 741              		.loc 1 303 1 view .LVU163
+ 742              		@ sp needed
+ 743 0006 10BD     		pop	{r4, pc}
+ 744              		.cfi_endproc
+ 745              	.LFE865:
+ 747              		.section	.text.USBPD_DPM_TimerCounter,"ax",%progbits
+ 748              		.align	1
+ 749              		.global	USBPD_DPM_TimerCounter
+ 750              		.syntax unified
+ 751              		.code	16
+ 752              		.thumb_func
+ 753              		.fpu softvfp
+ 755              	USBPD_DPM_TimerCounter:
+ 756              	.LFB866:
+ 310:Src/usbpd_dpm_core.c ****   /* Call PE/PRL timers functions only if DPM is initialized */
+ 757              		.loc 1 310 1 is_stmt 1 view -0
+ 758              		.cfi_startproc
+ 759              		@ args = 0, pretend = 0, frame = 0
+ 760              		@ frame_needed = 0, uses_anonymous_args = 0
+ 312:Src/usbpd_dpm_core.c ****   {
+ 761              		.loc 1 312 3 view .LVU165
+ 312:Src/usbpd_dpm_core.c ****   {
+ 762              		.loc 1 312 18 is_stmt 0 view .LVU166
+ 763 0000 074B     		ldr	r3, .L63
+ 310:Src/usbpd_dpm_core.c ****   /* Call PE/PRL timers functions only if DPM is initialized */
+ 764              		.loc 1 310 1 view .LVU167
+ 765 0002 10B5     		push	{r4, lr}
+ 766              	.LCFI10:
+ 767              		.cfi_def_cfa_offset 8
+ 768              		.cfi_offset 4, -8
+ 769              		.cfi_offset 14, -4
+ 312:Src/usbpd_dpm_core.c ****   {
+ 770              		.loc 1 312 18 view .LVU168
+ 771 0004 5B78     		ldrb	r3, [r3, #1]
+ 312:Src/usbpd_dpm_core.c ****   {
+ 772              		.loc 1 312 6 view .LVU169
+ 773 0006 1B07     		lsls	r3, r3, #28
+ 774 0008 08D5     		bpl	.L58
+ARM GAS  /tmp/cchcd7QB.s 			page 26
+
+
+ 314:Src/usbpd_dpm_core.c ****     USBPD_PE_TimerCounter(USBPD_PORT_0);
+ 775              		.loc 1 314 5 is_stmt 1 view .LVU170
+ 776 000a 0020     		movs	r0, #0
+ 777 000c FFF7FEFF 		bl	USBPD_DPM_UserTimerCounter
+ 778              	.LVL51:
+ 315:Src/usbpd_dpm_core.c ****     USBPD_PRL_TimerCounter(USBPD_PORT_0);
+ 779              		.loc 1 315 5 view .LVU171
+ 780 0010 0020     		movs	r0, #0
+ 781 0012 FFF7FEFF 		bl	USBPD_PE_TimerCounter
+ 782              	.LVL52:
+ 316:Src/usbpd_dpm_core.c ****   }
+ 783              		.loc 1 316 5 view .LVU172
+ 784 0016 0020     		movs	r0, #0
+ 785 0018 FFF7FEFF 		bl	USBPD_PRL_TimerCounter
+ 786              	.LVL53:
+ 787              	.L58:
+ 327:Src/usbpd_dpm_core.c **** 
+ 788              		.loc 1 327 1 is_stmt 0 view .LVU173
+ 789              		@ sp needed
+ 790 001c 10BD     		pop	{r4, pc}
+ 791              	.L64:
+ 792 001e C046     		.align	2
+ 793              	.L63:
+ 794 0020 00000000 		.word	DPM_Params
+ 795              		.cfi_endproc
+ 796              	.LFE866:
+ 798              		.section	.text.USBPD_DPM_TraceWakeUp,"ax",%progbits
+ 799              		.align	1
+ 800              		.global	USBPD_DPM_TraceWakeUp
+ 801              		.syntax unified
+ 802              		.code	16
+ 803              		.thumb_func
+ 804              		.fpu softvfp
+ 806              	USBPD_DPM_TraceWakeUp:
+ 807              	.LFB872:
+ 466:Src/usbpd_dpm_core.c ****   if (NULL != TraceQueueId)
+ 808              		.loc 1 466 1 is_stmt 1 view -0
+ 809              		.cfi_startproc
+ 810              		@ args = 0, pretend = 0, frame = 0
+ 811              		@ frame_needed = 0, uses_anonymous_args = 0
+ 467:Src/usbpd_dpm_core.c ****   {
+ 812              		.loc 1 467 3 view .LVU175
+ 467:Src/usbpd_dpm_core.c ****   {
+ 813              		.loc 1 467 12 is_stmt 0 view .LVU176
+ 814 0000 044B     		ldr	r3, .L70
+ 466:Src/usbpd_dpm_core.c ****   if (NULL != TraceQueueId)
+ 815              		.loc 1 466 1 view .LVU177
+ 816 0002 10B5     		push	{r4, lr}
+ 817              	.LCFI11:
+ 818              		.cfi_def_cfa_offset 8
+ 819              		.cfi_offset 4, -8
+ 820              		.cfi_offset 14, -4
+ 467:Src/usbpd_dpm_core.c ****   {
+ 821              		.loc 1 467 12 view .LVU178
+ 822 0004 1868     		ldr	r0, [r3]
+ 467:Src/usbpd_dpm_core.c ****   {
+ 823              		.loc 1 467 6 view .LVU179
+ARM GAS  /tmp/cchcd7QB.s 			page 27
+
+
+ 824 0006 0028     		cmp	r0, #0
+ 825 0008 03D0     		beq	.L65
+ 470:Src/usbpd_dpm_core.c **** #else
+ 826              		.loc 1 470 5 is_stmt 1 view .LVU180
+ 470:Src/usbpd_dpm_core.c **** #else
+ 827              		.loc 1 470 11 is_stmt 0 view .LVU181
+ 828 000a 0022     		movs	r2, #0
+ 829 000c 0249     		ldr	r1, .L70+4
+ 830 000e FFF7FEFF 		bl	osMessagePut
+ 831              	.LVL54:
+ 832              	.L65:
+ 476:Src/usbpd_dpm_core.c **** 
+ 833              		.loc 1 476 1 view .LVU182
+ 834              		@ sp needed
+ 835 0012 10BD     		pop	{r4, pc}
+ 836              	.L71:
+ 837              		.align	2
+ 838              	.L70:
+ 839 0014 00000000 		.word	.LANCHOR2
+ 840 0018 FFFF0000 		.word	65535
+ 841              		.cfi_endproc
+ 842              	.LFE872:
+ 844              		.comm	DPM_Params,4,4
+ 845              		.global	os_messageQ_def_queueTRACE
+ 846              		.global	os_thread_def_TRA_TX
+ 847              		.section	.rodata.str1.1,"aMS",%progbits,1
+ 848              	.LC26:
+ 849 0000 5452415F 		.ascii	"TRA_TX\000"
+ 849      545800
+ 850              		.global	os_messageQ_def_queueCAD
+ 851              		.global	os_thread_def_CAD
+ 852              	.LC27:
+ 853 0007 43414400 		.ascii	"CAD\000"
+ 854              		.global	os_messageQ_def_queuePE
+ 855              		.global	os_thread_def_PE_1
+ 856              	.LC28:
+ 857 000b 50455F31 		.ascii	"PE_1\000"
+ 857      00
+ 858              		.global	os_thread_def_PE_0
+ 859              	.LC29:
+ 860 0010 50455F30 		.ascii	"PE_0\000"
+ 860      00
+ 861              		.global	DPM_Settings
+ 862              		.section	.bss.CADQueueId,"aw",%nobits
+ 863              		.align	2
+ 864              		.set	.LANCHOR1,. + 0
+ 867              	CADQueueId:
+ 868 0000 00000000 		.space	4
+ 869              		.section	.bss.DPM_Thread_Table,"aw",%nobits
+ 870              		.align	2
+ 871              		.set	.LANCHOR5,. + 0
+ 874              	DPM_Thread_Table:
+ 875 0000 00000000 		.space	8
+ 875      00000000 
+ 876              		.section	.bss.PEQueueId,"aw",%nobits
+ 877              		.align	2
+ 878              		.set	.LANCHOR0,. + 0
+ARM GAS  /tmp/cchcd7QB.s 			page 28
+
+
+ 881              	PEQueueId:
+ 882 0000 00000000 		.space	4
+ 883              		.section	.bss.TraceQueueId,"aw",%nobits
+ 884              		.align	2
+ 885              		.set	.LANCHOR2,. + 0
+ 888              	TraceQueueId:
+ 889 0000 00000000 		.space	4
+ 890              		.section	.data.DPM_Settings,"aw"
+ 891              		.align	2
+ 892              		.set	.LANCHOR6,. + 0
+ 895              	DPM_Settings:
+ 896 0000 03000000 		.word	3
+ 897 0004 02       		.byte	2
+ 898 0005 00       		.byte	0
+ 899 0006 00       		.byte	0
+ 900 0007 00       		.byte	0
+ 901 0008 00       		.byte	0
+ 902 0009 00       		.byte	0
+ 903 000a 0000     		.space	2
+ 904              		.section	.rodata.CAD_cbs.11307,"a"
+ 905              		.align	2
+ 906              		.set	.LANCHOR7,. + 0
+ 909              	CAD_cbs.11307:
+ 910 0000 00000000 		.word	USBPD_DPM_CADCallback
+ 911 0004 00000000 		.word	USBPD_DPM_CADTaskWakeUp
+ 912              		.section	.rodata.dpmCallbacks.11306,"a"
+ 913              		.align	2
+ 914              		.set	.LANCHOR8,. + 0
+ 917              	dpmCallbacks.11306:
+ 918 0000 00000000 		.word	0
+ 919 0004 00000000 		.word	USBPD_DPM_HardReset
+ 920 0008 00000000 		.word	USBPD_DPM_EvaluatePowerRoleSwap
+ 921 000c 00000000 		.word	USBPD_DPM_Notification
+ 922 0010 00000000 		.word	USBPD_DPM_ExtendedMessageReceived
+ 923 0014 00000000 		.word	USBPD_DPM_GetDataInfo
+ 924 0018 00000000 		.word	USBPD_DPM_SetDataInfo
+ 925 001c 00000000 		.word	0
+ 926 0020 00000000 		.word	USBPD_DPM_SNK_EvaluateCapabilities
+ 927 0024 00000000 		.word	0
+ 928 0028 00000000 		.word	USBPD_PE_TaskWakeUp
+ 929 002c 00000000 		.word	0
+ 930 0030 00000000 		.word	0
+ 931 0034 00000000 		.word	0
+ 932 0038 00000000 		.word	USBPD_DPM_EvaluateDataRoleSwap
+ 933 003c 00000000 		.word	USBPD_DPM_IsPowerReady
+ 934              		.section	.rodata.os_messageQ_def_queueCAD,"a"
+ 935              		.align	2
+ 936              		.set	.LANCHOR9,. + 0
+ 939              	os_messageQ_def_queueCAD:
+ 940 0000 02000000 		.word	2
+ 941 0004 02000000 		.word	2
+ 942              		.section	.rodata.os_messageQ_def_queuePE,"a"
+ 943              		.align	2
+ 944              		.set	.LANCHOR13,. + 0
+ 947              	os_messageQ_def_queuePE:
+ 948 0000 01000000 		.word	1
+ 949 0004 02000000 		.word	2
+ARM GAS  /tmp/cchcd7QB.s 			page 29
+
+
+ 950              		.section	.rodata.os_messageQ_def_queueTRACE,"a"
+ 951              		.align	2
+ 952              		.set	.LANCHOR11,. + 0
+ 955              	os_messageQ_def_queueTRACE:
+ 956 0000 01000000 		.word	1
+ 957 0004 02000000 		.word	2
+ 958              		.section	.rodata.os_thread_def_CAD,"a"
+ 959              		.align	2
+ 960              		.set	.LANCHOR10,. + 0
+ 963              	os_thread_def_CAD:
+ 964 0000 07000000 		.word	.LC27
+ 965 0004 00000000 		.word	USBPD_CAD_Task
+ 966 0008 0300     		.short	3
+ 967 000a 0000     		.space	2
+ 968 000c 00000000 		.word	0
+ 969 0010 2C010000 		.word	300
+ 970              		.section	.rodata.os_thread_def_PE_0,"a"
+ 971              		.align	2
+ 972              		.set	.LANCHOR3,. + 0
+ 975              	os_thread_def_PE_0:
+ 976 0000 10000000 		.word	.LC29
+ 977 0004 00000000 		.word	USBPD_PE_Task
+ 978 0008 0100     		.short	1
+ 979 000a 0000     		.space	2
+ 980 000c 00000000 		.word	0
+ 981 0010 C8000000 		.word	200
+ 982              		.section	.rodata.os_thread_def_PE_1,"a"
+ 983              		.align	2
+ 984              		.set	.LANCHOR4,. + 0
+ 987              	os_thread_def_PE_1:
+ 988 0000 0B000000 		.word	.LC28
+ 989 0004 00000000 		.word	USBPD_PE_Task
+ 990 0008 0100     		.short	1
+ 991 000a 0000     		.space	2
+ 992 000c 00000000 		.word	0
+ 993 0010 C8000000 		.word	200
+ 994              		.section	.rodata.os_thread_def_TRA_TX,"a"
+ 995              		.align	2
+ 996              		.set	.LANCHOR12,. + 0
+ 999              	os_thread_def_TRA_TX:
+ 1000 0000 00000000 		.word	.LC26
+ 1001 0004 00000000 		.word	USBPD_TRACE_TX_Task
+ 1002 0008 FEFF     		.short	-2
+ 1003 000a 0000     		.space	2
+ 1004 000c 00000000 		.word	0
+ 1005 0010 3C000000 		.word	60
+ 1006              		.text
+ 1007              	.Letext0:
+ 1008              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 1009              		.file 3 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_def.h"
+ 1010              		.file 4 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_core.h"
+ 1011              		.file 5 "Inc/usbpd_dpm_core.h"
+ 1012              		.file 6 "Inc/FreeRTOSConfig.h"
+ 1013              		.file 7 "Middlewares/Third_Party/FreeRTOS/Source/include/task.h"
+ 1014              		.file 8 "Middlewares/Third_Party/FreeRTOS/Source/include/queue.h"
+ 1015              		.file 9 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
+ 1016              		.file 10 "Drivers/CMSIS/Device/ST/STM32G0xx/Include/system_stm32g0xx.h"
+ARM GAS  /tmp/cchcd7QB.s 			page 30
+
+
+ 1017              		.file 11 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_def.h"
+ 1018              		.file 12 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_flash.h"
+ 1019              		.file 13 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal.h"
+ 1020              		.file 14 "Inc/usbpd_pdo_defs.h"
+ 1021              		.file 15 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 1022              		.file 16 "/usr/include/newlib/sys/_types.h"
+ 1023              		.file 17 "/usr/include/newlib/sys/reent.h"
+ 1024              		.file 18 "/usr/include/newlib/sys/lock.h"
+ 1025              		.file 19 "Utilities/GUI_INTERFACE/gui_api.h"
+ 1026              		.file 20 "Inc/usbpd_dpm_conf.h"
+ 1027              		.file 21 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_dma.h"
+ 1028              		.file 22 "Inc/usbpd_dpm_user.h"
+ 1029              		.file 23 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_trace.h"
+ARM GAS  /tmp/cchcd7QB.s 			page 31
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usbpd_dpm_core.c
+     /tmp/cchcd7QB.s:16     .text.USBPD_PE_TaskWakeUp:0000000000000000 $t
+     /tmp/cchcd7QB.s:23     .text.USBPD_PE_TaskWakeUp:0000000000000000 USBPD_PE_TaskWakeUp
+     /tmp/cchcd7QB.s:54     .text.USBPD_PE_TaskWakeUp:0000000000000014 $d
+     /tmp/cchcd7QB.s:60     .text.USBPD_DPM_CADTaskWakeUp:0000000000000000 $t
+     /tmp/cchcd7QB.s:66     .text.USBPD_DPM_CADTaskWakeUp:0000000000000000 USBPD_DPM_CADTaskWakeUp
+     /tmp/cchcd7QB.s:92     .text.USBPD_DPM_CADTaskWakeUp:0000000000000010 $d
+     /tmp/cchcd7QB.s:98     .text.USBPD_PE_Task:0000000000000000 $t
+     /tmp/cchcd7QB.s:105    .text.USBPD_PE_Task:0000000000000000 USBPD_PE_Task
+     /tmp/cchcd7QB.s:151    .text.USBPD_PE_Task:0000000000000020 $d
+     /tmp/cchcd7QB.s:156    .text.USBPD_CAD_Task:0000000000000000 $t
+     /tmp/cchcd7QB.s:163    .text.USBPD_CAD_Task:0000000000000000 USBPD_CAD_Task
+     /tmp/cchcd7QB.s:199    .text.USBPD_CAD_Task:0000000000000018 $d
+     /tmp/cchcd7QB.s:204    .text.USBPD_TRACE_TX_Task:0000000000000000 $t
+     /tmp/cchcd7QB.s:211    .text.USBPD_TRACE_TX_Task:0000000000000000 USBPD_TRACE_TX_Task
+     /tmp/cchcd7QB.s:247    .text.USBPD_TRACE_TX_Task:0000000000000018 $d
+     /tmp/cchcd7QB.s:252    .text.DPM_ManageAttachedState:0000000000000000 $t
+     /tmp/cchcd7QB.s:258    .text.DPM_ManageAttachedState:0000000000000000 DPM_ManageAttachedState
+     /tmp/cchcd7QB.s:341    .text.DPM_ManageAttachedState:0000000000000048 $d
+                            *COM*:0000000000000004 DPM_Params
+     /tmp/cchcd7QB.s:349    .text.USBPD_DPM_CADCallback:0000000000000000 $t
+     /tmp/cchcd7QB.s:356    .text.USBPD_DPM_CADCallback:0000000000000000 USBPD_DPM_CADCallback
+     /tmp/cchcd7QB.s:402    .text.USBPD_DPM_CADCallback:0000000000000020 $d
+     /tmp/cchcd7QB.s:406    .text.USBPD_DPM_CADCallback:0000000000000024 $t
+     /tmp/cchcd7QB.s:482    .text.USBPD_DPM_CADCallback:0000000000000064 $d
+     /tmp/cchcd7QB.s:489    .text.USBPD_DPM_InitCore:0000000000000000 $t
+     /tmp/cchcd7QB.s:496    .text.USBPD_DPM_InitCore:0000000000000000 USBPD_DPM_InitCore
+     /tmp/cchcd7QB.s:606    .text.USBPD_DPM_InitCore:0000000000000064 $d
+     /tmp/cchcd7QB.s:616    .text.USBPD_DPM_InitOS:0000000000000000 $t
+     /tmp/cchcd7QB.s:623    .text.USBPD_DPM_InitOS:0000000000000000 USBPD_DPM_InitOS
+     /tmp/cchcd7QB.s:705    .text.USBPD_DPM_InitOS:000000000000004c $d
+     /tmp/cchcd7QB.s:718    .text.USBPD_DPM_Run:0000000000000000 $t
+     /tmp/cchcd7QB.s:725    .text.USBPD_DPM_Run:0000000000000000 USBPD_DPM_Run
+     /tmp/cchcd7QB.s:748    .text.USBPD_DPM_TimerCounter:0000000000000000 $t
+     /tmp/cchcd7QB.s:755    .text.USBPD_DPM_TimerCounter:0000000000000000 USBPD_DPM_TimerCounter
+     /tmp/cchcd7QB.s:794    .text.USBPD_DPM_TimerCounter:0000000000000020 $d
+     /tmp/cchcd7QB.s:799    .text.USBPD_DPM_TraceWakeUp:0000000000000000 $t
+     /tmp/cchcd7QB.s:806    .text.USBPD_DPM_TraceWakeUp:0000000000000000 USBPD_DPM_TraceWakeUp
+     /tmp/cchcd7QB.s:839    .text.USBPD_DPM_TraceWakeUp:0000000000000014 $d
+     /tmp/cchcd7QB.s:955    .rodata.os_messageQ_def_queueTRACE:0000000000000000 os_messageQ_def_queueTRACE
+     /tmp/cchcd7QB.s:999    .rodata.os_thread_def_TRA_TX:0000000000000000 os_thread_def_TRA_TX
+     /tmp/cchcd7QB.s:939    .rodata.os_messageQ_def_queueCAD:0000000000000000 os_messageQ_def_queueCAD
+     /tmp/cchcd7QB.s:963    .rodata.os_thread_def_CAD:0000000000000000 os_thread_def_CAD
+     /tmp/cchcd7QB.s:947    .rodata.os_messageQ_def_queuePE:0000000000000000 os_messageQ_def_queuePE
+     /tmp/cchcd7QB.s:987    .rodata.os_thread_def_PE_1:0000000000000000 os_thread_def_PE_1
+     /tmp/cchcd7QB.s:975    .rodata.os_thread_def_PE_0:0000000000000000 os_thread_def_PE_0
+     /tmp/cchcd7QB.s:895    .data.DPM_Settings:0000000000000000 DPM_Settings
+     /tmp/cchcd7QB.s:863    .bss.CADQueueId:0000000000000000 $d
+     /tmp/cchcd7QB.s:867    .bss.CADQueueId:0000000000000000 CADQueueId
+     /tmp/cchcd7QB.s:870    .bss.DPM_Thread_Table:0000000000000000 $d
+     /tmp/cchcd7QB.s:874    .bss.DPM_Thread_Table:0000000000000000 DPM_Thread_Table
+     /tmp/cchcd7QB.s:877    .bss.PEQueueId:0000000000000000 $d
+     /tmp/cchcd7QB.s:881    .bss.PEQueueId:0000000000000000 PEQueueId
+     /tmp/cchcd7QB.s:884    .bss.TraceQueueId:0000000000000000 $d
+     /tmp/cchcd7QB.s:888    .bss.TraceQueueId:0000000000000000 TraceQueueId
+     /tmp/cchcd7QB.s:891    .data.DPM_Settings:0000000000000000 $d
+ARM GAS  /tmp/cchcd7QB.s 			page 32
+
+
+     /tmp/cchcd7QB.s:905    .rodata.CAD_cbs.11307:0000000000000000 $d
+     /tmp/cchcd7QB.s:909    .rodata.CAD_cbs.11307:0000000000000000 CAD_cbs.11307
+     /tmp/cchcd7QB.s:913    .rodata.dpmCallbacks.11306:0000000000000000 $d
+     /tmp/cchcd7QB.s:917    .rodata.dpmCallbacks.11306:0000000000000000 dpmCallbacks.11306
+     /tmp/cchcd7QB.s:935    .rodata.os_messageQ_def_queueCAD:0000000000000000 $d
+     /tmp/cchcd7QB.s:943    .rodata.os_messageQ_def_queuePE:0000000000000000 $d
+     /tmp/cchcd7QB.s:951    .rodata.os_messageQ_def_queueTRACE:0000000000000000 $d
+     /tmp/cchcd7QB.s:959    .rodata.os_thread_def_CAD:0000000000000000 $d
+     /tmp/cchcd7QB.s:971    .rodata.os_thread_def_PE_0:0000000000000000 $d
+     /tmp/cchcd7QB.s:983    .rodata.os_thread_def_PE_1:0000000000000000 $d
+     /tmp/cchcd7QB.s:995    .rodata.os_thread_def_TRA_TX:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+osMessagePut
+USBPD_PE_StateMachine_SNK
+osMessageGet
+USBPD_CAD_Process
+USBPD_TRACE_TX_Process
+USBPD_PE_IsCableConnected
+USBPD_DPM_UserCableDetection
+osThreadCreate
+USBPD_TRACE_Add
+__gnu_thumb1_case_uqi
+osThreadTerminate
+USBPD_PE_CheckLIB
+USBPD_PE_GetMemoryConsumption
+USBPD_TRACE_Init
+USBPD_CAD_Init
+USBPD_PE_Init
+USBPD_CAD_PortEnable
+osMessageCreate
+osKernelStart
+USBPD_DPM_UserTimerCounter
+USBPD_PE_TimerCounter
+USBPD_PRL_TimerCounter
+USBPD_DPM_HardReset
+USBPD_DPM_EvaluatePowerRoleSwap
+USBPD_DPM_Notification
+USBPD_DPM_ExtendedMessageReceived
+USBPD_DPM_GetDataInfo
+USBPD_DPM_SetDataInfo
+USBPD_DPM_SNK_EvaluateCapabilities
+USBPD_DPM_EvaluateDataRoleSwap
+USBPD_DPM_IsPowerReady

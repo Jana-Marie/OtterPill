@@ -1,0 +1,3281 @@
+ARM GAS  /tmp/ccg4sqYC.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 4
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"usbpd_dpm_user.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.USBPD_DPM_UserInit,"ax",%progbits
+  16              		.align	1
+  17              		.global	USBPD_DPM_UserInit
+  18              		.arch armv6s-m
+  19              		.syntax unified
+  20              		.code	16
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	USBPD_DPM_UserInit:
+  25              	.LFB866:
+  26              		.file 1 "Src/usbpd_dpm_user.c"
+   1:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN Header */
+   2:Src/usbpd_dpm_user.c **** /**
+   3:Src/usbpd_dpm_user.c ****   ******************************************************************************
+   4:Src/usbpd_dpm_user.c ****   * @file    usbpd_dpm_user.c
+   5:Src/usbpd_dpm_user.c ****   * @author  MCD Application Team
+   6:Src/usbpd_dpm_user.c ****   * @brief   USBPD DPM user code
+   7:Src/usbpd_dpm_user.c ****   ******************************************************************************
+   8:Src/usbpd_dpm_user.c ****   * @attention
+   9:Src/usbpd_dpm_user.c ****   *
+  10:Src/usbpd_dpm_user.c ****   * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+  11:Src/usbpd_dpm_user.c ****   * All rights reserved.</center></h2>
+  12:Src/usbpd_dpm_user.c ****   *
+  13:Src/usbpd_dpm_user.c ****   * This software component is licensed by ST under Ultimate Liberty license
+  14:Src/usbpd_dpm_user.c ****   * SLA0044, the "License"; You may not use this file except in compliance with
+  15:Src/usbpd_dpm_user.c ****   * the License. You may obtain a copy of the License at:
+  16:Src/usbpd_dpm_user.c ****   *                             www.st.com/SLA0044
+  17:Src/usbpd_dpm_user.c ****   *
+  18:Src/usbpd_dpm_user.c ****   ******************************************************************************
+  19:Src/usbpd_dpm_user.c ****   */
+  20:Src/usbpd_dpm_user.c **** /* USER CODE END Header */
+  21:Src/usbpd_dpm_user.c **** 
+  22:Src/usbpd_dpm_user.c **** #define USBPD_DPM_USER_C
+  23:Src/usbpd_dpm_user.c **** /* Includes ------------------------------------------------------------------*/
+  24:Src/usbpd_dpm_user.c **** #include "usbpd_core.h"
+  25:Src/usbpd_dpm_user.c **** #include "usbpd_pdo_defs.h"
+  26:Src/usbpd_dpm_user.c **** #include "usbpd_dpm_core.h"
+  27:Src/usbpd_dpm_user.c **** #include "usbpd_dpm_conf.h"
+  28:Src/usbpd_dpm_user.c **** #include "usbpd_dpm_user.h"
+  29:Src/usbpd_dpm_user.c **** #include "usbpd_vdm_user.h"
+  30:Src/usbpd_dpm_user.c **** #if defined(_TRACE)
+  31:Src/usbpd_dpm_user.c **** #include "usbpd_trace.h"
+  32:Src/usbpd_dpm_user.c **** #include "stdio.h"
+ARM GAS  /tmp/ccg4sqYC.s 			page 2
+
+
+  33:Src/usbpd_dpm_user.c **** #endif /* _TRACE */
+  34:Src/usbpd_dpm_user.c **** #include "usbpd_pwr_if.h"
+  35:Src/usbpd_dpm_user.c **** #include "string.h"
+  36:Src/usbpd_dpm_user.c **** #include "cmsis_os.h"
+  37:Src/usbpd_dpm_user.c **** #include "usbpd_pwr_user.h"
+  38:Src/usbpd_dpm_user.c **** 
+  39:Src/usbpd_dpm_user.c **** /** @addtogroup STM32_USBPD_APPLICATION
+  40:Src/usbpd_dpm_user.c ****   * @{
+  41:Src/usbpd_dpm_user.c ****   */
+  42:Src/usbpd_dpm_user.c **** 
+  43:Src/usbpd_dpm_user.c **** /** @addtogroup STM32_USBPD_APPLICATION_DPM_USER
+  44:Src/usbpd_dpm_user.c ****   * @{
+  45:Src/usbpd_dpm_user.c ****   */
+  46:Src/usbpd_dpm_user.c **** 
+  47:Src/usbpd_dpm_user.c **** /* Private typedef -----------------------------------------------------------*/
+  48:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN Private_Typedef */
+  49:Src/usbpd_dpm_user.c **** 
+  50:Src/usbpd_dpm_user.c **** /* USER CODE END Private_Typedef */
+  51:Src/usbpd_dpm_user.c **** 
+  52:Src/usbpd_dpm_user.c **** /* Private define ------------------------------------------------------------*/
+  53:Src/usbpd_dpm_user.c **** /** @defgroup USBPD_USER_PRIVATE_DEFINES USBPD USER Private Defines
+  54:Src/usbpd_dpm_user.c ****   * @{
+  55:Src/usbpd_dpm_user.c ****   */
+  56:Src/usbpd_dpm_user.c **** #define DPM_GUI_NOTIF_ISCONNECTED       (1 << 5)
+  57:Src/usbpd_dpm_user.c **** #define DPM_GUI_NOTIF_POWER_EVENT       (1 << 15)
+  58:Src/usbpd_dpm_user.c **** #if (osCMSIS < 0x20000U)
+  59:Src/usbpd_dpm_user.c **** void                USBPD_DPM_UserExecute(void const *argument);
+  60:Src/usbpd_dpm_user.c **** #else
+  61:Src/usbpd_dpm_user.c **** void                USBPD_DPM_UserExecute(void *argument);
+  62:Src/usbpd_dpm_user.c **** #endif /* osCMSIS < 0x20000U */
+  63:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN Private_Define */
+  64:Src/usbpd_dpm_user.c **** 
+  65:Src/usbpd_dpm_user.c **** /* USER CODE END Private_Define */
+  66:Src/usbpd_dpm_user.c **** 
+  67:Src/usbpd_dpm_user.c **** /**
+  68:Src/usbpd_dpm_user.c ****   * @}
+  69:Src/usbpd_dpm_user.c ****   */
+  70:Src/usbpd_dpm_user.c **** 
+  71:Src/usbpd_dpm_user.c **** /* Private macro -------------------------------------------------------------*/
+  72:Src/usbpd_dpm_user.c **** /** @defgroup USBPD_USER_PRIVATE_MACROS USBPD USER Private Macros
+  73:Src/usbpd_dpm_user.c ****   * @{
+  74:Src/usbpd_dpm_user.c ****   */
+  75:Src/usbpd_dpm_user.c **** #if defined(_TRACE)
+  76:Src/usbpd_dpm_user.c **** #define DPM_USER_DEBUG_TRACE_SIZE       40u
+  77:Src/usbpd_dpm_user.c **** #define DPM_USER_DEBUG_TRACE(_PORT_, ...)  do {                                          \
+  78:Src/usbpd_dpm_user.c ****       char _str[DPM_USER_DEBUG_TRACE_SIZE];                                                        
+  79:Src/usbpd_dpm_user.c ****       uint8_t _size = snprintf(_str, DPM_USER_DEBUG_TRACE_SIZE, __VA_ARGS__);                      
+  80:Src/usbpd_dpm_user.c ****       if (_size < DPM_USER_DEBUG_TRACE_SIZE)                                                       
+  81:Src/usbpd_dpm_user.c ****         USBPD_TRACE_Add(USBPD_TRACE_DEBUG, (uint8_t)(_PORT_), 0, (uint8_t*)_str, strlen(_str));  \
+  82:Src/usbpd_dpm_user.c ****       else                                                                              \
+  83:Src/usbpd_dpm_user.c ****         USBPD_TRACE_Add(USBPD_TRACE_DEBUG, (uint8_t)(_PORT_), 0, (uint8_t*)_str, DPM_USER_DEBUG_TRA
+  84:Src/usbpd_dpm_user.c ****  } while(0)
+  85:Src/usbpd_dpm_user.c **** #else
+  86:Src/usbpd_dpm_user.c **** #define DPM_USER_DEBUG_TRACE(_PORT_, ...)
+  87:Src/usbpd_dpm_user.c **** #endif /* _TRACE */
+  88:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN Private_Macro */
+  89:Src/usbpd_dpm_user.c **** 
+ARM GAS  /tmp/ccg4sqYC.s 			page 3
+
+
+  90:Src/usbpd_dpm_user.c **** /* USER CODE END Private_Macro */
+  91:Src/usbpd_dpm_user.c **** /**
+  92:Src/usbpd_dpm_user.c ****   * @}
+  93:Src/usbpd_dpm_user.c ****   */
+  94:Src/usbpd_dpm_user.c **** 
+  95:Src/usbpd_dpm_user.c **** /* Private variables ---------------------------------------------------------*/
+  96:Src/usbpd_dpm_user.c **** /** @defgroup USBPD_USER_PRIVATE_VARIABLES USBPD USER Private Variables
+  97:Src/usbpd_dpm_user.c ****   * @{
+  98:Src/usbpd_dpm_user.c ****   */
+  99:Src/usbpd_dpm_user.c **** GUI_NOTIFICATION_POST         DPM_GUI_PostNotificationMessage   = NULL;
+ 100:Src/usbpd_dpm_user.c **** GUI_NOTIFICATION_FORMAT_SEND  DPM_GUI_FormatAndSendNotification = NULL;
+ 101:Src/usbpd_dpm_user.c **** GUI_SAVE_INFO                 DPM_GUI_SaveInfo                  = NULL;
+ 102:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN Private_Variables */
+ 103:Src/usbpd_dpm_user.c **** 
+ 104:Src/usbpd_dpm_user.c **** /* USER CODE END Private_Variables */
+ 105:Src/usbpd_dpm_user.c **** /**
+ 106:Src/usbpd_dpm_user.c ****   * @}
+ 107:Src/usbpd_dpm_user.c ****   */
+ 108:Src/usbpd_dpm_user.c **** 
+ 109:Src/usbpd_dpm_user.c **** /* Private function prototypes -----------------------------------------------*/
+ 110:Src/usbpd_dpm_user.c **** /** @defgroup USBPD_USER_PRIVATE_FUNCTIONS USBPD USER Private Functions
+ 111:Src/usbpd_dpm_user.c ****   * @{
+ 112:Src/usbpd_dpm_user.c ****   */
+ 113:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_USER_PRIVATE_FUNCTIONS_Prototypes */
+ 114:Src/usbpd_dpm_user.c **** 
+ 115:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_USER_PRIVATE_FUNCTIONS_Prototypes */
+ 116:Src/usbpd_dpm_user.c **** /**
+ 117:Src/usbpd_dpm_user.c ****   * @}
+ 118:Src/usbpd_dpm_user.c ****   */
+ 119:Src/usbpd_dpm_user.c **** 
+ 120:Src/usbpd_dpm_user.c **** /* Exported functions ------- ------------------------------------------------*/
+ 121:Src/usbpd_dpm_user.c **** /** @defgroup USBPD_USER_EXPORTED_FUNCTIONS USBPD USER Exported Functions
+ 122:Src/usbpd_dpm_user.c ****   * @{
+ 123:Src/usbpd_dpm_user.c ****   */
+ 124:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_USER_EXPORTED_FUNCTIONS */
+ 125:Src/usbpd_dpm_user.c **** 
+ 126:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_USER_EXPORTED_FUNCTIONS */
+ 127:Src/usbpd_dpm_user.c **** 
+ 128:Src/usbpd_dpm_user.c **** /** @defgroup USBPD_USER_EXPORTED_FUNCTIONS_GROUP1 USBPD USER Exported Functions called by DPM CORE
+ 129:Src/usbpd_dpm_user.c ****   * @{
+ 130:Src/usbpd_dpm_user.c ****   */
+ 131:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_USER_EXPORTED_FUNCTIONS_GROUP1 */
+ 132:Src/usbpd_dpm_user.c **** 
+ 133:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_USER_EXPORTED_FUNCTIONS_GROUP1 */
+ 134:Src/usbpd_dpm_user.c **** 
+ 135:Src/usbpd_dpm_user.c **** /**
+ 136:Src/usbpd_dpm_user.c ****   * @brief  Initialize DPM (port power role, PWR_IF, CAD and PE Init procedures)
+ 137:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 138:Src/usbpd_dpm_user.c ****   */
+ 139:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_UserInit(void)
+ 140:Src/usbpd_dpm_user.c **** {
+  27              		.loc 1 140 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+ 141:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_UserInit */
+ARM GAS  /tmp/ccg4sqYC.s 			page 4
+
+
+ 142:Src/usbpd_dpm_user.c ****   return USBPD_OK;
+  32              		.loc 1 142 3 view .LVU1
+ 143:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_UserInit */
+ 144:Src/usbpd_dpm_user.c **** }
+  33              		.loc 1 144 1 is_stmt 0 view .LVU2
+  34 0000 0020     		movs	r0, #0
+  35              		@ sp needed
+  36 0002 7047     		bx	lr
+  37              		.cfi_endproc
+  38              	.LFE866:
+  40              		.section	.text.USBPD_DPM_SetNotification_GUI,"ax",%progbits
+  41              		.align	1
+  42              		.global	USBPD_DPM_SetNotification_GUI
+  43              		.syntax unified
+  44              		.code	16
+  45              		.thumb_func
+  46              		.fpu softvfp
+  48              	USBPD_DPM_SetNotification_GUI:
+  49              	.LVL0:
+  50              	.LFB867:
+ 145:Src/usbpd_dpm_user.c **** 
+ 146:Src/usbpd_dpm_user.c **** /**
+ 147:Src/usbpd_dpm_user.c ****   * @brief  Function to set the function ptr linked to GUI interface
+ 148:Src/usbpd_dpm_user.c ****   * @param  PtrFormatSend Pointer on function to format and send GUI notifications
+ 149:Src/usbpd_dpm_user.c ****   * @param  PtrPost       Pointer on function to send GUI notifications
+ 150:Src/usbpd_dpm_user.c ****   * @param  PtrSaveInfo   Pointer on function to save information from Port Partner
+ 151:Src/usbpd_dpm_user.c ****   * @retval None
+ 152:Src/usbpd_dpm_user.c ****   */
+ 153:Src/usbpd_dpm_user.c **** void USBPD_DPM_SetNotification_GUI(GUI_NOTIFICATION_FORMAT_SEND PtrFormatSend, GUI_NOTIFICATION_POS
+ 154:Src/usbpd_dpm_user.c **** {
+  51              		.loc 1 154 1 is_stmt 1 view -0
+  52              		.cfi_startproc
+  53              		@ args = 0, pretend = 0, frame = 0
+  54              		@ frame_needed = 0, uses_anonymous_args = 0
+  55              		@ link register save eliminated.
+ 155:Src/usbpd_dpm_user.c ****   DPM_GUI_PostNotificationMessage   = PtrPost;
+  56              		.loc 1 155 3 view .LVU4
+  57              		.loc 1 155 37 is_stmt 0 view .LVU5
+  58 0000 034B     		ldr	r3, .L3
+ 156:Src/usbpd_dpm_user.c ****   DPM_GUI_FormatAndSendNotification = PtrFormatSend;
+ 157:Src/usbpd_dpm_user.c ****   DPM_GUI_SaveInfo                  = PtrSaveInfo;
+ 158:Src/usbpd_dpm_user.c **** }
+  59              		.loc 1 158 1 view .LVU6
+  60              		@ sp needed
+ 155:Src/usbpd_dpm_user.c ****   DPM_GUI_PostNotificationMessage   = PtrPost;
+  61              		.loc 1 155 37 view .LVU7
+  62 0002 1960     		str	r1, [r3]
+ 156:Src/usbpd_dpm_user.c ****   DPM_GUI_FormatAndSendNotification = PtrFormatSend;
+  63              		.loc 1 156 3 is_stmt 1 view .LVU8
+ 156:Src/usbpd_dpm_user.c ****   DPM_GUI_FormatAndSendNotification = PtrFormatSend;
+  64              		.loc 1 156 37 is_stmt 0 view .LVU9
+  65 0004 034B     		ldr	r3, .L3+4
+  66 0006 1860     		str	r0, [r3]
+ 157:Src/usbpd_dpm_user.c **** }
+  67              		.loc 1 157 3 is_stmt 1 view .LVU10
+ 157:Src/usbpd_dpm_user.c **** }
+  68              		.loc 1 157 37 is_stmt 0 view .LVU11
+ARM GAS  /tmp/ccg4sqYC.s 			page 5
+
+
+  69 0008 034B     		ldr	r3, .L3+8
+  70 000a 1A60     		str	r2, [r3]
+  71              		.loc 1 158 1 view .LVU12
+  72 000c 7047     		bx	lr
+  73              	.L4:
+  74 000e C046     		.align	2
+  75              	.L3:
+  76 0010 00000000 		.word	.LANCHOR0
+  77 0014 00000000 		.word	.LANCHOR1
+  78 0018 00000000 		.word	.LANCHOR2
+  79              		.cfi_endproc
+  80              	.LFE867:
+  82              		.section	.text.USBPD_DPM_WaitForTime,"ax",%progbits
+  83              		.align	1
+  84              		.global	USBPD_DPM_WaitForTime
+  85              		.syntax unified
+  86              		.code	16
+  87              		.thumb_func
+  88              		.fpu softvfp
+  90              	USBPD_DPM_WaitForTime:
+  91              	.LVL1:
+  92              	.LFB868:
+ 159:Src/usbpd_dpm_user.c **** 
+ 160:Src/usbpd_dpm_user.c **** /**
+ 161:Src/usbpd_dpm_user.c ****   * @brief  User delay implementation which is OS dependant
+ 162:Src/usbpd_dpm_user.c ****   * @param  Time time in ms
+ 163:Src/usbpd_dpm_user.c ****   * @retval None
+ 164:Src/usbpd_dpm_user.c ****   */
+ 165:Src/usbpd_dpm_user.c **** void USBPD_DPM_WaitForTime(uint32_t Time)
+ 166:Src/usbpd_dpm_user.c **** {
+  93              		.loc 1 166 1 is_stmt 1 view -0
+  94              		.cfi_startproc
+  95              		@ args = 0, pretend = 0, frame = 0
+  96              		@ frame_needed = 0, uses_anonymous_args = 0
+ 167:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_WaitForTime */
+ 168:Src/usbpd_dpm_user.c ****   osDelay(Time);
+  97              		.loc 1 168 3 view .LVU14
+ 166:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_WaitForTime */
+  98              		.loc 1 166 1 is_stmt 0 view .LVU15
+  99 0000 10B5     		push	{r4, lr}
+ 100              	.LCFI0:
+ 101              		.cfi_def_cfa_offset 8
+ 102              		.cfi_offset 4, -8
+ 103              		.cfi_offset 14, -4
+ 104              		.loc 1 168 3 view .LVU16
+ 105 0002 FFF7FEFF 		bl	osDelay
+ 106              	.LVL2:
+ 169:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_WaitForTime */
+ 170:Src/usbpd_dpm_user.c **** }
+ 107              		.loc 1 170 1 view .LVU17
+ 108              		@ sp needed
+ 109 0006 10BD     		pop	{r4, pc}
+ 110              		.cfi_endproc
+ 111              	.LFE868:
+ 113              		.section	.text.USBPD_DPM_UserExecute,"ax",%progbits
+ 114              		.align	1
+ 115              		.global	USBPD_DPM_UserExecute
+ARM GAS  /tmp/ccg4sqYC.s 			page 6
+
+
+ 116              		.syntax unified
+ 117              		.code	16
+ 118              		.thumb_func
+ 119              		.fpu softvfp
+ 121              	USBPD_DPM_UserExecute:
+ 122              	.LVL3:
+ 123              	.LFB869:
+ 171:Src/usbpd_dpm_user.c **** 
+ 172:Src/usbpd_dpm_user.c **** /**
+ 173:Src/usbpd_dpm_user.c ****   * @brief  User processing time, it is recommended to avoid blocking task for long time
+ 174:Src/usbpd_dpm_user.c ****   * @param  argument  DPM User event
+ 175:Src/usbpd_dpm_user.c ****   * @retval None
+ 176:Src/usbpd_dpm_user.c ****   */
+ 177:Src/usbpd_dpm_user.c **** #if (osCMSIS < 0x20000U)
+ 178:Src/usbpd_dpm_user.c **** void USBPD_DPM_UserExecute(void const *argument)
+ 179:Src/usbpd_dpm_user.c **** #else
+ 180:Src/usbpd_dpm_user.c **** void USBPD_DPM_UserExecute(void *argument)
+ 181:Src/usbpd_dpm_user.c **** #endif /* osCMSIS < 0x20000U */
+ 182:Src/usbpd_dpm_user.c **** {
+ 124              		.loc 1 182 1 is_stmt 1 view -0
+ 125              		.cfi_startproc
+ 126              		@ args = 0, pretend = 0, frame = 0
+ 127              		@ frame_needed = 0, uses_anonymous_args = 0
+ 128              		@ link register save eliminated.
+ 183:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_UserExecute */
+ 184:Src/usbpd_dpm_user.c **** 
+ 185:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_UserExecute */
+ 186:Src/usbpd_dpm_user.c **** }
+ 129              		.loc 1 186 1 view .LVU19
+ 130              		@ sp needed
+ 131 0000 7047     		bx	lr
+ 132              		.cfi_endproc
+ 133              	.LFE869:
+ 135              		.section	.rodata.USBPD_DPM_UserCableDetection.str1.1,"aMS",%progbits,1
+ 136              	.LC4:
+ 137 0000 48454C50 		.ascii	"HELP: update USBPD_DPM_UserCableDetection\000"
+ 137      3A207570 
+ 137      64617465 
+ 137      20555342 
+ 137      50445F44 
+ 138              		.section	.text.USBPD_DPM_UserCableDetection,"ax",%progbits
+ 139              		.align	1
+ 140              		.global	USBPD_DPM_UserCableDetection
+ 141              		.syntax unified
+ 142              		.code	16
+ 143              		.thumb_func
+ 144              		.fpu softvfp
+ 146              	USBPD_DPM_UserCableDetection:
+ 147              	.LVL4:
+ 148              	.LFB870:
+ 187:Src/usbpd_dpm_user.c **** 
+ 188:Src/usbpd_dpm_user.c **** /**
+ 189:Src/usbpd_dpm_user.c ****   * @brief  UserCableDetection reporting events on a specified port from CAD layer.
+ 190:Src/usbpd_dpm_user.c ****   * @param  PortNum The handle of the port
+ 191:Src/usbpd_dpm_user.c ****   * @param  State CAD state
+ 192:Src/usbpd_dpm_user.c ****   * @retval None
+ 193:Src/usbpd_dpm_user.c ****   */
+ARM GAS  /tmp/ccg4sqYC.s 			page 7
+
+
+ 194:Src/usbpd_dpm_user.c **** void USBPD_DPM_UserCableDetection(uint8_t PortNum, USBPD_CAD_EVENT State)
+ 195:Src/usbpd_dpm_user.c **** {
+ 149              		.loc 1 195 1 view -0
+ 150              		.cfi_startproc
+ 151              		@ args = 0, pretend = 0, frame = 40
+ 152              		@ frame_needed = 0, uses_anonymous_args = 0
+ 196:Src/usbpd_dpm_user.c ****   switch(State)
+ 153              		.loc 1 196 3 view .LVU21
+ 154 0000 0239     		subs	r1, r1, #2
+ 155              	.LVL5:
+ 156              		.loc 1 196 3 is_stmt 0 view .LVU22
+ 157 0002 FD23     		movs	r3, #253
+ 158 0004 0A00     		movs	r2, r1
+ 195:Src/usbpd_dpm_user.c ****   switch(State)
+ 159              		.loc 1 195 1 view .LVU23
+ 160 0006 30B5     		push	{r4, r5, lr}
+ 161              	.LCFI1:
+ 162              		.cfi_def_cfa_offset 12
+ 163              		.cfi_offset 4, -12
+ 164              		.cfi_offset 5, -8
+ 165              		.cfi_offset 14, -4
+ 166              		.loc 1 196 3 view .LVU24
+ 167 0008 1A40     		ands	r2, r3
+ 195:Src/usbpd_dpm_user.c ****   switch(State)
+ 168              		.loc 1 195 1 view .LVU25
+ 169 000a 0400     		movs	r4, r0
+ 170 000c 0F4D     		ldr	r5, .L16
+ 171 000e 8DB0     		sub	sp, sp, #52
+ 172              	.LCFI2:
+ 173              		.cfi_def_cfa_offset 64
+ 174              		.loc 1 196 3 view .LVU26
+ 175 0010 1942     		tst	r1, r3
+ 176 0012 04D1     		bne	.L8
+ 177 0014 2B68     		ldr	r3, [r5]
+ 197:Src/usbpd_dpm_user.c ****   {
+ 198:Src/usbpd_dpm_user.c ****   case USBPD_CAD_EVENT_ATTEMC:
+ 199:Src/usbpd_dpm_user.c ****   case USBPD_CAD_EVENT_ATTACHED:
+ 200:Src/usbpd_dpm_user.c ****    /* Format and send a notification to GUI if enabled */
+ 201:Src/usbpd_dpm_user.c ****     if (NULL != DPM_GUI_FormatAndSendNotification)
+ 178              		.loc 1 201 5 is_stmt 1 view .LVU27
+ 179              		.loc 1 201 8 is_stmt 0 view .LVU28
+ 180 0016 002B     		cmp	r3, #0
+ 181 0018 01D0     		beq	.L8
+ 202:Src/usbpd_dpm_user.c ****     {
+ 203:Src/usbpd_dpm_user.c ****       DPM_GUI_FormatAndSendNotification(PortNum, DPM_GUI_NOTIF_ISCONNECTED | DPM_GUI_NOTIF_POWER_EV
+ 182              		.loc 1 203 7 is_stmt 1 view .LVU29
+ 183 001a 0D49     		ldr	r1, .L16+4
+ 184 001c 9847     		blx	r3
+ 185              	.LVL6:
+ 186              	.L8:
+ 204:Src/usbpd_dpm_user.c ****     }
+ 205:Src/usbpd_dpm_user.c ****   default :
+ 206:Src/usbpd_dpm_user.c ****     /* Format and send a notification to GUI if enabled */
+ 207:Src/usbpd_dpm_user.c ****     if (NULL != DPM_GUI_FormatAndSendNotification)
+ 187              		.loc 1 207 5 view .LVU30
+ 188              		.loc 1 207 14 is_stmt 0 view .LVU31
+ 189 001e 2B68     		ldr	r3, [r5]
+ARM GAS  /tmp/ccg4sqYC.s 			page 8
+
+
+ 190              		.loc 1 207 8 view .LVU32
+ 191 0020 002B     		cmp	r3, #0
+ 192 0022 03D0     		beq	.L9
+ 208:Src/usbpd_dpm_user.c ****     {
+ 209:Src/usbpd_dpm_user.c ****       DPM_GUI_FormatAndSendNotification(PortNum, DPM_GUI_NOTIF_ISCONNECTED | DPM_GUI_NOTIF_POWER_EV
+ 193              		.loc 1 209 7 is_stmt 1 view .LVU33
+ 194 0024 0022     		movs	r2, #0
+ 195 0026 2000     		movs	r0, r4
+ 196 0028 0949     		ldr	r1, .L16+4
+ 197 002a 9847     		blx	r3
+ 198              	.LVL7:
+ 199              	.L9:
+ 210:Src/usbpd_dpm_user.c ****     }
+ 211:Src/usbpd_dpm_user.c ****   }
+ 212:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_UserCableDetection */
+ 213:Src/usbpd_dpm_user.c ****   DPM_USER_DEBUG_TRACE(PortNum, "HELP: update USBPD_DPM_UserCableDetection");
+ 200              		.loc 1 213 3 view .LVU34
+ 201              	.LBB2:
+ 202              		.loc 1 213 3 view .LVU35
+ 203              		.loc 1 213 3 view .LVU36
+ 204 002c 2821     		movs	r1, #40
+ 205 002e 094A     		ldr	r2, .L16+8
+ 206 0030 02A8     		add	r0, sp, #8
+ 207 0032 FFF7FEFF 		bl	snprintf
+ 208              	.LVL8:
+ 209              		.loc 1 213 3 view .LVU37
+ 210              		.loc 1 213 3 view .LVU38
+ 211 0036 2823     		movs	r3, #40
+ 212 0038 0022     		movs	r2, #0
+ 213 003a 0093     		str	r3, [sp]
+ 214 003c 2100     		movs	r1, r4
+ 215 003e 0620     		movs	r0, #6
+ 216 0040 02AB     		add	r3, sp, #8
+ 217 0042 FFF7FEFF 		bl	USBPD_TRACE_Add
+ 218              	.LVL9:
+ 219              	.LBE2:
+ 220              		.loc 1 213 3 view .LVU39
+ 214:Src/usbpd_dpm_user.c ****   // switch(State)
+ 215:Src/usbpd_dpm_user.c ****   // {
+ 216:Src/usbpd_dpm_user.c ****   // case USBPD_CAD_EVENT_ATTACHED:
+ 217:Src/usbpd_dpm_user.c ****   // case USBPD_CAD_EVENT_ATTEMC:
+ 218:Src/usbpd_dpm_user.c ****     // {
+ 219:Src/usbpd_dpm_user.c ****       // if (USBPD_OK != USBPD_PWR_IF_VBUSEnable(PortNum))
+ 220:Src/usbpd_dpm_user.c ****       // {
+ 221:Src/usbpd_dpm_user.c ****         // /* Should not occurr */
+ 222:Src/usbpd_dpm_user.c ****         // HAL_Delay(6000);
+ 223:Src/usbpd_dpm_user.c ****         // NVIC_SystemReset();
+ 224:Src/usbpd_dpm_user.c ****       // }
+ 225:Src/usbpd_dpm_user.c ****       // break;
+ 226:Src/usbpd_dpm_user.c ****     // }
+ 227:Src/usbpd_dpm_user.c ****   // case USBPD_CAD_EVENT_DETACHED :
+ 228:Src/usbpd_dpm_user.c ****   // case USBPD_CAD_EVENT_EMC :
+ 229:Src/usbpd_dpm_user.c ****   // default :
+ 230:Src/usbpd_dpm_user.c ****     // {
+ 231:Src/usbpd_dpm_user.c ****       // if (USBPD_OK != USBPD_PWR_IF_VBUSDisable(PortNum))
+ 232:Src/usbpd_dpm_user.c ****       // {
+ 233:Src/usbpd_dpm_user.c ****         // /* Should not occurr */
+ARM GAS  /tmp/ccg4sqYC.s 			page 9
+
+
+ 234:Src/usbpd_dpm_user.c ****         // while(1);
+ 235:Src/usbpd_dpm_user.c ****       // }
+ 236:Src/usbpd_dpm_user.c ****       // break;
+ 237:Src/usbpd_dpm_user.c ****     // }
+ 238:Src/usbpd_dpm_user.c ****   // }
+ 239:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_UserCableDetection */
+ 240:Src/usbpd_dpm_user.c **** }
+ 221              		.loc 1 240 1 is_stmt 0 view .LVU40
+ 222 0046 0DB0     		add	sp, sp, #52
+ 223              		@ sp needed
+ 224 0048 30BD     		pop	{r4, r5, pc}
+ 225              	.L17:
+ 226 004a C046     		.align	2
+ 227              	.L16:
+ 228 004c 00000000 		.word	.LANCHOR1
+ 229 0050 20800000 		.word	32800
+ 230 0054 00000000 		.word	.LC4
+ 231              		.cfi_endproc
+ 232              	.LFE870:
+ 234              		.section	.text.USBPD_DPM_UserTimerCounter,"ax",%progbits
+ 235              		.align	1
+ 236              		.global	USBPD_DPM_UserTimerCounter
+ 237              		.syntax unified
+ 238              		.code	16
+ 239              		.thumb_func
+ 240              		.fpu softvfp
+ 242              	USBPD_DPM_UserTimerCounter:
+ 243              	.LVL10:
+ 244              	.LFB871:
+ 241:Src/usbpd_dpm_user.c **** 
+ 242:Src/usbpd_dpm_user.c **** /**
+ 243:Src/usbpd_dpm_user.c ****   * @brief  function used to manage user timer.
+ 244:Src/usbpd_dpm_user.c ****   * @param  PortNum Port number
+ 245:Src/usbpd_dpm_user.c ****   * @retval None
+ 246:Src/usbpd_dpm_user.c ****   */
+ 247:Src/usbpd_dpm_user.c **** void USBPD_DPM_UserTimerCounter(uint8_t PortNum)
+ 248:Src/usbpd_dpm_user.c **** {
+ 245              		.loc 1 248 1 is_stmt 1 view -0
+ 246              		.cfi_startproc
+ 247              		@ args = 0, pretend = 0, frame = 0
+ 248              		@ frame_needed = 0, uses_anonymous_args = 0
+ 249              		@ link register save eliminated.
+ 249:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_UserTimerCounter */
+ 250:Src/usbpd_dpm_user.c **** 
+ 251:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_UserTimerCounter */
+ 252:Src/usbpd_dpm_user.c **** }
+ 250              		.loc 1 252 1 view .LVU42
+ 251              		@ sp needed
+ 252 0000 7047     		bx	lr
+ 253              		.cfi_endproc
+ 254              	.LFE871:
+ 256              		.section	.rodata.USBPD_DPM_HardReset.str1.1,"aMS",%progbits,1
+ 257              	.LC6:
+ 258 0000 48454C50 		.ascii	"HELP: update USBPD_DPM_HardReset\000"
+ 258      3A207570 
+ 258      64617465 
+ 258      20555342 
+ARM GAS  /tmp/ccg4sqYC.s 			page 10
+
+
+ 258      50445F44 
+ 259              		.section	.text.USBPD_DPM_HardReset,"ax",%progbits
+ 260              		.align	1
+ 261              		.global	USBPD_DPM_HardReset
+ 262              		.syntax unified
+ 263              		.code	16
+ 264              		.thumb_func
+ 265              		.fpu softvfp
+ 267              	USBPD_DPM_HardReset:
+ 268              	.LVL11:
+ 269              	.LFB872:
+ 253:Src/usbpd_dpm_user.c **** 
+ 254:Src/usbpd_dpm_user.c **** /**
+ 255:Src/usbpd_dpm_user.c ****   * @}
+ 256:Src/usbpd_dpm_user.c ****   */
+ 257:Src/usbpd_dpm_user.c **** 
+ 258:Src/usbpd_dpm_user.c **** /** @defgroup USBPD_USER_EXPORTED_FUNCTIONS_GROUP2 USBPD USER Exported Callbacks functions called b
+ 259:Src/usbpd_dpm_user.c ****   * @{
+ 260:Src/usbpd_dpm_user.c ****   */
+ 261:Src/usbpd_dpm_user.c **** 
+ 262:Src/usbpd_dpm_user.c **** /**
+ 263:Src/usbpd_dpm_user.c ****   * @brief  Callback function called by PE layer when HardReset message received from PRL
+ 264:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 265:Src/usbpd_dpm_user.c ****   * @param  CurrentRole the current role
+ 266:Src/usbpd_dpm_user.c ****   * @param  Status status on hard reset event
+ 267:Src/usbpd_dpm_user.c ****   * @retval None
+ 268:Src/usbpd_dpm_user.c ****   */
+ 269:Src/usbpd_dpm_user.c **** void USBPD_DPM_HardReset(uint8_t PortNum, USBPD_PortPowerRole_TypeDef CurrentRole, USBPD_HR_Status_
+ 270:Src/usbpd_dpm_user.c **** {
+ 270              		.loc 1 270 1 view -0
+ 271              		.cfi_startproc
+ 272              		@ args = 0, pretend = 0, frame = 40
+ 273              		@ frame_needed = 0, uses_anonymous_args = 0
+ 271:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_HardReset */
+ 272:Src/usbpd_dpm_user.c ****   DPM_USER_DEBUG_TRACE(PortNum, "HELP: update USBPD_DPM_HardReset");
+ 274              		.loc 1 272 3 view .LVU44
+ 275              	.LBB3:
+ 276              		.loc 1 272 3 view .LVU45
+ 277              		.loc 1 272 3 view .LVU46
+ 278              	.LBE3:
+ 270:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_HardReset */
+ 279              		.loc 1 270 1 is_stmt 0 view .LVU47
+ 280 0000 10B5     		push	{r4, lr}
+ 281              	.LCFI3:
+ 282              		.cfi_def_cfa_offset 8
+ 283              		.cfi_offset 4, -8
+ 284              		.cfi_offset 14, -4
+ 285 0002 8CB0     		sub	sp, sp, #48
+ 286              	.LCFI4:
+ 287              		.cfi_def_cfa_offset 56
+ 270:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_HardReset */
+ 288              		.loc 1 270 1 view .LVU48
+ 289 0004 0400     		movs	r4, r0
+ 290              	.LBB4:
+ 291              		.loc 1 272 3 view .LVU49
+ 292 0006 0849     		ldr	r1, .L20
+ 293              	.LVL12:
+ARM GAS  /tmp/ccg4sqYC.s 			page 11
+
+
+ 294              		.loc 1 272 3 view .LVU50
+ 295 0008 02A8     		add	r0, sp, #8
+ 296              	.LVL13:
+ 297              		.loc 1 272 3 view .LVU51
+ 298 000a FFF7FEFF 		bl	strcpy
+ 299              	.LVL14:
+ 300              		.loc 1 272 3 is_stmt 1 view .LVU52
+ 301              		.loc 1 272 3 view .LVU53
+ 302 000e 02A8     		add	r0, sp, #8
+ 303 0010 FFF7FEFF 		bl	strlen
+ 304              	.LVL15:
+ 305 0014 0022     		movs	r2, #0
+ 306 0016 0090     		str	r0, [sp]
+ 307 0018 2100     		movs	r1, r4
+ 308 001a 0620     		movs	r0, #6
+ 309 001c 02AB     		add	r3, sp, #8
+ 310 001e FFF7FEFF 		bl	USBPD_TRACE_Add
+ 311              	.LVL16:
+ 312              	.LBE4:
+ 313              		.loc 1 272 3 view .LVU54
+ 273:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_HardReset */
+ 274:Src/usbpd_dpm_user.c **** }
+ 314              		.loc 1 274 1 is_stmt 0 view .LVU55
+ 315 0022 0CB0     		add	sp, sp, #48
+ 316              		@ sp needed
+ 317 0024 10BD     		pop	{r4, pc}
+ 318              	.L21:
+ 319 0026 C046     		.align	2
+ 320              	.L20:
+ 321 0028 00000000 		.word	.LC6
+ 322              		.cfi_endproc
+ 323              	.LFE872:
+ 325              		.section	.text.USBPD_DPM_SetupNewPower,"ax",%progbits
+ 326              		.align	1
+ 327              		.global	USBPD_DPM_SetupNewPower
+ 328              		.syntax unified
+ 329              		.code	16
+ 330              		.thumb_func
+ 331              		.fpu softvfp
+ 333              	USBPD_DPM_SetupNewPower:
+ 334              	.LVL17:
+ 335              	.LFB873:
+ 275:Src/usbpd_dpm_user.c **** 
+ 276:Src/usbpd_dpm_user.c **** /**
+ 277:Src/usbpd_dpm_user.c ****   * @brief  Request the DPM to setup the new power level.
+ 278:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 279:Src/usbpd_dpm_user.c ****   * @retval USBPD status
+ 280:Src/usbpd_dpm_user.c ****   */
+ 281:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_SetupNewPower(uint8_t PortNum)
+ 282:Src/usbpd_dpm_user.c **** {
+ 336              		.loc 1 282 1 is_stmt 1 view -0
+ 337              		.cfi_startproc
+ 338              		@ args = 0, pretend = 0, frame = 0
+ 339              		@ frame_needed = 0, uses_anonymous_args = 0
+ 283:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_SetupNewPower */
+ 284:Src/usbpd_dpm_user.c ****   return USBPD_PWR_IF_SetProfile(PortNum);
+ 340              		.loc 1 284 3 view .LVU57
+ARM GAS  /tmp/ccg4sqYC.s 			page 12
+
+
+ 282:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_SetupNewPower */
+ 341              		.loc 1 282 1 is_stmt 0 view .LVU58
+ 342 0000 10B5     		push	{r4, lr}
+ 343              	.LCFI5:
+ 344              		.cfi_def_cfa_offset 8
+ 345              		.cfi_offset 4, -8
+ 346              		.cfi_offset 14, -4
+ 347              		.loc 1 284 10 view .LVU59
+ 348 0002 FFF7FEFF 		bl	USBPD_PWR_IF_SetProfile
+ 349              	.LVL18:
+ 285:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_SetupNewPower */
+ 286:Src/usbpd_dpm_user.c **** }
+ 350              		.loc 1 286 1 view .LVU60
+ 351              		@ sp needed
+ 352 0006 10BD     		pop	{r4, pc}
+ 353              		.cfi_endproc
+ 354              	.LFE873:
+ 356              		.section	.text.USBPD_DPM_EvaluatePowerRoleSwap,"ax",%progbits
+ 357              		.align	1
+ 358              		.global	USBPD_DPM_EvaluatePowerRoleSwap
+ 359              		.syntax unified
+ 360              		.code	16
+ 361              		.thumb_func
+ 362              		.fpu softvfp
+ 364              	USBPD_DPM_EvaluatePowerRoleSwap:
+ 365              	.LVL19:
+ 366              	.LFB874:
+ 287:Src/usbpd_dpm_user.c **** 
+ 288:Src/usbpd_dpm_user.c **** /**
+ 289:Src/usbpd_dpm_user.c ****   * @brief  Evaluate the swap request from PE.
+ 290:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 291:Src/usbpd_dpm_user.c ****   * @retval USBPD_ACCEPT, USBPD_WAIT, USBPD_REJECT
+ 292:Src/usbpd_dpm_user.c ****   */
+ 293:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_EvaluatePowerRoleSwap(uint8_t PortNum)
+ 294:Src/usbpd_dpm_user.c **** {
+ 367              		.loc 1 294 1 is_stmt 1 view -0
+ 368              		.cfi_startproc
+ 369              		@ args = 0, pretend = 0, frame = 0
+ 370              		@ frame_needed = 0, uses_anonymous_args = 0
+ 371              		@ link register save eliminated.
+ 295:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_EvaluatePowerRoleSwap */
+ 296:Src/usbpd_dpm_user.c ****   return USBPD_REJECT;
+ 372              		.loc 1 296 3 view .LVU62
+ 297:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_EvaluatePowerRoleSwap */
+ 298:Src/usbpd_dpm_user.c **** }
+ 373              		.loc 1 298 1 is_stmt 0 view .LVU63
+ 374 0000 0C20     		movs	r0, #12
+ 375              	.LVL20:
+ 376              		.loc 1 298 1 view .LVU64
+ 377              		@ sp needed
+ 378 0002 7047     		bx	lr
+ 379              		.cfi_endproc
+ 380              	.LFE874:
+ 382              		.section	.text.USBPD_DPM_Notification,"ax",%progbits
+ 383              		.align	1
+ 384              		.global	USBPD_DPM_Notification
+ 385              		.syntax unified
+ARM GAS  /tmp/ccg4sqYC.s 			page 13
+
+
+ 386              		.code	16
+ 387              		.thumb_func
+ 388              		.fpu softvfp
+ 390              	USBPD_DPM_Notification:
+ 391              	.LVL21:
+ 392              	.LFB875:
+ 299:Src/usbpd_dpm_user.c **** 
+ 300:Src/usbpd_dpm_user.c **** /**
+ 301:Src/usbpd_dpm_user.c ****   * @brief  Callback function called by PE to inform DPM about PE event.
+ 302:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 303:Src/usbpd_dpm_user.c ****   * @param  EventVal @ref USBPD_NotifyEventValue_TypeDef
+ 304:Src/usbpd_dpm_user.c ****   * @retval None
+ 305:Src/usbpd_dpm_user.c ****   */
+ 306:Src/usbpd_dpm_user.c **** void USBPD_DPM_Notification(uint8_t PortNum, USBPD_NotifyEventValue_TypeDef EventVal)
+ 307:Src/usbpd_dpm_user.c **** {
+ 393              		.loc 1 307 1 is_stmt 1 view -0
+ 394              		.cfi_startproc
+ 395              		@ args = 0, pretend = 0, frame = 0
+ 396              		@ frame_needed = 0, uses_anonymous_args = 0
+ 308:Src/usbpd_dpm_user.c ****   /* Forward PE notifications to GUI if enabled */
+ 309:Src/usbpd_dpm_user.c ****   if (NULL != DPM_GUI_PostNotificationMessage)
+ 397              		.loc 1 309 3 view .LVU66
+ 398              		.loc 1 309 12 is_stmt 0 view .LVU67
+ 399 0000 034B     		ldr	r3, .L29
+ 307:Src/usbpd_dpm_user.c ****   /* Forward PE notifications to GUI if enabled */
+ 400              		.loc 1 307 1 view .LVU68
+ 401 0002 10B5     		push	{r4, lr}
+ 402              	.LCFI6:
+ 403              		.cfi_def_cfa_offset 8
+ 404              		.cfi_offset 4, -8
+ 405              		.cfi_offset 14, -4
+ 406              		.loc 1 309 12 view .LVU69
+ 407 0004 1B68     		ldr	r3, [r3]
+ 408              		.loc 1 309 6 view .LVU70
+ 409 0006 002B     		cmp	r3, #0
+ 410 0008 01D0     		beq	.L24
+ 310:Src/usbpd_dpm_user.c ****   {
+ 311:Src/usbpd_dpm_user.c ****     DPM_GUI_PostNotificationMessage(PortNum, EventVal);
+ 411              		.loc 1 311 5 is_stmt 1 view .LVU71
+ 412 000a 89B2     		uxth	r1, r1
+ 413              	.LVL22:
+ 414              		.loc 1 311 5 is_stmt 0 view .LVU72
+ 415 000c 9847     		blx	r3
+ 416              	.LVL23:
+ 417              	.L24:
+ 312:Src/usbpd_dpm_user.c ****   }
+ 313:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_Notification */
+ 314:Src/usbpd_dpm_user.c **** 
+ 315:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_Notification */
+ 316:Src/usbpd_dpm_user.c **** }
+ 418              		.loc 1 316 1 view .LVU73
+ 419              		@ sp needed
+ 420 000e 10BD     		pop	{r4, pc}
+ 421              	.L30:
+ 422              		.align	2
+ 423              	.L29:
+ 424 0010 00000000 		.word	.LANCHOR0
+ARM GAS  /tmp/ccg4sqYC.s 			page 14
+
+
+ 425              		.cfi_endproc
+ 426              	.LFE875:
+ 428              		.section	.rodata.USBPD_DPM_GetDataInfo.str1.1,"aMS",%progbits,1
+ 429              	.LC9:
+ 430 0000 48454C50 		.ascii	"HELP: update USBPD_DPM_GetDataInfo:%d\000"
+ 430      3A207570 
+ 430      64617465 
+ 430      20555342 
+ 430      50445F44 
+ 431              		.section	.text.USBPD_DPM_GetDataInfo,"ax",%progbits
+ 432              		.align	1
+ 433              		.global	USBPD_DPM_GetDataInfo
+ 434              		.syntax unified
+ 435              		.code	16
+ 436              		.thumb_func
+ 437              		.fpu softvfp
+ 439              	USBPD_DPM_GetDataInfo:
+ 440              	.LVL24:
+ 441              	.LFB876:
+ 317:Src/usbpd_dpm_user.c **** 
+ 318:Src/usbpd_dpm_user.c **** /**
+ 319:Src/usbpd_dpm_user.c ****   * @brief  DPM callback to allow PE to retrieve information from DPM/PWR_IF.
+ 320:Src/usbpd_dpm_user.c ****   * @param  PortNum Port number
+ 321:Src/usbpd_dpm_user.c ****   * @param  DataId  Type of data to be updated in DPM based on @ref USBPD_CORE_DataInfoType_TypeDef
+ 322:Src/usbpd_dpm_user.c ****   * @param  Ptr     Pointer on address where DPM data should be written (u8 pointer)
+ 323:Src/usbpd_dpm_user.c ****   * @param  Size    Pointer on nb of u8 written by DPM
+ 324:Src/usbpd_dpm_user.c ****   * @retval None
+ 325:Src/usbpd_dpm_user.c ****   */
+ 326:Src/usbpd_dpm_user.c **** void USBPD_DPM_GetDataInfo(uint8_t PortNum, USBPD_CORE_DataInfoType_TypeDef DataId, uint8_t *Ptr, u
+ 327:Src/usbpd_dpm_user.c **** {
+ 442              		.loc 1 327 1 is_stmt 1 view -0
+ 443              		.cfi_startproc
+ 444              		@ args = 0, pretend = 0, frame = 40
+ 445              		@ frame_needed = 0, uses_anonymous_args = 0
+ 328:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_GetDataInfo */
+ 329:Src/usbpd_dpm_user.c ****   /* Check type of information targeted by request */
+ 330:Src/usbpd_dpm_user.c ****   switch(DataId)
+ 446              		.loc 1 330 3 view .LVU75
+ 331:Src/usbpd_dpm_user.c ****   {
+ 332:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_DATATYPE_SNK_PDO:           /*!< Handling of port Sink PDO, requested by get si
+ 333:Src/usbpd_dpm_user.c ****     // break;
+ 334:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_EXTENDED_CAPA:              /*!< Source Extended capability message content    
+ 335:Src/usbpd_dpm_user.c ****     // break;
+ 336:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_DATATYPE_REQ_VOLTAGE:       /*!< Get voltage value requested for BIST tests, ex
+ 337:Src/usbpd_dpm_user.c ****     // break;
+ 338:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_DATATYPE_SRC_PDO:           /*!< Handling of port Source PDO                   
+ 339:Src/usbpd_dpm_user.c ****     // break;
+ 340:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_PPS_STATUS:                 /*!< PPS Status message content                    
+ 341:Src/usbpd_dpm_user.c ****     // break;
+ 342:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_SNK_EXTENDED_CAPA:          /*!< Retrieve of Sink Extended capability message c
+ 343:Src/usbpd_dpm_user.c ****     // break;
+ 344:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_INFO_STATUS:                /*!< Information status message content            
+ 345:Src/usbpd_dpm_user.c ****     // break;
+ 346:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_MANUFACTURER_INFO:          /*!< Retrieve of Manufacturer info message content 
+ 347:Src/usbpd_dpm_user.c ****     // break;
+ 348:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_BATTERY_STATUS:             /*!< Retrieve of Battery status message content    
+ 349:Src/usbpd_dpm_user.c ****     // break;
+ARM GAS  /tmp/ccg4sqYC.s 			page 15
+
+
+ 350:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_BATTERY_CAPABILITY:         /*!< Retrieve of Battery capability message content
+ 351:Src/usbpd_dpm_user.c ****     // break;
+ 352:Src/usbpd_dpm_user.c ****   default:
+ 353:Src/usbpd_dpm_user.c ****     DPM_USER_DEBUG_TRACE(PortNum, "HELP: update USBPD_DPM_GetDataInfo:%d", DataId);
+ 447              		.loc 1 353 5 view .LVU76
+ 448              	.LBB5:
+ 449              		.loc 1 353 5 view .LVU77
+ 450              		.loc 1 353 5 view .LVU78
+ 451              	.LBE5:
+ 327:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_GetDataInfo */
+ 452              		.loc 1 327 1 is_stmt 0 view .LVU79
+ 453 0000 10B5     		push	{r4, lr}
+ 454              	.LCFI7:
+ 455              		.cfi_def_cfa_offset 8
+ 456              		.cfi_offset 4, -8
+ 457              		.cfi_offset 14, -4
+ 458 0002 8CB0     		sub	sp, sp, #48
+ 459              	.LCFI8:
+ 460              		.cfi_def_cfa_offset 56
+ 327:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_GetDataInfo */
+ 461              		.loc 1 327 1 view .LVU80
+ 462 0004 0B00     		movs	r3, r1
+ 463              	.LVL25:
+ 327:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_GetDataInfo */
+ 464              		.loc 1 327 1 view .LVU81
+ 465 0006 0400     		movs	r4, r0
+ 466              	.LBB6:
+ 467              		.loc 1 353 5 view .LVU82
+ 468 0008 2821     		movs	r1, #40
+ 469              	.LVL26:
+ 470              		.loc 1 353 5 view .LVU83
+ 471 000a 084A     		ldr	r2, .L32
+ 472              	.LVL27:
+ 473              		.loc 1 353 5 view .LVU84
+ 474 000c 02A8     		add	r0, sp, #8
+ 475              	.LVL28:
+ 476              		.loc 1 353 5 view .LVU85
+ 477 000e FFF7FEFF 		bl	snprintf
+ 478              	.LVL29:
+ 479              		.loc 1 353 5 is_stmt 1 view .LVU86
+ 480              		.loc 1 353 5 view .LVU87
+ 481 0012 02A8     		add	r0, sp, #8
+ 482 0014 FFF7FEFF 		bl	strlen
+ 483              	.LVL30:
+ 484 0018 0022     		movs	r2, #0
+ 485 001a 0090     		str	r0, [sp]
+ 486 001c 2100     		movs	r1, r4
+ 487 001e 0620     		movs	r0, #6
+ 488 0020 02AB     		add	r3, sp, #8
+ 489 0022 FFF7FEFF 		bl	USBPD_TRACE_Add
+ 490              	.LVL31:
+ 491              	.LBE6:
+ 492              		.loc 1 353 5 view .LVU88
+ 354:Src/usbpd_dpm_user.c ****     break;
+ 493              		.loc 1 354 5 view .LVU89
+ 355:Src/usbpd_dpm_user.c ****   }
+ 356:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_GetDataInfo */
+ARM GAS  /tmp/ccg4sqYC.s 			page 16
+
+
+ 357:Src/usbpd_dpm_user.c **** }
+ 494              		.loc 1 357 1 is_stmt 0 view .LVU90
+ 495 0026 0CB0     		add	sp, sp, #48
+ 496              		@ sp needed
+ 497 0028 10BD     		pop	{r4, pc}
+ 498              	.L33:
+ 499 002a C046     		.align	2
+ 500              	.L32:
+ 501 002c 00000000 		.word	.LC9
+ 502              		.cfi_endproc
+ 503              	.LFE876:
+ 505              		.section	.rodata.USBPD_DPM_SetDataInfo.str1.1,"aMS",%progbits,1
+ 506              	.LC11:
+ 507 0000 48454C50 		.ascii	"HELP: update USBPD_DPM_SetDataInfo:%d\000"
+ 507      3A207570 
+ 507      64617465 
+ 507      20555342 
+ 507      50445F44 
+ 508              		.section	.text.USBPD_DPM_SetDataInfo,"ax",%progbits
+ 509              		.align	1
+ 510              		.global	USBPD_DPM_SetDataInfo
+ 511              		.syntax unified
+ 512              		.code	16
+ 513              		.thumb_func
+ 514              		.fpu softvfp
+ 516              	USBPD_DPM_SetDataInfo:
+ 517              	.LVL32:
+ 518              	.LFB877:
+ 358:Src/usbpd_dpm_user.c **** 
+ 359:Src/usbpd_dpm_user.c **** /**
+ 360:Src/usbpd_dpm_user.c ****   * @brief  DPM callback to allow PE to update information in DPM/PWR_IF.
+ 361:Src/usbpd_dpm_user.c ****   * @param  PortNum Port number
+ 362:Src/usbpd_dpm_user.c ****   * @param  DataId  Type of data to be updated in DPM based on @ref USBPD_CORE_DataInfoType_TypeDef
+ 363:Src/usbpd_dpm_user.c ****   * @param  Ptr     Pointer on the data
+ 364:Src/usbpd_dpm_user.c ****   * @param  Size    Nb of bytes to be updated in DPM
+ 365:Src/usbpd_dpm_user.c ****   * @retval None
+ 366:Src/usbpd_dpm_user.c ****   */
+ 367:Src/usbpd_dpm_user.c **** void USBPD_DPM_SetDataInfo(uint8_t PortNum, USBPD_CORE_DataInfoType_TypeDef DataId, uint8_t *Ptr, u
+ 368:Src/usbpd_dpm_user.c **** {
+ 519              		.loc 1 368 1 is_stmt 1 view -0
+ 520              		.cfi_startproc
+ 521              		@ args = 0, pretend = 0, frame = 48
+ 522              		@ frame_needed = 0, uses_anonymous_args = 0
+ 369:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_SetDataInfo */
+ 370:Src/usbpd_dpm_user.c ****   /* Check type of information targeted by request */
+ 371:Src/usbpd_dpm_user.c ****   switch(DataId)
+ 523              		.loc 1 371 3 view .LVU92
+ 372:Src/usbpd_dpm_user.c ****   {
+ 373:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_DATATYPE_RDO_POSITION:      /*!< Reset the PDO position selected by the sink on
+ 374:Src/usbpd_dpm_user.c ****     // break;
+ 375:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_DATATYPE_RCV_SRC_PDO:       /*!< Storage of Received Source PDO values        *
+ 376:Src/usbpd_dpm_user.c ****     // break;
+ 377:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_DATATYPE_RCV_SNK_PDO:       /*!< Storage of Received Sink PDO values          *
+ 378:Src/usbpd_dpm_user.c ****     // break;
+ 379:Src/usbpd_dpm_user.c ****   // case USBPD_CORE_DATATYPE_RCV_REQ_PDO :     /*!< Storage of Received Sink Request PDO value   *
+ 380:Src/usbpd_dpm_user.c ****     // if (Size == 4)
+ 381:Src/usbpd_dpm_user.c ****     // {
+ARM GAS  /tmp/ccg4sqYC.s 			page 17
+
+
+ 382:Src/usbpd_dpm_user.c ****       // memcpy((uint8_t *)&DPM_Ports[PortNum].DPM_RcvRequestDOMsg,  Ptr, 4);
+ 383:Src/usbpd_dpm_user.c ****     // }
+ 384:Src/usbpd_dpm_user.c ****     // break;
+ 385:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_EXTENDED_CAPA:              /*!< Source Extended capability message content   *
+ 386:Src/usbpd_dpm_user.c ****     // break;
+ 387:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_PPS_STATUS:                 /*!< PPS Status message content                   *
+ 388:Src/usbpd_dpm_user.c ****     // break;
+ 389:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_INFO_STATUS:                /*!< Information status message content           *
+ 390:Src/usbpd_dpm_user.c ****     // break;
+ 391:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_ALERT:                      /*!< Storing of received Alert message content    *
+ 392:Src/usbpd_dpm_user.c ****     // break;
+ 393:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_GET_MANUFACTURER_INFO:      /*!< Storing of received Get Manufacturer info mess
+ 394:Src/usbpd_dpm_user.c ****     // break;
+ 395:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_GET_BATTERY_STATUS:         /*!< Storing of received Get Battery status message
+ 396:Src/usbpd_dpm_user.c ****     // break;
+ 397:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_GET_BATTERY_CAPABILITY:     /*!< Storing of received Get Battery capability mes
+ 398:Src/usbpd_dpm_user.c ****     // break;
+ 399:Src/usbpd_dpm_user.c **** //  case USBPD_CORE_SNK_EXTENDED_CAPA:          /*!< Storing of Sink Extended capability message co
+ 400:Src/usbpd_dpm_user.c ****     // break;
+ 401:Src/usbpd_dpm_user.c ****   default:
+ 402:Src/usbpd_dpm_user.c ****     DPM_USER_DEBUG_TRACE(PortNum, "HELP: update USBPD_DPM_SetDataInfo:%d", DataId);
+ 524              		.loc 1 402 5 view .LVU93
+ 525              	.LBB7:
+ 526              		.loc 1 402 5 view .LVU94
+ 527              		.loc 1 402 5 view .LVU95
+ 528              	.LBE7:
+ 368:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_SetDataInfo */
+ 529              		.loc 1 368 1 is_stmt 0 view .LVU96
+ 530 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 531              	.LCFI9:
+ 532              		.cfi_def_cfa_offset 20
+ 533              		.cfi_offset 4, -20
+ 534              		.cfi_offset 5, -16
+ 535              		.cfi_offset 6, -12
+ 536              		.cfi_offset 7, -8
+ 537              		.cfi_offset 14, -4
+ 538 0002 8FB0     		sub	sp, sp, #60
+ 539              	.LCFI10:
+ 540              		.cfi_def_cfa_offset 80
+ 368:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_SetDataInfo */
+ 541              		.loc 1 368 1 view .LVU97
+ 542 0004 0400     		movs	r4, r0
+ 543 0006 0392     		str	r2, [sp, #12]
+ 544 0008 0D00     		movs	r5, r1
+ 545              	.LBB8:
+ 546              		.loc 1 402 5 view .LVU98
+ 547 000a 0E4A     		ldr	r2, .L39
+ 548              	.LVL33:
+ 549              		.loc 1 402 5 view .LVU99
+ 550              	.LBE8:
+ 368:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_SetDataInfo */
+ 551              		.loc 1 368 1 view .LVU100
+ 552 000c 1E00     		movs	r6, r3
+ 553              	.LBB9:
+ 554              		.loc 1 402 5 view .LVU101
+ 555 000e 04A8     		add	r0, sp, #16
+ 556              	.LVL34:
+ARM GAS  /tmp/ccg4sqYC.s 			page 18
+
+
+ 557              		.loc 1 402 5 view .LVU102
+ 558 0010 0B00     		movs	r3, r1
+ 559              	.LVL35:
+ 560              		.loc 1 402 5 view .LVU103
+ 561 0012 2821     		movs	r1, #40
+ 562              	.LVL36:
+ 563              		.loc 1 402 5 view .LVU104
+ 564 0014 FFF7FEFF 		bl	snprintf
+ 565              	.LVL37:
+ 566              		.loc 1 402 5 is_stmt 1 view .LVU105
+ 567              		.loc 1 402 5 view .LVU106
+ 568 0018 04A8     		add	r0, sp, #16
+ 569 001a FFF7FEFF 		bl	strlen
+ 570              	.LVL38:
+ 571 001e 04AB     		add	r3, sp, #16
+ 572 0020 0090     		str	r0, [sp]
+ 573 0022 0022     		movs	r2, #0
+ 574 0024 2100     		movs	r1, r4
+ 575 0026 0620     		movs	r0, #6
+ 576 0028 FFF7FEFF 		bl	USBPD_TRACE_Add
+ 577              	.LVL39:
+ 578              	.LBE9:
+ 579              		.loc 1 402 5 view .LVU107
+ 403:Src/usbpd_dpm_user.c ****     break;
+ 580              		.loc 1 403 5 view .LVU108
+ 404:Src/usbpd_dpm_user.c ****   }
+ 405:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_SetDataInfo */
+ 406:Src/usbpd_dpm_user.c **** 
+ 407:Src/usbpd_dpm_user.c ****   /* Forward info to GUI if enabled */
+ 408:Src/usbpd_dpm_user.c ****   if (NULL != DPM_GUI_SaveInfo)
+ 581              		.loc 1 408 3 view .LVU109
+ 582              		.loc 1 408 12 is_stmt 0 view .LVU110
+ 583 002c 064B     		ldr	r3, .L39+4
+ 584 002e 1F68     		ldr	r7, [r3]
+ 585              		.loc 1 408 6 view .LVU111
+ 586 0030 002F     		cmp	r7, #0
+ 587 0032 04D0     		beq	.L34
+ 409:Src/usbpd_dpm_user.c ****   {
+ 410:Src/usbpd_dpm_user.c ****     DPM_GUI_SaveInfo(PortNum, DataId, Ptr, Size);
+ 588              		.loc 1 410 5 is_stmt 1 view .LVU112
+ 589 0034 3300     		movs	r3, r6
+ 590 0036 2900     		movs	r1, r5
+ 591 0038 2000     		movs	r0, r4
+ 592 003a 039A     		ldr	r2, [sp, #12]
+ 593 003c B847     		blx	r7
+ 594              	.LVL40:
+ 595              	.L34:
+ 411:Src/usbpd_dpm_user.c ****   }
+ 412:Src/usbpd_dpm_user.c **** }
+ 596              		.loc 1 412 1 is_stmt 0 view .LVU113
+ 597 003e 0FB0     		add	sp, sp, #60
+ 598              		@ sp needed
+ 599              	.LVL41:
+ 600              		.loc 1 412 1 view .LVU114
+ 601 0040 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 602              	.L40:
+ 603 0042 C046     		.align	2
+ARM GAS  /tmp/ccg4sqYC.s 			page 19
+
+
+ 604              	.L39:
+ 605 0044 00000000 		.word	.LC11
+ 606 0048 00000000 		.word	.LANCHOR2
+ 607              		.cfi_endproc
+ 608              	.LFE877:
+ 610              		.section	.rodata.USBPD_DPM_EvaluateRequest.str1.1,"aMS",%progbits,1
+ 611              	.LC14:
+ 612 0000 48454C50 		.ascii	"HELP: update USBPD_DPM_EvaluateRequest\000"
+ 612      3A207570 
+ 612      64617465 
+ 612      20555342 
+ 612      50445F44 
+ 613              		.section	.text.USBPD_DPM_EvaluateRequest,"ax",%progbits
+ 614              		.align	1
+ 615              		.global	USBPD_DPM_EvaluateRequest
+ 616              		.syntax unified
+ 617              		.code	16
+ 618              		.thumb_func
+ 619              		.fpu softvfp
+ 621              	USBPD_DPM_EvaluateRequest:
+ 622              	.LVL42:
+ 623              	.LFB878:
+ 413:Src/usbpd_dpm_user.c **** 
+ 414:Src/usbpd_dpm_user.c **** /**
+ 415:Src/usbpd_dpm_user.c ****   * @brief  Evaluate received Request Message from Sink port
+ 416:Src/usbpd_dpm_user.c ****   * @param  PortNum Port number
+ 417:Src/usbpd_dpm_user.c ****   * @param  PtrPowerObject  Pointer on the power data object
+ 418:Src/usbpd_dpm_user.c ****   * @retval USBPD status : USBPD_ACCEPT, USBPD_REJECT, USBPD_WAIT, USBPD_GOTOMIN
+ 419:Src/usbpd_dpm_user.c ****   */
+ 420:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_EvaluateRequest(uint8_t PortNum, USBPD_CORE_PDO_Type_TypeDef *PtrPowe
+ 421:Src/usbpd_dpm_user.c **** {
+ 624              		.loc 1 421 1 is_stmt 1 view -0
+ 625              		.cfi_startproc
+ 626              		@ args = 0, pretend = 0, frame = 40
+ 627              		@ frame_needed = 0, uses_anonymous_args = 0
+ 422:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_EvaluateRequest */
+ 423:Src/usbpd_dpm_user.c ****   DPM_USER_DEBUG_TRACE(PortNum, "HELP: update USBPD_DPM_EvaluateRequest");
+ 628              		.loc 1 423 3 view .LVU116
+ 629              	.LBB10:
+ 630              		.loc 1 423 3 view .LVU117
+ 631              		.loc 1 423 3 view .LVU118
+ 632              	.LBE10:
+ 421:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_EvaluateRequest */
+ 633              		.loc 1 421 1 is_stmt 0 view .LVU119
+ 634 0000 10B5     		push	{r4, lr}
+ 635              	.LCFI11:
+ 636              		.cfi_def_cfa_offset 8
+ 637              		.cfi_offset 4, -8
+ 638              		.cfi_offset 14, -4
+ 639 0002 8CB0     		sub	sp, sp, #48
+ 640              	.LCFI12:
+ 641              		.cfi_def_cfa_offset 56
+ 421:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_EvaluateRequest */
+ 642              		.loc 1 421 1 view .LVU120
+ 643 0004 0400     		movs	r4, r0
+ 644              	.LBB11:
+ 645              		.loc 1 423 3 view .LVU121
+ARM GAS  /tmp/ccg4sqYC.s 			page 20
+
+
+ 646 0006 0849     		ldr	r1, .L42
+ 647              	.LVL43:
+ 648              		.loc 1 423 3 view .LVU122
+ 649 0008 02A8     		add	r0, sp, #8
+ 650              	.LVL44:
+ 651              		.loc 1 423 3 view .LVU123
+ 652 000a FFF7FEFF 		bl	strcpy
+ 653              	.LVL45:
+ 654              		.loc 1 423 3 is_stmt 1 view .LVU124
+ 655              		.loc 1 423 3 view .LVU125
+ 656 000e 02A8     		add	r0, sp, #8
+ 657 0010 FFF7FEFF 		bl	strlen
+ 658              	.LVL46:
+ 659 0014 0022     		movs	r2, #0
+ 660 0016 0090     		str	r0, [sp]
+ 661 0018 2100     		movs	r1, r4
+ 662 001a 0620     		movs	r0, #6
+ 663 001c 02AB     		add	r3, sp, #8
+ 664 001e FFF7FEFF 		bl	USBPD_TRACE_Add
+ 665              	.LVL47:
+ 666              	.LBE11:
+ 667              		.loc 1 423 3 view .LVU126
+ 424:Src/usbpd_dpm_user.c ****   return USBPD_REJECT;
+ 668              		.loc 1 424 3 view .LVU127
+ 425:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_EvaluateRequest */
+ 426:Src/usbpd_dpm_user.c **** }
+ 669              		.loc 1 426 1 is_stmt 0 view .LVU128
+ 670 0022 0C20     		movs	r0, #12
+ 671 0024 0CB0     		add	sp, sp, #48
+ 672              		@ sp needed
+ 673 0026 10BD     		pop	{r4, pc}
+ 674              	.L43:
+ 675              		.align	2
+ 676              	.L42:
+ 677 0028 00000000 		.word	.LC14
+ 678              		.cfi_endproc
+ 679              	.LFE878:
+ 681              		.section	.text.USBPD_DPM_SNK_EvaluateCapabilities,"ax",%progbits
+ 682              		.align	1
+ 683              		.global	USBPD_DPM_SNK_EvaluateCapabilities
+ 684              		.syntax unified
+ 685              		.code	16
+ 686              		.thumb_func
+ 687              		.fpu softvfp
+ 689              	USBPD_DPM_SNK_EvaluateCapabilities:
+ 690              	.LVL48:
+ 691              	.LFB879:
+ 427:Src/usbpd_dpm_user.c **** 
+ 428:Src/usbpd_dpm_user.c **** /**
+ 429:Src/usbpd_dpm_user.c ****   * @brief  Evaluate received Capabilities Message from Source port and prepare the request message
+ 430:Src/usbpd_dpm_user.c ****   * @param  PortNum         Port number
+ 431:Src/usbpd_dpm_user.c ****   * @param  PtrRequestData  Pointer on selected request data object
+ 432:Src/usbpd_dpm_user.c ****   * @param  PtrPowerObjectType  Pointer on the power data object
+ 433:Src/usbpd_dpm_user.c ****   * @retval None
+ 434:Src/usbpd_dpm_user.c ****   */
+ 435:Src/usbpd_dpm_user.c **** void USBPD_DPM_SNK_EvaluateCapabilities(uint8_t PortNum, uint32_t *PtrRequestData, USBPD_CORE_PDO_T
+ 436:Src/usbpd_dpm_user.c **** {
+ARM GAS  /tmp/ccg4sqYC.s 			page 21
+
+
+ 692              		.loc 1 436 1 is_stmt 1 view -0
+ 693              		.cfi_startproc
+ 694              		@ args = 0, pretend = 0, frame = 0
+ 695              		@ frame_needed = 0, uses_anonymous_args = 0
+ 696              		@ link register save eliminated.
+ 437:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_SNK_EvaluateCapabilities */
+ 438:Src/usbpd_dpm_user.c ****   USBPD_SNKRDO_TypeDef rdo;
+ 697              		.loc 1 438 3 view .LVU130
+ 439:Src/usbpd_dpm_user.c ****   /* Initialize RDO */
+ 440:Src/usbpd_dpm_user.c ****   rdo.d32 = 0;
+ 698              		.loc 1 440 3 view .LVU131
+ 441:Src/usbpd_dpm_user.c ****   /* Prepare the requested pdo */
+ 442:Src/usbpd_dpm_user.c ****   rdo.FixedVariableRDO.ObjectPosition = 1;
+ 699              		.loc 1 442 3 view .LVU132
+ 443:Src/usbpd_dpm_user.c ****   rdo.FixedVariableRDO.OperatingCurrentIn10mAunits = 50;
+ 700              		.loc 1 443 3 view .LVU133
+ 444:Src/usbpd_dpm_user.c ****   rdo.FixedVariableRDO.MaxOperatingCurrent10mAunits = 500;
+ 701              		.loc 1 444 3 view .LVU134
+ 445:Src/usbpd_dpm_user.c ****   rdo.FixedVariableRDO.CapabilityMismatch = 0;
+ 702              		.loc 1 445 3 view .LVU135
+ 446:Src/usbpd_dpm_user.c ****   *PtrPowerObjectType = USBPD_CORE_PDO_TYPE_FIXED;
+ 703              		.loc 1 446 3 view .LVU136
+ 704              		.loc 1 446 23 is_stmt 0 view .LVU137
+ 705 0000 0023     		movs	r3, #0
+ 706 0002 1360     		str	r3, [r2]
+ 447:Src/usbpd_dpm_user.c ****   *PtrRequestData = rdo.d32;
+ 707              		.loc 1 447 3 is_stmt 1 view .LVU138
+ 708              		.loc 1 447 19 is_stmt 0 view .LVU139
+ 709 0004 014B     		ldr	r3, .L45
+ 710              	.LVL49:
+ 448:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_SNK_EvaluateCapabilities */
+ 449:Src/usbpd_dpm_user.c **** }
+ 711              		.loc 1 449 1 view .LVU140
+ 712              		@ sp needed
+ 713              	.LVL50:
+ 447:Src/usbpd_dpm_user.c ****   *PtrRequestData = rdo.d32;
+ 714              		.loc 1 447 19 view .LVU141
+ 715 0006 0B60     		str	r3, [r1]
+ 716              		.loc 1 449 1 view .LVU142
+ 717 0008 7047     		bx	lr
+ 718              	.L46:
+ 719 000a C046     		.align	2
+ 720              	.L45:
+ 721 000c F4C90010 		.word	268487156
+ 722              		.cfi_endproc
+ 723              	.LFE879:
+ 725              		.section	.rodata.USBPD_DPM_PowerRoleSwap.str1.1,"aMS",%progbits,1
+ 726              	.LC16:
+ 727 0000 48454C50 		.ascii	"HELP: update USBPD_DPM_PowerRoleSwap\000"
+ 727      3A207570 
+ 727      64617465 
+ 727      20555342 
+ 727      50445F44 
+ 728              		.section	.text.USBPD_DPM_PowerRoleSwap,"ax",%progbits
+ 729              		.align	1
+ 730              		.global	USBPD_DPM_PowerRoleSwap
+ 731              		.syntax unified
+ARM GAS  /tmp/ccg4sqYC.s 			page 22
+
+
+ 732              		.code	16
+ 733              		.thumb_func
+ 734              		.fpu softvfp
+ 736              	USBPD_DPM_PowerRoleSwap:
+ 737              	.LVL51:
+ 738              	.LFB880:
+ 450:Src/usbpd_dpm_user.c **** 
+ 451:Src/usbpd_dpm_user.c **** /**
+ 452:Src/usbpd_dpm_user.c ****   * @brief  Power role swap status update
+ 453:Src/usbpd_dpm_user.c ****   * @param  PortNum Port number
+ 454:Src/usbpd_dpm_user.c ****   * @param  CurrentRole the current role
+ 455:Src/usbpd_dpm_user.c ****   * @param  Status status on power role swap event
+ 456:Src/usbpd_dpm_user.c ****   */
+ 457:Src/usbpd_dpm_user.c **** void USBPD_DPM_PowerRoleSwap(uint8_t PortNum, USBPD_PortPowerRole_TypeDef CurrentRole, USBPD_PRS_St
+ 458:Src/usbpd_dpm_user.c **** {
+ 739              		.loc 1 458 1 is_stmt 1 view -0
+ 740              		.cfi_startproc
+ 741              		@ args = 0, pretend = 0, frame = 40
+ 742              		@ frame_needed = 0, uses_anonymous_args = 0
+ 459:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_PowerRoleSwap */
+ 460:Src/usbpd_dpm_user.c ****   DPM_USER_DEBUG_TRACE(PortNum, "HELP: update USBPD_DPM_PowerRoleSwap");
+ 743              		.loc 1 460 3 view .LVU144
+ 744              	.LBB12:
+ 745              		.loc 1 460 3 view .LVU145
+ 746              		.loc 1 460 3 view .LVU146
+ 747              	.LBE12:
+ 458:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_PowerRoleSwap */
+ 748              		.loc 1 458 1 is_stmt 0 view .LVU147
+ 749 0000 10B5     		push	{r4, lr}
+ 750              	.LCFI13:
+ 751              		.cfi_def_cfa_offset 8
+ 752              		.cfi_offset 4, -8
+ 753              		.cfi_offset 14, -4
+ 754 0002 8CB0     		sub	sp, sp, #48
+ 755              	.LCFI14:
+ 756              		.cfi_def_cfa_offset 56
+ 458:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_PowerRoleSwap */
+ 757              		.loc 1 458 1 view .LVU148
+ 758 0004 0400     		movs	r4, r0
+ 759              	.LBB13:
+ 760              		.loc 1 460 3 view .LVU149
+ 761 0006 0849     		ldr	r1, .L48
+ 762              	.LVL52:
+ 763              		.loc 1 460 3 view .LVU150
+ 764 0008 02A8     		add	r0, sp, #8
+ 765              	.LVL53:
+ 766              		.loc 1 460 3 view .LVU151
+ 767 000a FFF7FEFF 		bl	strcpy
+ 768              	.LVL54:
+ 769              		.loc 1 460 3 is_stmt 1 view .LVU152
+ 770              		.loc 1 460 3 view .LVU153
+ 771 000e 02A8     		add	r0, sp, #8
+ 772 0010 FFF7FEFF 		bl	strlen
+ 773              	.LVL55:
+ 774 0014 0022     		movs	r2, #0
+ 775 0016 0090     		str	r0, [sp]
+ 776 0018 2100     		movs	r1, r4
+ARM GAS  /tmp/ccg4sqYC.s 			page 23
+
+
+ 777 001a 0620     		movs	r0, #6
+ 778 001c 02AB     		add	r3, sp, #8
+ 779 001e FFF7FEFF 		bl	USBPD_TRACE_Add
+ 780              	.LVL56:
+ 781              	.LBE13:
+ 782              		.loc 1 460 3 view .LVU154
+ 461:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_PowerRoleSwap */
+ 462:Src/usbpd_dpm_user.c **** }
+ 783              		.loc 1 462 1 is_stmt 0 view .LVU155
+ 784 0022 0CB0     		add	sp, sp, #48
+ 785              		@ sp needed
+ 786 0024 10BD     		pop	{r4, pc}
+ 787              	.L49:
+ 788 0026 C046     		.align	2
+ 789              	.L48:
+ 790 0028 00000000 		.word	.LC16
+ 791              		.cfi_endproc
+ 792              	.LFE880:
+ 794              		.section	.text.USBPD_DPM_EvaluateVconnSwap,"ax",%progbits
+ 795              		.align	1
+ 796              		.global	USBPD_DPM_EvaluateVconnSwap
+ 797              		.syntax unified
+ 798              		.code	16
+ 799              		.thumb_func
+ 800              		.fpu softvfp
+ 802              	USBPD_DPM_EvaluateVconnSwap:
+ 803              	.LFB919:
+ 804              		.cfi_startproc
+ 805              		@ args = 0, pretend = 0, frame = 0
+ 806              		@ frame_needed = 0, uses_anonymous_args = 0
+ 807              		@ link register save eliminated.
+ 808 0000 0C20     		movs	r0, #12
+ 809              		@ sp needed
+ 810 0002 7047     		bx	lr
+ 811              		.cfi_endproc
+ 812              	.LFE919:
+ 814              		.section	.text.USBPD_DPM_PE_VconnPwr,"ax",%progbits
+ 815              		.align	1
+ 816              		.global	USBPD_DPM_PE_VconnPwr
+ 817              		.syntax unified
+ 818              		.code	16
+ 819              		.thumb_func
+ 820              		.fpu softvfp
+ 822              	USBPD_DPM_PE_VconnPwr:
+ 823              	.LVL57:
+ 824              	.LFB882:
+ 463:Src/usbpd_dpm_user.c **** 
+ 464:Src/usbpd_dpm_user.c **** /**
+ 465:Src/usbpd_dpm_user.c ****   * @brief  Callback to be used by PE to evaluate a Vconn swap
+ 466:Src/usbpd_dpm_user.c ****   * @param  PortNum Port number
+ 467:Src/usbpd_dpm_user.c ****   * @retval USBPD_ACCEPT, USBPD_REJECT, USBPD_WAIT
+ 468:Src/usbpd_dpm_user.c ****   */
+ 469:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_EvaluateVconnSwap(uint8_t PortNum)
+ 470:Src/usbpd_dpm_user.c **** {
+ 471:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_EvaluateVconnSwap */
+ 472:Src/usbpd_dpm_user.c ****   return USBPD_REJECT;
+ 473:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_EvaluateVconnSwap */
+ARM GAS  /tmp/ccg4sqYC.s 			page 24
+
+
+ 474:Src/usbpd_dpm_user.c **** }
+ 475:Src/usbpd_dpm_user.c **** 
+ 476:Src/usbpd_dpm_user.c **** /**
+ 477:Src/usbpd_dpm_user.c ****   * @brief  Callback to be used by PE to manage VConn
+ 478:Src/usbpd_dpm_user.c ****   * @param  PortNum Port number
+ 479:Src/usbpd_dpm_user.c ****   * @param  State Enable or Disable VConn on CC lines
+ 480:Src/usbpd_dpm_user.c ****   * @retval USBPD_ACCEPT, USBPD_REJECT
+ 481:Src/usbpd_dpm_user.c ****   */
+ 482:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_PE_VconnPwr(uint8_t PortNum, USBPD_FunctionalState State)
+ 483:Src/usbpd_dpm_user.c **** {
+ 825              		.loc 1 483 1 is_stmt 1 view -0
+ 826              		.cfi_startproc
+ 827              		@ args = 0, pretend = 0, frame = 0
+ 828              		@ frame_needed = 0, uses_anonymous_args = 0
+ 829              		@ link register save eliminated.
+ 484:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_PE_VconnPwr */
+ 485:Src/usbpd_dpm_user.c ****   return USBPD_ERROR;
+ 830              		.loc 1 485 3 view .LVU157
+ 486:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_PE_VconnPwr */
+ 487:Src/usbpd_dpm_user.c **** }
+ 831              		.loc 1 487 1 is_stmt 0 view .LVU158
+ 832 0000 0220     		movs	r0, #2
+ 833              	.LVL58:
+ 834              		.loc 1 487 1 view .LVU159
+ 835              		@ sp needed
+ 836 0002 7047     		bx	lr
+ 837              		.cfi_endproc
+ 838              	.LFE882:
+ 840              		.section	.text.USBPD_DPM_ExtendedMessageReceived,"ax",%progbits
+ 841              		.align	1
+ 842              		.global	USBPD_DPM_ExtendedMessageReceived
+ 843              		.syntax unified
+ 844              		.code	16
+ 845              		.thumb_func
+ 846              		.fpu softvfp
+ 848              	USBPD_DPM_ExtendedMessageReceived:
+ 849              	.LVL59:
+ 850              	.LFB883:
+ 488:Src/usbpd_dpm_user.c **** 
+ 489:Src/usbpd_dpm_user.c **** /**
+ 490:Src/usbpd_dpm_user.c ****   * @brief  DPM callback to allow PE to forward extended message information.
+ 491:Src/usbpd_dpm_user.c ****   * @param  PortNum Port number
+ 492:Src/usbpd_dpm_user.c ****   * @param  MsgType Type of message to be handled in DPM
+ 493:Src/usbpd_dpm_user.c ****   *         This parameter can be one of the following values:
+ 494:Src/usbpd_dpm_user.c ****   *           @arg @ref USBPD_EXT_SECURITY_REQUEST Security Request extended message
+ 495:Src/usbpd_dpm_user.c ****   *           @arg @ref USBPD_EXT_SECURITY_RESPONSE Security Response extended message
+ 496:Src/usbpd_dpm_user.c ****   * @param  ptrData   Pointer on address Extended Message data could be read (u8 pointer)
+ 497:Src/usbpd_dpm_user.c ****   * @param  DataSize  Nb of u8 that compose Extended message
+ 498:Src/usbpd_dpm_user.c ****   * @retval None
+ 499:Src/usbpd_dpm_user.c ****   */
+ 500:Src/usbpd_dpm_user.c **** void USBPD_DPM_ExtendedMessageReceived(uint8_t PortNum, USBPD_ExtendedMsg_TypeDef MsgType, uint8_t 
+ 501:Src/usbpd_dpm_user.c **** {
+ 851              		.loc 1 501 1 is_stmt 1 view -0
+ 852              		.cfi_startproc
+ 853              		@ args = 0, pretend = 0, frame = 0
+ 854              		@ frame_needed = 0, uses_anonymous_args = 0
+ 855              		@ link register save eliminated.
+ARM GAS  /tmp/ccg4sqYC.s 			page 25
+
+
+ 502:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_ExtendedMessageReceived */
+ 503:Src/usbpd_dpm_user.c **** 
+ 504:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_ExtendedMessageReceived */
+ 505:Src/usbpd_dpm_user.c **** }
+ 856              		.loc 1 505 1 view .LVU161
+ 857              		@ sp needed
+ 858 0000 7047     		bx	lr
+ 859              		.cfi_endproc
+ 860              	.LFE883:
+ 862              		.section	.text.USBPD_DPM_EvaluateDataRoleSwap,"ax",%progbits
+ 863              		.align	1
+ 864              		.global	USBPD_DPM_EvaluateDataRoleSwap
+ 865              		.syntax unified
+ 866              		.code	16
+ 867              		.thumb_func
+ 868              		.fpu softvfp
+ 870              	USBPD_DPM_EvaluateDataRoleSwap:
+ 871              	.LFB921:
+ 872              		.cfi_startproc
+ 873              		@ args = 0, pretend = 0, frame = 0
+ 874              		@ frame_needed = 0, uses_anonymous_args = 0
+ 875              		@ link register save eliminated.
+ 876 0000 0C20     		movs	r0, #12
+ 877              		@ sp needed
+ 878 0002 7047     		bx	lr
+ 879              		.cfi_endproc
+ 880              	.LFE921:
+ 882              		.section	.text.USBPD_DPM_IsPowerReady,"ax",%progbits
+ 883              		.align	1
+ 884              		.global	USBPD_DPM_IsPowerReady
+ 885              		.syntax unified
+ 886              		.code	16
+ 887              		.thumb_func
+ 888              		.fpu softvfp
+ 890              	USBPD_DPM_IsPowerReady:
+ 891              	.LVL60:
+ 892              	.LFB885:
+ 506:Src/usbpd_dpm_user.c **** 
+ 507:Src/usbpd_dpm_user.c **** /**
+ 508:Src/usbpd_dpm_user.c ****   * @brief  DPM callback used to know user choice about Data Role Swap.
+ 509:Src/usbpd_dpm_user.c ****   * @param  PortNum Port number
+ 510:Src/usbpd_dpm_user.c ****   * @retval USBPD_REJECT, UBPD_ACCEPT
+ 511:Src/usbpd_dpm_user.c ****   */
+ 512:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_EvaluateDataRoleSwap(uint8_t PortNum)
+ 513:Src/usbpd_dpm_user.c **** {
+ 514:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_EvaluateDataRoleSwap */
+ 515:Src/usbpd_dpm_user.c ****   return USBPD_REJECT;
+ 516:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_EvaluateDataRoleSwap */
+ 517:Src/usbpd_dpm_user.c **** }
+ 518:Src/usbpd_dpm_user.c **** 
+ 519:Src/usbpd_dpm_user.c **** /**
+ 520:Src/usbpd_dpm_user.c ****   * @brief  Callback to be used by PE to check is VBUS is ready or present
+ 521:Src/usbpd_dpm_user.c ****   * @param  PortNum Port number
+ 522:Src/usbpd_dpm_user.c ****   * @param  Vsafe   Vsafe status based on @ref USBPD_VSAFE_StatusTypeDef
+ 523:Src/usbpd_dpm_user.c ****   * @retval USBPD_DISABLE or USBPD_ENABLE
+ 524:Src/usbpd_dpm_user.c ****   */
+ 525:Src/usbpd_dpm_user.c **** USBPD_FunctionalState USBPD_DPM_IsPowerReady(uint8_t PortNum, USBPD_VSAFE_StatusTypeDef Vsafe)
+ARM GAS  /tmp/ccg4sqYC.s 			page 26
+
+
+ 526:Src/usbpd_dpm_user.c **** {
+ 893              		.loc 1 526 1 view -0
+ 894              		.cfi_startproc
+ 895              		@ args = 0, pretend = 0, frame = 0
+ 896              		@ frame_needed = 0, uses_anonymous_args = 0
+ 527:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_IsPowerReady */
+ 528:Src/usbpd_dpm_user.c ****   return ((USBPD_OK == USBPD_PWR_IF_SupplyReady(PortNum, Vsafe)) ? USBPD_ENABLE : USBPD_DISABLE);
+ 897              		.loc 1 528 3 view .LVU163
+ 526:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_IsPowerReady */
+ 898              		.loc 1 526 1 is_stmt 0 view .LVU164
+ 899 0000 10B5     		push	{r4, lr}
+ 900              	.LCFI15:
+ 901              		.cfi_def_cfa_offset 8
+ 902              		.cfi_offset 4, -8
+ 903              		.cfi_offset 14, -4
+ 904              		.loc 1 528 24 view .LVU165
+ 905 0002 FFF7FEFF 		bl	USBPD_PWR_IF_SupplyReady
+ 906              	.LVL61:
+ 907              		.loc 1 528 81 view .LVU166
+ 908 0006 4342     		rsbs	r3, r0, #0
+ 909 0008 5841     		adcs	r0, r0, r3
+ 529:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_IsPowerReady */
+ 530:Src/usbpd_dpm_user.c **** }
+ 910              		.loc 1 530 1 view .LVU167
+ 911              		@ sp needed
+ 528:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_IsPowerReady */
+ 912              		.loc 1 528 81 view .LVU168
+ 913 000a C0B2     		uxtb	r0, r0
+ 914              		.loc 1 530 1 view .LVU169
+ 915 000c 10BD     		pop	{r4, pc}
+ 916              		.cfi_endproc
+ 917              	.LFE885:
+ 919              		.section	.text.USBPD_DPM_RequestHardReset,"ax",%progbits
+ 920              		.align	1
+ 921              		.global	USBPD_DPM_RequestHardReset
+ 922              		.syntax unified
+ 923              		.code	16
+ 924              		.thumb_func
+ 925              		.fpu softvfp
+ 927              	USBPD_DPM_RequestHardReset:
+ 928              	.LVL62:
+ 929              	.LFB886:
+ 531:Src/usbpd_dpm_user.c **** 
+ 532:Src/usbpd_dpm_user.c **** /**
+ 533:Src/usbpd_dpm_user.c ****   * @}
+ 534:Src/usbpd_dpm_user.c ****   */
+ 535:Src/usbpd_dpm_user.c **** 
+ 536:Src/usbpd_dpm_user.c **** /** @defgroup USBPD_USER_EXPORTED_FUNCTIONS_GROUP3 USBPD USER Functions PD messages requests
+ 537:Src/usbpd_dpm_user.c ****   * @{
+ 538:Src/usbpd_dpm_user.c ****   */
+ 539:Src/usbpd_dpm_user.c **** 
+ 540:Src/usbpd_dpm_user.c **** /**
+ 541:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a hard reset
+ 542:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 543:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 544:Src/usbpd_dpm_user.c ****   */
+ 545:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestHardReset(uint8_t PortNum)
+ARM GAS  /tmp/ccg4sqYC.s 			page 27
+
+
+ 546:Src/usbpd_dpm_user.c **** {
+ 930              		.loc 1 546 1 is_stmt 1 view -0
+ 931              		.cfi_startproc
+ 932              		@ args = 0, pretend = 0, frame = 0
+ 933              		@ frame_needed = 0, uses_anonymous_args = 0
+ 547:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_HardReset(PortNum);
+ 934              		.loc 1 547 3 view .LVU171
+ 546:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_HardReset(PortNum);
+ 935              		.loc 1 546 1 is_stmt 0 view .LVU172
+ 936 0000 10B5     		push	{r4, lr}
+ 937              	.LCFI16:
+ 938              		.cfi_def_cfa_offset 8
+ 939              		.cfi_offset 4, -8
+ 940              		.cfi_offset 14, -4
+ 941              		.loc 1 547 10 view .LVU173
+ 942 0002 FFF7FEFF 		bl	USBPD_PE_Request_HardReset
+ 943              	.LVL63:
+ 548:Src/usbpd_dpm_user.c **** }
+ 944              		.loc 1 548 1 view .LVU174
+ 945              		@ sp needed
+ 946 0006 10BD     		pop	{r4, pc}
+ 947              		.cfi_endproc
+ 948              	.LFE886:
+ 950              		.section	.text.USBPD_DPM_RequestCableReset,"ax",%progbits
+ 951              		.align	1
+ 952              		.global	USBPD_DPM_RequestCableReset
+ 953              		.syntax unified
+ 954              		.code	16
+ 955              		.thumb_func
+ 956              		.fpu softvfp
+ 958              	USBPD_DPM_RequestCableReset:
+ 959              	.LVL64:
+ 960              	.LFB887:
+ 549:Src/usbpd_dpm_user.c **** 
+ 550:Src/usbpd_dpm_user.c **** /**
+ 551:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a cable reset.
+ 552:Src/usbpd_dpm_user.c ****   * @note   Only a DFP Shall generate Cable Reset Signaling. A DFP Shall only generate Cable Reset 
+ 553:Src/usbpd_dpm_user.c ****             The DFP has to be supplying VCONN prior to a Cable Reset
+ 554:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 555:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 556:Src/usbpd_dpm_user.c ****   */
+ 557:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestCableReset(uint8_t PortNum)
+ 558:Src/usbpd_dpm_user.c **** {
+ 961              		.loc 1 558 1 is_stmt 1 view -0
+ 962              		.cfi_startproc
+ 963              		@ args = 0, pretend = 0, frame = 0
+ 964              		@ frame_needed = 0, uses_anonymous_args = 0
+ 965              		@ link register save eliminated.
+ 559:Src/usbpd_dpm_user.c ****   return USBPD_ERROR;
+ 966              		.loc 1 559 3 view .LVU176
+ 560:Src/usbpd_dpm_user.c **** }
+ 967              		.loc 1 560 1 is_stmt 0 view .LVU177
+ 968 0000 0220     		movs	r0, #2
+ 969              	.LVL65:
+ 970              		.loc 1 560 1 view .LVU178
+ 971              		@ sp needed
+ 972 0002 7047     		bx	lr
+ARM GAS  /tmp/ccg4sqYC.s 			page 28
+
+
+ 973              		.cfi_endproc
+ 974              	.LFE887:
+ 976              		.section	.text.USBPD_DPM_RequestGotoMin,"ax",%progbits
+ 977              		.align	1
+ 978              		.global	USBPD_DPM_RequestGotoMin
+ 979              		.syntax unified
+ 980              		.code	16
+ 981              		.thumb_func
+ 982              		.fpu softvfp
+ 984              	USBPD_DPM_RequestGotoMin:
+ 985              	.LVL66:
+ 986              	.LFB888:
+ 561:Src/usbpd_dpm_user.c **** 
+ 562:Src/usbpd_dpm_user.c **** /**
+ 563:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a GOTOMIN message
+ 564:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 565:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 566:Src/usbpd_dpm_user.c ****   */
+ 567:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestGotoMin(uint8_t PortNum)
+ 568:Src/usbpd_dpm_user.c **** {
+ 987              		.loc 1 568 1 is_stmt 1 view -0
+ 988              		.cfi_startproc
+ 989              		@ args = 0, pretend = 0, frame = 0
+ 990              		@ frame_needed = 0, uses_anonymous_args = 0
+ 569:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GOTOMIN, USBPD_SOPTYPE_SOP);
+ 991              		.loc 1 569 3 view .LVU180
+ 568:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GOTOMIN, USBPD_SOPTYPE_SOP);
+ 992              		.loc 1 568 1 is_stmt 0 view .LVU181
+ 993 0000 10B5     		push	{r4, lr}
+ 994              	.LCFI17:
+ 995              		.cfi_def_cfa_offset 8
+ 996              		.cfi_offset 4, -8
+ 997              		.cfi_offset 14, -4
+ 998              		.loc 1 569 10 view .LVU182
+ 999 0002 0022     		movs	r2, #0
+ 1000 0004 0221     		movs	r1, #2
+ 1001 0006 FFF7FEFF 		bl	USBPD_PE_Request_CtrlMessage
+ 1002              	.LVL67:
+ 570:Src/usbpd_dpm_user.c **** }
+ 1003              		.loc 1 570 1 view .LVU183
+ 1004              		@ sp needed
+ 1005 000a 10BD     		pop	{r4, pc}
+ 1006              		.cfi_endproc
+ 1007              	.LFE888:
+ 1009              		.section	.text.USBPD_DPM_RequestPing,"ax",%progbits
+ 1010              		.align	1
+ 1011              		.global	USBPD_DPM_RequestPing
+ 1012              		.syntax unified
+ 1013              		.code	16
+ 1014              		.thumb_func
+ 1015              		.fpu softvfp
+ 1017              	USBPD_DPM_RequestPing:
+ 1018              	.LVL68:
+ 1019              	.LFB889:
+ 571:Src/usbpd_dpm_user.c **** 
+ 572:Src/usbpd_dpm_user.c **** /**
+ 573:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a PING message
+ARM GAS  /tmp/ccg4sqYC.s 			page 29
+
+
+ 574:Src/usbpd_dpm_user.c ****   * @note   In USB-PD stack, only ping management for P3.0 is implemented.
+ 575:Src/usbpd_dpm_user.c ****   *         If PD2.0 is used, PING timer needs to be implemented on user side.
+ 576:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 577:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 578:Src/usbpd_dpm_user.c ****   */
+ 579:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestPing(uint8_t PortNum)
+ 580:Src/usbpd_dpm_user.c **** {
+ 1020              		.loc 1 580 1 is_stmt 1 view -0
+ 1021              		.cfi_startproc
+ 1022              		@ args = 0, pretend = 0, frame = 0
+ 1023              		@ frame_needed = 0, uses_anonymous_args = 0
+ 581:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_PING, USBPD_SOPTYPE_SOP);
+ 1024              		.loc 1 581 3 view .LVU185
+ 580:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_PING, USBPD_SOPTYPE_SOP);
+ 1025              		.loc 1 580 1 is_stmt 0 view .LVU186
+ 1026 0000 10B5     		push	{r4, lr}
+ 1027              	.LCFI18:
+ 1028              		.cfi_def_cfa_offset 8
+ 1029              		.cfi_offset 4, -8
+ 1030              		.cfi_offset 14, -4
+ 1031              		.loc 1 581 10 view .LVU187
+ 1032 0002 0022     		movs	r2, #0
+ 1033 0004 0521     		movs	r1, #5
+ 1034 0006 FFF7FEFF 		bl	USBPD_PE_Request_CtrlMessage
+ 1035              	.LVL69:
+ 582:Src/usbpd_dpm_user.c **** }
+ 1036              		.loc 1 582 1 view .LVU188
+ 1037              		@ sp needed
+ 1038 000a 10BD     		pop	{r4, pc}
+ 1039              		.cfi_endproc
+ 1040              	.LFE889:
+ 1042              		.section	.rodata.USBPD_DPM_RequestMessageRequest.str1.1,"aMS",%progbits,1
+ 1043              	.LC18:
+ 1044 0000 48454C50 		.ascii	"HELP: update USBPD_DPM_RequestMessageRequest\000"
+ 1044      3A207570 
+ 1044      64617465 
+ 1044      20555342 
+ 1044      50445F44 
+ 1045              		.section	.text.USBPD_DPM_RequestMessageRequest,"ax",%progbits
+ 1046              		.align	1
+ 1047              		.global	USBPD_DPM_RequestMessageRequest
+ 1048              		.syntax unified
+ 1049              		.code	16
+ 1050              		.thumb_func
+ 1051              		.fpu softvfp
+ 1053              	USBPD_DPM_RequestMessageRequest:
+ 1054              	.LVL70:
+ 1055              	.LFB890:
+ 583:Src/usbpd_dpm_user.c **** 
+ 584:Src/usbpd_dpm_user.c **** /**
+ 585:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a request message.
+ 586:Src/usbpd_dpm_user.c ****   * @param  PortNum     The current port number
+ 587:Src/usbpd_dpm_user.c ****   * @param  IndexSrcPDO Index on the selected SRC PDO (value between 1 to 7)
+ 588:Src/usbpd_dpm_user.c ****   * @param  RequestedVoltage Requested voltage (in MV and use mainly for APDO)
+ 589:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 590:Src/usbpd_dpm_user.c ****   */
+ 591:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestMessageRequest(uint8_t PortNum, uint8_t IndexSrcPDO, uint16_t 
+ARM GAS  /tmp/ccg4sqYC.s 			page 30
+
+
+ 592:Src/usbpd_dpm_user.c **** {
+ 1056              		.loc 1 592 1 is_stmt 1 view -0
+ 1057              		.cfi_startproc
+ 1058              		@ args = 0, pretend = 0, frame = 40
+ 1059              		@ frame_needed = 0, uses_anonymous_args = 0
+ 593:Src/usbpd_dpm_user.c ****   USBPD_StatusTypeDef _status = USBPD_ERROR;
+ 1060              		.loc 1 593 3 view .LVU190
+ 594:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_RequestMessageRequest */
+ 595:Src/usbpd_dpm_user.c ****   /* To be adapted to call the PE function */
+ 596:Src/usbpd_dpm_user.c ****   /*       _status = USBPD_PE_Send_Request(PortNum, rdo.d32, pdo_object);*/
+ 597:Src/usbpd_dpm_user.c ****   DPM_USER_DEBUG_TRACE(PortNum, "HELP: update USBPD_DPM_RequestMessageRequest");
+ 1061              		.loc 1 597 3 view .LVU191
+ 1062              	.LBB14:
+ 1063              		.loc 1 597 3 view .LVU192
+ 1064              		.loc 1 597 3 view .LVU193
+ 1065              	.LBE14:
+ 592:Src/usbpd_dpm_user.c ****   USBPD_StatusTypeDef _status = USBPD_ERROR;
+ 1066              		.loc 1 592 1 is_stmt 0 view .LVU194
+ 1067 0000 10B5     		push	{r4, lr}
+ 1068              	.LCFI19:
+ 1069              		.cfi_def_cfa_offset 8
+ 1070              		.cfi_offset 4, -8
+ 1071              		.cfi_offset 14, -4
+ 1072 0002 8CB0     		sub	sp, sp, #48
+ 1073              	.LCFI20:
+ 1074              		.cfi_def_cfa_offset 56
+ 592:Src/usbpd_dpm_user.c ****   USBPD_StatusTypeDef _status = USBPD_ERROR;
+ 1075              		.loc 1 592 1 view .LVU195
+ 1076 0004 0400     		movs	r4, r0
+ 1077              	.LBB15:
+ 1078              		.loc 1 597 3 view .LVU196
+ 1079 0006 2821     		movs	r1, #40
+ 1080              	.LVL71:
+ 1081              		.loc 1 597 3 view .LVU197
+ 1082 0008 074A     		ldr	r2, .L60
+ 1083              	.LVL72:
+ 1084              		.loc 1 597 3 view .LVU198
+ 1085 000a 02A8     		add	r0, sp, #8
+ 1086              	.LVL73:
+ 1087              		.loc 1 597 3 view .LVU199
+ 1088 000c FFF7FEFF 		bl	snprintf
+ 1089              	.LVL74:
+ 1090              		.loc 1 597 3 is_stmt 1 view .LVU200
+ 1091              		.loc 1 597 3 view .LVU201
+ 1092 0010 2823     		movs	r3, #40
+ 1093 0012 0022     		movs	r2, #0
+ 1094 0014 0093     		str	r3, [sp]
+ 1095 0016 2100     		movs	r1, r4
+ 1096 0018 0620     		movs	r0, #6
+ 1097 001a 02AB     		add	r3, sp, #8
+ 1098 001c FFF7FEFF 		bl	USBPD_TRACE_Add
+ 1099              	.LVL75:
+ 1100              	.LBE15:
+ 1101              		.loc 1 597 3 view .LVU202
+ 598:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_RequestMessageRequest */
+ 599:Src/usbpd_dpm_user.c ****   return _status;
+ 1102              		.loc 1 599 3 view .LVU203
+ARM GAS  /tmp/ccg4sqYC.s 			page 31
+
+
+ 600:Src/usbpd_dpm_user.c **** }
+ 1103              		.loc 1 600 1 is_stmt 0 view .LVU204
+ 1104 0020 0220     		movs	r0, #2
+ 1105 0022 0CB0     		add	sp, sp, #48
+ 1106              		@ sp needed
+ 1107 0024 10BD     		pop	{r4, pc}
+ 1108              	.L61:
+ 1109 0026 C046     		.align	2
+ 1110              	.L60:
+ 1111 0028 00000000 		.word	.LC18
+ 1112              		.cfi_endproc
+ 1113              	.LFE890:
+ 1115              		.section	.text.USBPD_DPM_RequestGetSourceCapability,"ax",%progbits
+ 1116              		.align	1
+ 1117              		.global	USBPD_DPM_RequestGetSourceCapability
+ 1118              		.syntax unified
+ 1119              		.code	16
+ 1120              		.thumb_func
+ 1121              		.fpu softvfp
+ 1123              	USBPD_DPM_RequestGetSourceCapability:
+ 1124              	.LVL76:
+ 1125              	.LFB891:
+ 601:Src/usbpd_dpm_user.c **** 
+ 602:Src/usbpd_dpm_user.c **** /**
+ 603:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a GET_SRC_CAPA message
+ 604:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 605:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 606:Src/usbpd_dpm_user.c ****   */
+ 607:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestGetSourceCapability(uint8_t PortNum)
+ 608:Src/usbpd_dpm_user.c **** {
+ 1126              		.loc 1 608 1 is_stmt 1 view -0
+ 1127              		.cfi_startproc
+ 1128              		@ args = 0, pretend = 0, frame = 0
+ 1129              		@ frame_needed = 0, uses_anonymous_args = 0
+ 609:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GET_SRC_CAP, USBPD_SOPTYPE_SOP);
+ 1130              		.loc 1 609 3 view .LVU206
+ 608:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GET_SRC_CAP, USBPD_SOPTYPE_SOP);
+ 1131              		.loc 1 608 1 is_stmt 0 view .LVU207
+ 1132 0000 10B5     		push	{r4, lr}
+ 1133              	.LCFI21:
+ 1134              		.cfi_def_cfa_offset 8
+ 1135              		.cfi_offset 4, -8
+ 1136              		.cfi_offset 14, -4
+ 1137              		.loc 1 609 10 view .LVU208
+ 1138 0002 0022     		movs	r2, #0
+ 1139 0004 0721     		movs	r1, #7
+ 1140 0006 FFF7FEFF 		bl	USBPD_PE_Request_CtrlMessage
+ 1141              	.LVL77:
+ 610:Src/usbpd_dpm_user.c **** }
+ 1142              		.loc 1 610 1 view .LVU209
+ 1143              		@ sp needed
+ 1144 000a 10BD     		pop	{r4, pc}
+ 1145              		.cfi_endproc
+ 1146              	.LFE891:
+ 1148              		.section	.text.USBPD_DPM_RequestGetSinkCapability,"ax",%progbits
+ 1149              		.align	1
+ 1150              		.global	USBPD_DPM_RequestGetSinkCapability
+ARM GAS  /tmp/ccg4sqYC.s 			page 32
+
+
+ 1151              		.syntax unified
+ 1152              		.code	16
+ 1153              		.thumb_func
+ 1154              		.fpu softvfp
+ 1156              	USBPD_DPM_RequestGetSinkCapability:
+ 1157              	.LVL78:
+ 1158              	.LFB892:
+ 611:Src/usbpd_dpm_user.c **** 
+ 612:Src/usbpd_dpm_user.c **** /**
+ 613:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a GET_SNK_CAPA message
+ 614:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 615:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 616:Src/usbpd_dpm_user.c ****   */
+ 617:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestGetSinkCapability(uint8_t PortNum)
+ 618:Src/usbpd_dpm_user.c **** {
+ 1159              		.loc 1 618 1 is_stmt 1 view -0
+ 1160              		.cfi_startproc
+ 1161              		@ args = 0, pretend = 0, frame = 0
+ 1162              		@ frame_needed = 0, uses_anonymous_args = 0
+ 619:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GET_SNK_CAP, USBPD_SOPTYPE_SOP);
+ 1163              		.loc 1 619 3 view .LVU211
+ 618:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GET_SNK_CAP, USBPD_SOPTYPE_SOP);
+ 1164              		.loc 1 618 1 is_stmt 0 view .LVU212
+ 1165 0000 10B5     		push	{r4, lr}
+ 1166              	.LCFI22:
+ 1167              		.cfi_def_cfa_offset 8
+ 1168              		.cfi_offset 4, -8
+ 1169              		.cfi_offset 14, -4
+ 1170              		.loc 1 619 10 view .LVU213
+ 1171 0002 0022     		movs	r2, #0
+ 1172 0004 0821     		movs	r1, #8
+ 1173 0006 FFF7FEFF 		bl	USBPD_PE_Request_CtrlMessage
+ 1174              	.LVL79:
+ 620:Src/usbpd_dpm_user.c **** }
+ 1175              		.loc 1 620 1 view .LVU214
+ 1176              		@ sp needed
+ 1177 000a 10BD     		pop	{r4, pc}
+ 1178              		.cfi_endproc
+ 1179              	.LFE892:
+ 1181              		.section	.text.USBPD_DPM_RequestDataRoleSwap,"ax",%progbits
+ 1182              		.align	1
+ 1183              		.global	USBPD_DPM_RequestDataRoleSwap
+ 1184              		.syntax unified
+ 1185              		.code	16
+ 1186              		.thumb_func
+ 1187              		.fpu softvfp
+ 1189              	USBPD_DPM_RequestDataRoleSwap:
+ 1190              	.LVL80:
+ 1191              	.LFB893:
+ 621:Src/usbpd_dpm_user.c **** 
+ 622:Src/usbpd_dpm_user.c **** /**
+ 623:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to perform a Data Role Swap.
+ 624:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 625:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 626:Src/usbpd_dpm_user.c ****   */
+ 627:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestDataRoleSwap(uint8_t PortNum)
+ 628:Src/usbpd_dpm_user.c **** {
+ARM GAS  /tmp/ccg4sqYC.s 			page 33
+
+
+ 1192              		.loc 1 628 1 is_stmt 1 view -0
+ 1193              		.cfi_startproc
+ 1194              		@ args = 0, pretend = 0, frame = 0
+ 1195              		@ frame_needed = 0, uses_anonymous_args = 0
+ 629:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_DR_SWAP, USBPD_SOPTYPE_SOP);
+ 1196              		.loc 1 629 3 view .LVU216
+ 628:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_DR_SWAP, USBPD_SOPTYPE_SOP);
+ 1197              		.loc 1 628 1 is_stmt 0 view .LVU217
+ 1198 0000 10B5     		push	{r4, lr}
+ 1199              	.LCFI23:
+ 1200              		.cfi_def_cfa_offset 8
+ 1201              		.cfi_offset 4, -8
+ 1202              		.cfi_offset 14, -4
+ 1203              		.loc 1 629 10 view .LVU218
+ 1204 0002 0022     		movs	r2, #0
+ 1205 0004 0921     		movs	r1, #9
+ 1206 0006 FFF7FEFF 		bl	USBPD_PE_Request_CtrlMessage
+ 1207              	.LVL81:
+ 630:Src/usbpd_dpm_user.c **** }
+ 1208              		.loc 1 630 1 view .LVU219
+ 1209              		@ sp needed
+ 1210 000a 10BD     		pop	{r4, pc}
+ 1211              		.cfi_endproc
+ 1212              	.LFE893:
+ 1214              		.section	.text.USBPD_DPM_RequestPowerRoleSwap,"ax",%progbits
+ 1215              		.align	1
+ 1216              		.global	USBPD_DPM_RequestPowerRoleSwap
+ 1217              		.syntax unified
+ 1218              		.code	16
+ 1219              		.thumb_func
+ 1220              		.fpu softvfp
+ 1222              	USBPD_DPM_RequestPowerRoleSwap:
+ 1223              	.LVL82:
+ 1224              	.LFB894:
+ 631:Src/usbpd_dpm_user.c **** 
+ 632:Src/usbpd_dpm_user.c **** /**
+ 633:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to perform a Power Role Swap.
+ 634:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 635:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 636:Src/usbpd_dpm_user.c ****   */
+ 637:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestPowerRoleSwap(uint8_t PortNum)
+ 638:Src/usbpd_dpm_user.c **** {
+ 1225              		.loc 1 638 1 is_stmt 1 view -0
+ 1226              		.cfi_startproc
+ 1227              		@ args = 0, pretend = 0, frame = 0
+ 1228              		@ frame_needed = 0, uses_anonymous_args = 0
+ 639:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_PR_SWAP, USBPD_SOPTYPE_SOP);
+ 1229              		.loc 1 639 3 view .LVU221
+ 638:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_PR_SWAP, USBPD_SOPTYPE_SOP);
+ 1230              		.loc 1 638 1 is_stmt 0 view .LVU222
+ 1231 0000 10B5     		push	{r4, lr}
+ 1232              	.LCFI24:
+ 1233              		.cfi_def_cfa_offset 8
+ 1234              		.cfi_offset 4, -8
+ 1235              		.cfi_offset 14, -4
+ 1236              		.loc 1 639 10 view .LVU223
+ 1237 0002 0022     		movs	r2, #0
+ARM GAS  /tmp/ccg4sqYC.s 			page 34
+
+
+ 1238 0004 0A21     		movs	r1, #10
+ 1239 0006 FFF7FEFF 		bl	USBPD_PE_Request_CtrlMessage
+ 1240              	.LVL83:
+ 640:Src/usbpd_dpm_user.c **** }
+ 1241              		.loc 1 640 1 view .LVU224
+ 1242              		@ sp needed
+ 1243 000a 10BD     		pop	{r4, pc}
+ 1244              		.cfi_endproc
+ 1245              	.LFE894:
+ 1247              		.section	.text.USBPD_DPM_RequestVconnSwap,"ax",%progbits
+ 1248              		.align	1
+ 1249              		.global	USBPD_DPM_RequestVconnSwap
+ 1250              		.syntax unified
+ 1251              		.code	16
+ 1252              		.thumb_func
+ 1253              		.fpu softvfp
+ 1255              	USBPD_DPM_RequestVconnSwap:
+ 1256              	.LVL84:
+ 1257              	.LFB895:
+ 641:Src/usbpd_dpm_user.c **** 
+ 642:Src/usbpd_dpm_user.c **** /**
+ 643:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to perform a VCONN Swap.
+ 644:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 645:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 646:Src/usbpd_dpm_user.c ****   */
+ 647:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestVconnSwap(uint8_t PortNum)
+ 648:Src/usbpd_dpm_user.c **** {
+ 1258              		.loc 1 648 1 is_stmt 1 view -0
+ 1259              		.cfi_startproc
+ 1260              		@ args = 0, pretend = 0, frame = 0
+ 1261              		@ frame_needed = 0, uses_anonymous_args = 0
+ 649:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_VCONN_SWAP, USBPD_SOPTYPE_SOP);
+ 1262              		.loc 1 649 3 view .LVU226
+ 648:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_VCONN_SWAP, USBPD_SOPTYPE_SOP);
+ 1263              		.loc 1 648 1 is_stmt 0 view .LVU227
+ 1264 0000 10B5     		push	{r4, lr}
+ 1265              	.LCFI25:
+ 1266              		.cfi_def_cfa_offset 8
+ 1267              		.cfi_offset 4, -8
+ 1268              		.cfi_offset 14, -4
+ 1269              		.loc 1 649 10 view .LVU228
+ 1270 0002 0022     		movs	r2, #0
+ 1271 0004 0B21     		movs	r1, #11
+ 1272 0006 FFF7FEFF 		bl	USBPD_PE_Request_CtrlMessage
+ 1273              	.LVL85:
+ 650:Src/usbpd_dpm_user.c **** }
+ 1274              		.loc 1 650 1 view .LVU229
+ 1275              		@ sp needed
+ 1276 000a 10BD     		pop	{r4, pc}
+ 1277              		.cfi_endproc
+ 1278              	.LFE895:
+ 1280              		.section	.text.USBPD_DPM_RequestSoftReset,"ax",%progbits
+ 1281              		.align	1
+ 1282              		.global	USBPD_DPM_RequestSoftReset
+ 1283              		.syntax unified
+ 1284              		.code	16
+ 1285              		.thumb_func
+ARM GAS  /tmp/ccg4sqYC.s 			page 35
+
+
+ 1286              		.fpu softvfp
+ 1288              	USBPD_DPM_RequestSoftReset:
+ 1289              	.LVL86:
+ 1290              	.LFB896:
+ 651:Src/usbpd_dpm_user.c **** 
+ 652:Src/usbpd_dpm_user.c **** /**
+ 653:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a soft reset
+ 654:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 655:Src/usbpd_dpm_user.c ****   * @param  SOPType SOP Type based on @ref USBPD_SOPType_TypeDef
+ 656:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 657:Src/usbpd_dpm_user.c ****   */
+ 658:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestSoftReset(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType)
+ 659:Src/usbpd_dpm_user.c **** {
+ 1291              		.loc 1 659 1 is_stmt 1 view -0
+ 1292              		.cfi_startproc
+ 1293              		@ args = 0, pretend = 0, frame = 0
+ 1294              		@ frame_needed = 0, uses_anonymous_args = 0
+ 660:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_SOFT_RESET, SOPType);
+ 1295              		.loc 1 660 3 view .LVU231
+ 659:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_SOFT_RESET, SOPType);
+ 1296              		.loc 1 659 1 is_stmt 0 view .LVU232
+ 1297 0000 10B5     		push	{r4, lr}
+ 1298              	.LCFI26:
+ 1299              		.cfi_def_cfa_offset 8
+ 1300              		.cfi_offset 4, -8
+ 1301              		.cfi_offset 14, -4
+ 659:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_SOFT_RESET, SOPType);
+ 1302              		.loc 1 659 1 view .LVU233
+ 1303 0002 0A00     		movs	r2, r1
+ 1304              		.loc 1 660 10 view .LVU234
+ 1305 0004 0D21     		movs	r1, #13
+ 1306              	.LVL87:
+ 1307              		.loc 1 660 10 view .LVU235
+ 1308 0006 FFF7FEFF 		bl	USBPD_PE_Request_CtrlMessage
+ 1309              	.LVL88:
+ 661:Src/usbpd_dpm_user.c **** }
+ 1310              		.loc 1 661 1 view .LVU236
+ 1311              		@ sp needed
+ 1312 000a 10BD     		pop	{r4, pc}
+ 1313              		.cfi_endproc
+ 1314              	.LFE896:
+ 1316              		.section	.text.USBPD_DPM_RequestSourceCapability,"ax",%progbits
+ 1317              		.align	1
+ 1318              		.global	USBPD_DPM_RequestSourceCapability
+ 1319              		.syntax unified
+ 1320              		.code	16
+ 1321              		.thumb_func
+ 1322              		.fpu softvfp
+ 1324              	USBPD_DPM_RequestSourceCapability:
+ 1325              	.LVL89:
+ 1326              	.LFB897:
+ 662:Src/usbpd_dpm_user.c **** 
+ 663:Src/usbpd_dpm_user.c **** /**
+ 664:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a Source Capability message.
+ 665:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 666:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 667:Src/usbpd_dpm_user.c ****   */
+ARM GAS  /tmp/ccg4sqYC.s 			page 36
+
+
+ 668:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestSourceCapability(uint8_t PortNum)
+ 669:Src/usbpd_dpm_user.c **** {
+ 1327              		.loc 1 669 1 is_stmt 1 view -0
+ 1328              		.cfi_startproc
+ 1329              		@ args = 0, pretend = 0, frame = 0
+ 1330              		@ frame_needed = 0, uses_anonymous_args = 0
+ 670:Src/usbpd_dpm_user.c ****   /* PE will directly get the PDO saved in structure @ref PWR_Port_PDO_Storage */
+ 671:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_DataMessage(PortNum, USBPD_DATAMSG_SRC_CAPABILITIES, NULL);
+ 1331              		.loc 1 671 3 view .LVU238
+ 669:Src/usbpd_dpm_user.c ****   /* PE will directly get the PDO saved in structure @ref PWR_Port_PDO_Storage */
+ 1332              		.loc 1 669 1 is_stmt 0 view .LVU239
+ 1333 0000 10B5     		push	{r4, lr}
+ 1334              	.LCFI27:
+ 1335              		.cfi_def_cfa_offset 8
+ 1336              		.cfi_offset 4, -8
+ 1337              		.cfi_offset 14, -4
+ 1338              		.loc 1 671 10 view .LVU240
+ 1339 0002 0022     		movs	r2, #0
+ 1340 0004 0121     		movs	r1, #1
+ 1341 0006 FFF7FEFF 		bl	USBPD_PE_Request_DataMessage
+ 1342              	.LVL90:
+ 672:Src/usbpd_dpm_user.c **** }
+ 1343              		.loc 1 672 1 view .LVU241
+ 1344              		@ sp needed
+ 1345 000a 10BD     		pop	{r4, pc}
+ 1346              		.cfi_endproc
+ 1347              	.LFE897:
+ 1349              		.section	.text.USBPD_DPM_RequestVDM_DiscoveryIdentify,"ax",%progbits
+ 1350              		.align	1
+ 1351              		.global	USBPD_DPM_RequestVDM_DiscoveryIdentify
+ 1352              		.syntax unified
+ 1353              		.code	16
+ 1354              		.thumb_func
+ 1355              		.fpu softvfp
+ 1357              	USBPD_DPM_RequestVDM_DiscoveryIdentify:
+ 1358              	.LVL91:
+ 1359              	.LFB898:
+ 673:Src/usbpd_dpm_user.c **** 
+ 674:Src/usbpd_dpm_user.c **** /**
+ 675:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a VDM discovery identity
+ 676:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 677:Src/usbpd_dpm_user.c ****   * @param  SOPType SOP Type
+ 678:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 679:Src/usbpd_dpm_user.c ****   */
+ 680:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestVDM_DiscoveryIdentify(uint8_t PortNum, USBPD_SOPType_TypeDef S
+ 681:Src/usbpd_dpm_user.c **** {
+ 1360              		.loc 1 681 1 is_stmt 1 view -0
+ 1361              		.cfi_startproc
+ 1362              		@ args = 0, pretend = 0, frame = 0
+ 1363              		@ frame_needed = 0, uses_anonymous_args = 0
+ 682:Src/usbpd_dpm_user.c ****   USBPD_StatusTypeDef _status = USBPD_ERROR;
+ 1364              		.loc 1 682 3 view .LVU243
+ 683:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_RequestVDM_DiscoveryIdentify */
+ 684:Src/usbpd_dpm_user.c **** 
+ 685:Src/usbpd_dpm_user.c ****   if (USBPD_SOPTYPE_SOP == SOPType)
+ 1365              		.loc 1 685 3 view .LVU244
+ 681:Src/usbpd_dpm_user.c ****   USBPD_StatusTypeDef _status = USBPD_ERROR;
+ARM GAS  /tmp/ccg4sqYC.s 			page 37
+
+
+ 1366              		.loc 1 681 1 is_stmt 0 view .LVU245
+ 1367 0000 0300     		movs	r3, r0
+ 1368 0002 10B5     		push	{r4, lr}
+ 1369              	.LCFI28:
+ 1370              		.cfi_def_cfa_offset 8
+ 1371              		.cfi_offset 4, -8
+ 1372              		.cfi_offset 14, -4
+ 682:Src/usbpd_dpm_user.c ****   USBPD_StatusTypeDef _status = USBPD_ERROR;
+ 1373              		.loc 1 682 23 view .LVU246
+ 1374 0004 0220     		movs	r0, #2
+ 1375              	.LVL92:
+ 1376              		.loc 1 685 6 view .LVU247
+ 1377 0006 0029     		cmp	r1, #0
+ 1378 0008 02D1     		bne	.L70
+ 686:Src/usbpd_dpm_user.c ****   {
+ 687:Src/usbpd_dpm_user.c ****     _status = USBPD_PE_SVDM_RequestIdentity(PortNum, SOPType);
+ 1379              		.loc 1 687 5 is_stmt 1 view .LVU248
+ 1380              		.loc 1 687 15 is_stmt 0 view .LVU249
+ 1381 000a 1800     		movs	r0, r3
+ 1382 000c FFF7FEFF 		bl	USBPD_PE_SVDM_RequestIdentity
+ 1383              	.LVL93:
+ 1384              	.L70:
+ 688:Src/usbpd_dpm_user.c ****   }
+ 689:Src/usbpd_dpm_user.c **** 
+ 690:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_RequestVDM_DiscoveryIdentify */
+ 691:Src/usbpd_dpm_user.c ****   return _status;
+ 1385              		.loc 1 691 3 is_stmt 1 view .LVU250
+ 692:Src/usbpd_dpm_user.c **** }
+ 1386              		.loc 1 692 1 is_stmt 0 view .LVU251
+ 1387              		@ sp needed
+ 1388 0010 10BD     		pop	{r4, pc}
+ 1389              		.cfi_endproc
+ 1390              	.LFE898:
+ 1392              		.section	.text.USBPD_DPM_RequestVDM_DiscoverySVID,"ax",%progbits
+ 1393              		.align	1
+ 1394              		.global	USBPD_DPM_RequestVDM_DiscoverySVID
+ 1395              		.syntax unified
+ 1396              		.code	16
+ 1397              		.thumb_func
+ 1398              		.fpu softvfp
+ 1400              	USBPD_DPM_RequestVDM_DiscoverySVID:
+ 1401              	.LVL94:
+ 1402              	.LFB899:
+ 693:Src/usbpd_dpm_user.c **** 
+ 694:Src/usbpd_dpm_user.c **** /**
+ 695:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a VDM discovery SVID
+ 696:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 697:Src/usbpd_dpm_user.c ****   * @param  SOPType SOP Type
+ 698:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 699:Src/usbpd_dpm_user.c ****   */
+ 700:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestVDM_DiscoverySVID(uint8_t PortNum, USBPD_SOPType_TypeDef SOPTy
+ 701:Src/usbpd_dpm_user.c **** {
+ 1403              		.loc 1 701 1 is_stmt 1 view -0
+ 1404              		.cfi_startproc
+ 1405              		@ args = 0, pretend = 0, frame = 0
+ 1406              		@ frame_needed = 0, uses_anonymous_args = 0
+ 702:Src/usbpd_dpm_user.c ****   return USBPD_PE_SVDM_RequestSVID(PortNum, SOPType);
+ARM GAS  /tmp/ccg4sqYC.s 			page 38
+
+
+ 1407              		.loc 1 702 3 view .LVU253
+ 701:Src/usbpd_dpm_user.c ****   return USBPD_PE_SVDM_RequestSVID(PortNum, SOPType);
+ 1408              		.loc 1 701 1 is_stmt 0 view .LVU254
+ 1409 0000 10B5     		push	{r4, lr}
+ 1410              	.LCFI29:
+ 1411              		.cfi_def_cfa_offset 8
+ 1412              		.cfi_offset 4, -8
+ 1413              		.cfi_offset 14, -4
+ 1414              		.loc 1 702 10 view .LVU255
+ 1415 0002 FFF7FEFF 		bl	USBPD_PE_SVDM_RequestSVID
+ 1416              	.LVL95:
+ 703:Src/usbpd_dpm_user.c **** }
+ 1417              		.loc 1 703 1 view .LVU256
+ 1418              		@ sp needed
+ 1419 0006 10BD     		pop	{r4, pc}
+ 1420              		.cfi_endproc
+ 1421              	.LFE899:
+ 1423              		.section	.text.USBPD_DPM_RequestVDM_DiscoveryMode,"ax",%progbits
+ 1424              		.align	1
+ 1425              		.global	USBPD_DPM_RequestVDM_DiscoveryMode
+ 1426              		.syntax unified
+ 1427              		.code	16
+ 1428              		.thumb_func
+ 1429              		.fpu softvfp
+ 1431              	USBPD_DPM_RequestVDM_DiscoveryMode:
+ 1432              	.LVL96:
+ 1433              	.LFB900:
+ 704:Src/usbpd_dpm_user.c **** 
+ 705:Src/usbpd_dpm_user.c **** /**
+ 706:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to perform a VDM Discovery mode message on one SVID.
+ 707:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 708:Src/usbpd_dpm_user.c ****   * @param  SOPType SOP Type
+ 709:Src/usbpd_dpm_user.c ****   * @param  SVID    SVID used for discovery mode message
+ 710:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 711:Src/usbpd_dpm_user.c ****   */
+ 712:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestVDM_DiscoveryMode(uint8_t PortNum, USBPD_SOPType_TypeDef SOPTy
+ 713:Src/usbpd_dpm_user.c **** {
+ 1434              		.loc 1 713 1 is_stmt 1 view -0
+ 1435              		.cfi_startproc
+ 1436              		@ args = 0, pretend = 0, frame = 0
+ 1437              		@ frame_needed = 0, uses_anonymous_args = 0
+ 714:Src/usbpd_dpm_user.c ****   return USBPD_PE_SVDM_RequestMode(PortNum, SOPType, SVID);
+ 1438              		.loc 1 714 3 view .LVU258
+ 713:Src/usbpd_dpm_user.c ****   return USBPD_PE_SVDM_RequestMode(PortNum, SOPType, SVID);
+ 1439              		.loc 1 713 1 is_stmt 0 view .LVU259
+ 1440 0000 10B5     		push	{r4, lr}
+ 1441              	.LCFI30:
+ 1442              		.cfi_def_cfa_offset 8
+ 1443              		.cfi_offset 4, -8
+ 1444              		.cfi_offset 14, -4
+ 1445              		.loc 1 714 10 view .LVU260
+ 1446 0002 FFF7FEFF 		bl	USBPD_PE_SVDM_RequestMode
+ 1447              	.LVL97:
+ 715:Src/usbpd_dpm_user.c **** }
+ 1448              		.loc 1 715 1 view .LVU261
+ 1449              		@ sp needed
+ 1450 0006 10BD     		pop	{r4, pc}
+ARM GAS  /tmp/ccg4sqYC.s 			page 39
+
+
+ 1451              		.cfi_endproc
+ 1452              	.LFE900:
+ 1454              		.section	.text.USBPD_DPM_RequestVDM_EnterMode,"ax",%progbits
+ 1455              		.align	1
+ 1456              		.global	USBPD_DPM_RequestVDM_EnterMode
+ 1457              		.syntax unified
+ 1458              		.code	16
+ 1459              		.thumb_func
+ 1460              		.fpu softvfp
+ 1462              	USBPD_DPM_RequestVDM_EnterMode:
+ 1463              	.LVL98:
+ 1464              	.LFB901:
+ 716:Src/usbpd_dpm_user.c **** 
+ 717:Src/usbpd_dpm_user.c **** /**
+ 718:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to perform a VDM mode enter.
+ 719:Src/usbpd_dpm_user.c ****   * @param  PortNum   The current port number
+ 720:Src/usbpd_dpm_user.c ****   * @param  SOPType   SOP Type
+ 721:Src/usbpd_dpm_user.c ****   * @param  SVID      SVID used for discovery mode message
+ 722:Src/usbpd_dpm_user.c ****   * @param  ModeIndex Index of the mode to be entered
+ 723:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 724:Src/usbpd_dpm_user.c ****   */
+ 725:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestVDM_EnterMode(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, 
+ 726:Src/usbpd_dpm_user.c **** {
+ 1465              		.loc 1 726 1 is_stmt 1 view -0
+ 1466              		.cfi_startproc
+ 1467              		@ args = 0, pretend = 0, frame = 0
+ 1468              		@ frame_needed = 0, uses_anonymous_args = 0
+ 727:Src/usbpd_dpm_user.c ****   return USBPD_PE_SVDM_RequestModeEnter(PortNum, SOPType, SVID, ModeIndex);
+ 1469              		.loc 1 727 3 view .LVU263
+ 726:Src/usbpd_dpm_user.c ****   return USBPD_PE_SVDM_RequestModeEnter(PortNum, SOPType, SVID, ModeIndex);
+ 1470              		.loc 1 726 1 is_stmt 0 view .LVU264
+ 1471 0000 10B5     		push	{r4, lr}
+ 1472              	.LCFI31:
+ 1473              		.cfi_def_cfa_offset 8
+ 1474              		.cfi_offset 4, -8
+ 1475              		.cfi_offset 14, -4
+ 1476              		.loc 1 727 10 view .LVU265
+ 1477 0002 FFF7FEFF 		bl	USBPD_PE_SVDM_RequestModeEnter
+ 1478              	.LVL99:
+ 728:Src/usbpd_dpm_user.c **** }
+ 1479              		.loc 1 728 1 view .LVU266
+ 1480              		@ sp needed
+ 1481 0006 10BD     		pop	{r4, pc}
+ 1482              		.cfi_endproc
+ 1483              	.LFE901:
+ 1485              		.section	.text.USBPD_DPM_RequestVDM_ExitMode,"ax",%progbits
+ 1486              		.align	1
+ 1487              		.global	USBPD_DPM_RequestVDM_ExitMode
+ 1488              		.syntax unified
+ 1489              		.code	16
+ 1490              		.thumb_func
+ 1491              		.fpu softvfp
+ 1493              	USBPD_DPM_RequestVDM_ExitMode:
+ 1494              	.LVL100:
+ 1495              	.LFB902:
+ 729:Src/usbpd_dpm_user.c **** 
+ 730:Src/usbpd_dpm_user.c **** /**
+ARM GAS  /tmp/ccg4sqYC.s 			page 40
+
+
+ 731:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to perform a VDM mode exit.
+ 732:Src/usbpd_dpm_user.c ****   * @param  PortNum   The current port number
+ 733:Src/usbpd_dpm_user.c ****   * @param  SOPType   SOP Type
+ 734:Src/usbpd_dpm_user.c ****   * @param  SVID      SVID used for discovery mode message
+ 735:Src/usbpd_dpm_user.c ****   * @param  ModeIndex Index of the mode to be exit
+ 736:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 737:Src/usbpd_dpm_user.c ****   */
+ 738:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestVDM_ExitMode(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, u
+ 739:Src/usbpd_dpm_user.c **** {
+ 1496              		.loc 1 739 1 is_stmt 1 view -0
+ 1497              		.cfi_startproc
+ 1498              		@ args = 0, pretend = 0, frame = 0
+ 1499              		@ frame_needed = 0, uses_anonymous_args = 0
+ 740:Src/usbpd_dpm_user.c ****   return USBPD_PE_SVDM_RequestModeExit(PortNum, SOPType, SVID, ModeIndex);
+ 1500              		.loc 1 740 3 view .LVU268
+ 739:Src/usbpd_dpm_user.c ****   return USBPD_PE_SVDM_RequestModeExit(PortNum, SOPType, SVID, ModeIndex);
+ 1501              		.loc 1 739 1 is_stmt 0 view .LVU269
+ 1502 0000 10B5     		push	{r4, lr}
+ 1503              	.LCFI32:
+ 1504              		.cfi_def_cfa_offset 8
+ 1505              		.cfi_offset 4, -8
+ 1506              		.cfi_offset 14, -4
+ 1507              		.loc 1 740 10 view .LVU270
+ 1508 0002 FFF7FEFF 		bl	USBPD_PE_SVDM_RequestModeExit
+ 1509              	.LVL101:
+ 741:Src/usbpd_dpm_user.c **** }
+ 1510              		.loc 1 741 1 view .LVU271
+ 1511              		@ sp needed
+ 1512 0006 10BD     		pop	{r4, pc}
+ 1513              		.cfi_endproc
+ 1514              	.LFE902:
+ 1516              		.section	.text.USBPD_DPM_RequestDisplayPortStatus,"ax",%progbits
+ 1517              		.align	1
+ 1518              		.global	USBPD_DPM_RequestDisplayPortStatus
+ 1519              		.syntax unified
+ 1520              		.code	16
+ 1521              		.thumb_func
+ 1522              		.fpu softvfp
+ 1524              	USBPD_DPM_RequestDisplayPortStatus:
+ 1525              	.LVL102:
+ 1526              	.LFB903:
+ 742:Src/usbpd_dpm_user.c **** 
+ 743:Src/usbpd_dpm_user.c **** /**
+ 744:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a Display Port status
+ 745:Src/usbpd_dpm_user.c ****   * @param  PortNum   The current port number
+ 746:Src/usbpd_dpm_user.c ****   * @param  SOPType   SOP Type
+ 747:Src/usbpd_dpm_user.c ****   * @param  SVID      Used SVID
+ 748:Src/usbpd_dpm_user.c ****   * @param  pDPStatus Pointer on DP Status data (32 bit)
+ 749:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 750:Src/usbpd_dpm_user.c ****   */
+ 751:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestDisplayPortStatus(uint8_t PortNum, USBPD_SOPType_TypeDef SOPTy
+ 752:Src/usbpd_dpm_user.c **** {
+ 1527              		.loc 1 752 1 is_stmt 1 view -0
+ 1528              		.cfi_startproc
+ 1529              		@ args = 0, pretend = 0, frame = 0
+ 1530              		@ frame_needed = 0, uses_anonymous_args = 0
+ 753:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_RequestDisplayPortStatus */
+ARM GAS  /tmp/ccg4sqYC.s 			page 41
+
+
+ 754:Src/usbpd_dpm_user.c ****   /*USBPD_VDM_FillDPStatus(PortNum, (USBPD_DPStatus_TypeDef*)pDPStatus);*/
+ 755:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_RequestDisplayPortStatus */
+ 756:Src/usbpd_dpm_user.c ****   return USBPD_PE_SVDM_RequestSpecific(PortNum, SOPType, SVDM_SPECIFIC_1, SVID);
+ 1531              		.loc 1 756 3 view .LVU273
+ 752:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_RequestDisplayPortStatus */
+ 1532              		.loc 1 752 1 is_stmt 0 view .LVU274
+ 1533 0000 10B5     		push	{r4, lr}
+ 1534              	.LCFI33:
+ 1535              		.cfi_def_cfa_offset 8
+ 1536              		.cfi_offset 4, -8
+ 1537              		.cfi_offset 14, -4
+ 752:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_RequestDisplayPortStatus */
+ 1538              		.loc 1 752 1 view .LVU275
+ 1539 0002 1300     		movs	r3, r2
+ 1540              	.LVL103:
+ 1541              		.loc 1 756 10 view .LVU276
+ 1542 0004 1022     		movs	r2, #16
+ 1543              	.LVL104:
+ 1544              		.loc 1 756 10 view .LVU277
+ 1545 0006 FFF7FEFF 		bl	USBPD_PE_SVDM_RequestSpecific
+ 1546              	.LVL105:
+ 757:Src/usbpd_dpm_user.c **** }
+ 1547              		.loc 1 757 1 view .LVU278
+ 1548              		@ sp needed
+ 1549 000a 10BD     		pop	{r4, pc}
+ 1550              		.cfi_endproc
+ 1551              	.LFE903:
+ 1553              		.section	.text.USBPD_DPM_RequestDisplayPortConfig,"ax",%progbits
+ 1554              		.align	1
+ 1555              		.global	USBPD_DPM_RequestDisplayPortConfig
+ 1556              		.syntax unified
+ 1557              		.code	16
+ 1558              		.thumb_func
+ 1559              		.fpu softvfp
+ 1561              	USBPD_DPM_RequestDisplayPortConfig:
+ 1562              	.LVL106:
+ 1563              	.LFB904:
+ 758:Src/usbpd_dpm_user.c **** /**
+ 759:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a Display Port Config
+ 760:Src/usbpd_dpm_user.c ****   * @param  PortNum   The current port number
+ 761:Src/usbpd_dpm_user.c ****   * @param  SOPType   SOP Type
+ 762:Src/usbpd_dpm_user.c ****   * @param  SVID      Used SVID
+ 763:Src/usbpd_dpm_user.c ****   * @param  pDPConfig Pointer on DP Config data (32 bit)
+ 764:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 765:Src/usbpd_dpm_user.c ****   */
+ 766:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestDisplayPortConfig(uint8_t PortNum, USBPD_SOPType_TypeDef SOPTy
+ 767:Src/usbpd_dpm_user.c **** {
+ 1564              		.loc 1 767 1 is_stmt 1 view -0
+ 1565              		.cfi_startproc
+ 1566              		@ args = 0, pretend = 0, frame = 0
+ 1567              		@ frame_needed = 0, uses_anonymous_args = 0
+ 768:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_RequestDisplayPortConfig */
+ 769:Src/usbpd_dpm_user.c ****   /*USBPD_VDM_FillDPConfig(PortNum, (USBPD_DPConfig_TypeDef*)pDPConfig);*/
+ 770:Src/usbpd_dpm_user.c **** /* USER CODE END USBPD_DPM_RequestDisplayPortConfig */
+ 771:Src/usbpd_dpm_user.c ****   return USBPD_PE_SVDM_RequestSpecific(PortNum, SOPType, SVDM_SPECIFIC_2, SVID);
+ 1568              		.loc 1 771 3 view .LVU280
+ 767:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_RequestDisplayPortConfig */
+ARM GAS  /tmp/ccg4sqYC.s 			page 42
+
+
+ 1569              		.loc 1 767 1 is_stmt 0 view .LVU281
+ 1570 0000 10B5     		push	{r4, lr}
+ 1571              	.LCFI34:
+ 1572              		.cfi_def_cfa_offset 8
+ 1573              		.cfi_offset 4, -8
+ 1574              		.cfi_offset 14, -4
+ 767:Src/usbpd_dpm_user.c **** /* USER CODE BEGIN USBPD_DPM_RequestDisplayPortConfig */
+ 1575              		.loc 1 767 1 view .LVU282
+ 1576 0002 1300     		movs	r3, r2
+ 1577              	.LVL107:
+ 1578              		.loc 1 771 10 view .LVU283
+ 1579 0004 1122     		movs	r2, #17
+ 1580              	.LVL108:
+ 1581              		.loc 1 771 10 view .LVU284
+ 1582 0006 FFF7FEFF 		bl	USBPD_PE_SVDM_RequestSpecific
+ 1583              	.LVL109:
+ 772:Src/usbpd_dpm_user.c **** }
+ 1584              		.loc 1 772 1 view .LVU285
+ 1585              		@ sp needed
+ 1586 000a 10BD     		pop	{r4, pc}
+ 1587              		.cfi_endproc
+ 1588              	.LFE904:
+ 1590              		.section	.text.USBPD_DPM_RequestAttention,"ax",%progbits
+ 1591              		.align	1
+ 1592              		.global	USBPD_DPM_RequestAttention
+ 1593              		.syntax unified
+ 1594              		.code	16
+ 1595              		.thumb_func
+ 1596              		.fpu softvfp
+ 1598              	USBPD_DPM_RequestAttention:
+ 1599              	.LVL110:
+ 1600              	.LFB905:
+ 773:Src/usbpd_dpm_user.c **** 
+ 774:Src/usbpd_dpm_user.c **** /**
+ 775:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to perform a VDM Attention.
+ 776:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 777:Src/usbpd_dpm_user.c ****   * @param  SOPType SOP Type
+ 778:Src/usbpd_dpm_user.c ****   * @param  SVID    Used SVID
+ 779:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 780:Src/usbpd_dpm_user.c ****   */
+ 781:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestAttention(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, uint
+ 782:Src/usbpd_dpm_user.c **** {
+ 1601              		.loc 1 782 1 is_stmt 1 view -0
+ 1602              		.cfi_startproc
+ 1603              		@ args = 0, pretend = 0, frame = 0
+ 1604              		@ frame_needed = 0, uses_anonymous_args = 0
+ 783:Src/usbpd_dpm_user.c ****   return USBPD_PE_SVDM_RequestAttention(PortNum, SOPType, SVID);
+ 1605              		.loc 1 783 3 view .LVU287
+ 782:Src/usbpd_dpm_user.c ****   return USBPD_PE_SVDM_RequestAttention(PortNum, SOPType, SVID);
+ 1606              		.loc 1 782 1 is_stmt 0 view .LVU288
+ 1607 0000 10B5     		push	{r4, lr}
+ 1608              	.LCFI35:
+ 1609              		.cfi_def_cfa_offset 8
+ 1610              		.cfi_offset 4, -8
+ 1611              		.cfi_offset 14, -4
+ 1612              		.loc 1 783 10 view .LVU289
+ 1613 0002 FFF7FEFF 		bl	USBPD_PE_SVDM_RequestAttention
+ARM GAS  /tmp/ccg4sqYC.s 			page 43
+
+
+ 1614              	.LVL111:
+ 784:Src/usbpd_dpm_user.c **** }
+ 1615              		.loc 1 784 1 view .LVU290
+ 1616              		@ sp needed
+ 1617 0006 10BD     		pop	{r4, pc}
+ 1618              		.cfi_endproc
+ 1619              	.LFE905:
+ 1621              		.section	.text.USBPD_DPM_RequestAlert,"ax",%progbits
+ 1622              		.align	1
+ 1623              		.global	USBPD_DPM_RequestAlert
+ 1624              		.syntax unified
+ 1625              		.code	16
+ 1626              		.thumb_func
+ 1627              		.fpu softvfp
+ 1629              	USBPD_DPM_RequestAlert:
+ 1630              	.LVL112:
+ 1631              	.LFB906:
+ 785:Src/usbpd_dpm_user.c **** 
+ 786:Src/usbpd_dpm_user.c **** /**
+ 787:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send an ALERT to port partner
+ 788:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 789:Src/usbpd_dpm_user.c ****   * @param  Alert   Alert based on @ref USBPD_ADO_TypeDef
+ 790:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 791:Src/usbpd_dpm_user.c ****   */
+ 792:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestAlert(uint8_t PortNum, USBPD_ADO_TypeDef Alert)
+ 793:Src/usbpd_dpm_user.c **** {
+ 1632              		.loc 1 793 1 is_stmt 1 view -0
+ 1633              		.cfi_startproc
+ 1634              		@ args = 0, pretend = 0, frame = 8
+ 1635              		@ frame_needed = 0, uses_anonymous_args = 0
+ 794:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_DataMessage(PortNum, USBPD_DATAMSG_ALERT, (uint32_t*)&Alert.d32);
+ 1636              		.loc 1 794 3 view .LVU292
+ 793:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_DataMessage(PortNum, USBPD_DATAMSG_ALERT, (uint32_t*)&Alert.d32);
+ 1637              		.loc 1 793 1 is_stmt 0 view .LVU293
+ 1638 0000 07B5     		push	{r0, r1, r2, lr}
+ 1639              	.LCFI36:
+ 1640              		.cfi_def_cfa_offset 16
+ 1641              		.cfi_offset 0, -16
+ 1642              		.cfi_offset 1, -12
+ 1643              		.cfi_offset 2, -8
+ 1644              		.cfi_offset 14, -4
+ 793:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_DataMessage(PortNum, USBPD_DATAMSG_ALERT, (uint32_t*)&Alert.d32);
+ 1645              		.loc 1 793 1 view .LVU294
+ 1646 0002 0191     		str	r1, [sp, #4]
+ 1647              		.loc 1 794 10 view .LVU295
+ 1648 0004 01AA     		add	r2, sp, #4
+ 1649 0006 0621     		movs	r1, #6
+ 1650 0008 FFF7FEFF 		bl	USBPD_PE_Request_DataMessage
+ 1651              	.LVL113:
+ 795:Src/usbpd_dpm_user.c **** }
+ 1652              		.loc 1 795 1 view .LVU296
+ 1653              		@ sp needed
+ 1654 000c 0EBD     		pop	{r1, r2, r3, pc}
+ 1655              		.cfi_endproc
+ 1656              	.LFE906:
+ 1658              		.section	.text.USBPD_DPM_RequestGetSourceCapabilityExt,"ax",%progbits
+ 1659              		.align	1
+ARM GAS  /tmp/ccg4sqYC.s 			page 44
+
+
+ 1660              		.global	USBPD_DPM_RequestGetSourceCapabilityExt
+ 1661              		.syntax unified
+ 1662              		.code	16
+ 1663              		.thumb_func
+ 1664              		.fpu softvfp
+ 1666              	USBPD_DPM_RequestGetSourceCapabilityExt:
+ 1667              	.LVL114:
+ 1668              	.LFB907:
+ 796:Src/usbpd_dpm_user.c **** 
+ 797:Src/usbpd_dpm_user.c **** /**
+ 798:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to get a source capability extended
+ 799:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 800:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 801:Src/usbpd_dpm_user.c ****   */
+ 802:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestGetSourceCapabilityExt(uint8_t PortNum)
+ 803:Src/usbpd_dpm_user.c **** {
+ 1669              		.loc 1 803 1 is_stmt 1 view -0
+ 1670              		.cfi_startproc
+ 1671              		@ args = 0, pretend = 0, frame = 0
+ 1672              		@ frame_needed = 0, uses_anonymous_args = 0
+ 804:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GET_SRC_CAPEXT, USBPD_SOPTYPE_SOP);
+ 1673              		.loc 1 804 3 view .LVU298
+ 803:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GET_SRC_CAPEXT, USBPD_SOPTYPE_SOP);
+ 1674              		.loc 1 803 1 is_stmt 0 view .LVU299
+ 1675 0000 10B5     		push	{r4, lr}
+ 1676              	.LCFI37:
+ 1677              		.cfi_def_cfa_offset 8
+ 1678              		.cfi_offset 4, -8
+ 1679              		.cfi_offset 14, -4
+ 1680              		.loc 1 804 10 view .LVU300
+ 1681 0002 0022     		movs	r2, #0
+ 1682 0004 1121     		movs	r1, #17
+ 1683 0006 FFF7FEFF 		bl	USBPD_PE_Request_CtrlMessage
+ 1684              	.LVL115:
+ 805:Src/usbpd_dpm_user.c **** }
+ 1685              		.loc 1 805 1 view .LVU301
+ 1686              		@ sp needed
+ 1687 000a 10BD     		pop	{r4, pc}
+ 1688              		.cfi_endproc
+ 1689              	.LFE907:
+ 1691              		.section	.text.USBPD_DPM_RequestGetSinkCapabilityExt,"ax",%progbits
+ 1692              		.align	1
+ 1693              		.global	USBPD_DPM_RequestGetSinkCapabilityExt
+ 1694              		.syntax unified
+ 1695              		.code	16
+ 1696              		.thumb_func
+ 1697              		.fpu softvfp
+ 1699              	USBPD_DPM_RequestGetSinkCapabilityExt:
+ 1700              	.LVL116:
+ 1701              	.LFB908:
+ 806:Src/usbpd_dpm_user.c **** 
+ 807:Src/usbpd_dpm_user.c **** /**
+ 808:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to get a sink capability extended
+ 809:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 810:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 811:Src/usbpd_dpm_user.c ****   */
+ 812:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestGetSinkCapabilityExt(uint8_t PortNum)
+ARM GAS  /tmp/ccg4sqYC.s 			page 45
+
+
+ 813:Src/usbpd_dpm_user.c **** {
+ 1702              		.loc 1 813 1 is_stmt 1 view -0
+ 1703              		.cfi_startproc
+ 1704              		@ args = 0, pretend = 0, frame = 0
+ 1705              		@ frame_needed = 0, uses_anonymous_args = 0
+ 814:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GET_SNK_CAPEXT, USBPD_SOPTYPE_SOP);
+ 1706              		.loc 1 814 3 view .LVU303
+ 813:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GET_SNK_CAPEXT, USBPD_SOPTYPE_SOP);
+ 1707              		.loc 1 813 1 is_stmt 0 view .LVU304
+ 1708 0000 10B5     		push	{r4, lr}
+ 1709              	.LCFI38:
+ 1710              		.cfi_def_cfa_offset 8
+ 1711              		.cfi_offset 4, -8
+ 1712              		.cfi_offset 14, -4
+ 1713              		.loc 1 814 10 view .LVU305
+ 1714 0002 0022     		movs	r2, #0
+ 1715 0004 1621     		movs	r1, #22
+ 1716 0006 FFF7FEFF 		bl	USBPD_PE_Request_CtrlMessage
+ 1717              	.LVL117:
+ 815:Src/usbpd_dpm_user.c **** }
+ 1718              		.loc 1 815 1 view .LVU306
+ 1719              		@ sp needed
+ 1720 000a 10BD     		pop	{r4, pc}
+ 1721              		.cfi_endproc
+ 1722              	.LFE908:
+ 1724              		.section	.text.USBPD_DPM_RequestGetManufacturerInfo,"ax",%progbits
+ 1725              		.align	1
+ 1726              		.global	USBPD_DPM_RequestGetManufacturerInfo
+ 1727              		.syntax unified
+ 1728              		.code	16
+ 1729              		.thumb_func
+ 1730              		.fpu softvfp
+ 1732              	USBPD_DPM_RequestGetManufacturerInfo:
+ 1733              	.LVL118:
+ 1734              	.LFB909:
+ 816:Src/usbpd_dpm_user.c **** 
+ 817:Src/usbpd_dpm_user.c **** /**
+ 818:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to get a manufacturer infor
+ 819:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 820:Src/usbpd_dpm_user.c ****   * @param  SOPType SOP Type
+ 821:Src/usbpd_dpm_user.c ****   * @param  pManuInfoData Pointer on manufacturer info based on @ref USBPD_GMIDB_TypeDef
+ 822:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 823:Src/usbpd_dpm_user.c ****   */
+ 824:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestGetManufacturerInfo(uint8_t PortNum, USBPD_SOPType_TypeDef SOP
+ 825:Src/usbpd_dpm_user.c **** {
+ 1735              		.loc 1 825 1 is_stmt 1 view -0
+ 1736              		.cfi_startproc
+ 1737              		@ args = 0, pretend = 0, frame = 0
+ 1738              		@ frame_needed = 0, uses_anonymous_args = 0
+ 826:Src/usbpd_dpm_user.c ****   return USBPD_PE_SendExtendedMessage(PortNum, SOPType, USBPD_EXT_GET_MANUFACTURER_INFO, (uint8_t*)
+ 1739              		.loc 1 826 3 view .LVU308
+ 825:Src/usbpd_dpm_user.c ****   return USBPD_PE_SendExtendedMessage(PortNum, SOPType, USBPD_EXT_GET_MANUFACTURER_INFO, (uint8_t*)
+ 1740              		.loc 1 825 1 is_stmt 0 view .LVU309
+ 1741 0000 07B5     		push	{r0, r1, r2, lr}
+ 1742              	.LCFI39:
+ 1743              		.cfi_def_cfa_offset 16
+ 1744              		.cfi_offset 0, -16
+ARM GAS  /tmp/ccg4sqYC.s 			page 46
+
+
+ 1745              		.cfi_offset 1, -12
+ 1746              		.cfi_offset 2, -8
+ 1747              		.cfi_offset 14, -4
+ 825:Src/usbpd_dpm_user.c ****   return USBPD_PE_SendExtendedMessage(PortNum, SOPType, USBPD_EXT_GET_MANUFACTURER_INFO, (uint8_t*)
+ 1748              		.loc 1 825 1 view .LVU310
+ 1749 0002 1300     		movs	r3, r2
+ 1750              		.loc 1 826 10 view .LVU311
+ 1751 0004 0222     		movs	r2, #2
+ 1752              	.LVL119:
+ 1753              		.loc 1 826 10 view .LVU312
+ 1754 0006 0092     		str	r2, [sp]
+ 1755 0008 0432     		adds	r2, r2, #4
+ 1756 000a FFF7FEFF 		bl	USBPD_PE_SendExtendedMessage
+ 1757              	.LVL120:
+ 827:Src/usbpd_dpm_user.c **** }
+ 1758              		.loc 1 827 1 view .LVU313
+ 1759              		@ sp needed
+ 1760 000e 0EBD     		pop	{r1, r2, r3, pc}
+ 1761              		.cfi_endproc
+ 1762              	.LFE909:
+ 1764              		.section	.text.USBPD_DPM_RequestGetPPS_Status,"ax",%progbits
+ 1765              		.align	1
+ 1766              		.global	USBPD_DPM_RequestGetPPS_Status
+ 1767              		.syntax unified
+ 1768              		.code	16
+ 1769              		.thumb_func
+ 1770              		.fpu softvfp
+ 1772              	USBPD_DPM_RequestGetPPS_Status:
+ 1773              	.LVL121:
+ 1774              	.LFB910:
+ 828:Src/usbpd_dpm_user.c **** 
+ 829:Src/usbpd_dpm_user.c **** /**
+ 830:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to request a GET_PPS_STATUS
+ 831:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 832:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 833:Src/usbpd_dpm_user.c ****   */
+ 834:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestGetPPS_Status(uint8_t PortNum)
+ 835:Src/usbpd_dpm_user.c **** {
+ 1775              		.loc 1 835 1 is_stmt 1 view -0
+ 1776              		.cfi_startproc
+ 1777              		@ args = 0, pretend = 0, frame = 0
+ 1778              		@ frame_needed = 0, uses_anonymous_args = 0
+ 836:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GET_PPS_STATUS, USBPD_SOPTYPE_SOP);
+ 1779              		.loc 1 836 3 view .LVU315
+ 835:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GET_PPS_STATUS, USBPD_SOPTYPE_SOP);
+ 1780              		.loc 1 835 1 is_stmt 0 view .LVU316
+ 1781 0000 10B5     		push	{r4, lr}
+ 1782              	.LCFI40:
+ 1783              		.cfi_def_cfa_offset 8
+ 1784              		.cfi_offset 4, -8
+ 1785              		.cfi_offset 14, -4
+ 1786              		.loc 1 836 10 view .LVU317
+ 1787 0002 0022     		movs	r2, #0
+ 1788 0004 1421     		movs	r1, #20
+ 1789 0006 FFF7FEFF 		bl	USBPD_PE_Request_CtrlMessage
+ 1790              	.LVL122:
+ 837:Src/usbpd_dpm_user.c **** }
+ARM GAS  /tmp/ccg4sqYC.s 			page 47
+
+
+ 1791              		.loc 1 837 1 view .LVU318
+ 1792              		@ sp needed
+ 1793 000a 10BD     		pop	{r4, pc}
+ 1794              		.cfi_endproc
+ 1795              	.LFE910:
+ 1797              		.section	.text.USBPD_DPM_RequestGetStatus,"ax",%progbits
+ 1798              		.align	1
+ 1799              		.global	USBPD_DPM_RequestGetStatus
+ 1800              		.syntax unified
+ 1801              		.code	16
+ 1802              		.thumb_func
+ 1803              		.fpu softvfp
+ 1805              	USBPD_DPM_RequestGetStatus:
+ 1806              	.LVL123:
+ 1807              	.LFB911:
+ 838:Src/usbpd_dpm_user.c **** 
+ 839:Src/usbpd_dpm_user.c **** /**
+ 840:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to request a GET_STATUS
+ 841:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 842:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 843:Src/usbpd_dpm_user.c ****   */
+ 844:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestGetStatus(uint8_t PortNum)
+ 845:Src/usbpd_dpm_user.c **** {
+ 1808              		.loc 1 845 1 is_stmt 1 view -0
+ 1809              		.cfi_startproc
+ 1810              		@ args = 0, pretend = 0, frame = 0
+ 1811              		@ frame_needed = 0, uses_anonymous_args = 0
+ 846:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GET_STATUS, USBPD_SOPTYPE_SOP);
+ 1812              		.loc 1 846 3 view .LVU320
+ 845:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GET_STATUS, USBPD_SOPTYPE_SOP);
+ 1813              		.loc 1 845 1 is_stmt 0 view .LVU321
+ 1814 0000 10B5     		push	{r4, lr}
+ 1815              	.LCFI41:
+ 1816              		.cfi_def_cfa_offset 8
+ 1817              		.cfi_offset 4, -8
+ 1818              		.cfi_offset 14, -4
+ 1819              		.loc 1 846 10 view .LVU322
+ 1820 0002 0022     		movs	r2, #0
+ 1821 0004 1221     		movs	r1, #18
+ 1822 0006 FFF7FEFF 		bl	USBPD_PE_Request_CtrlMessage
+ 1823              	.LVL124:
+ 847:Src/usbpd_dpm_user.c **** }
+ 1824              		.loc 1 847 1 view .LVU323
+ 1825              		@ sp needed
+ 1826 000a 10BD     		pop	{r4, pc}
+ 1827              		.cfi_endproc
+ 1828              	.LFE911:
+ 1830              		.section	.text.USBPD_DPM_RequestFastRoleSwap,"ax",%progbits
+ 1831              		.align	1
+ 1832              		.global	USBPD_DPM_RequestFastRoleSwap
+ 1833              		.syntax unified
+ 1834              		.code	16
+ 1835              		.thumb_func
+ 1836              		.fpu softvfp
+ 1838              	USBPD_DPM_RequestFastRoleSwap:
+ 1839              	.LVL125:
+ 1840              	.LFB912:
+ARM GAS  /tmp/ccg4sqYC.s 			page 48
+
+
+ 848:Src/usbpd_dpm_user.c **** 
+ 849:Src/usbpd_dpm_user.c **** /**
+ 850:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to perform a Fast Role Swap.
+ 851:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 852:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 853:Src/usbpd_dpm_user.c ****   */
+ 854:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestFastRoleSwap(uint8_t PortNum)
+ 855:Src/usbpd_dpm_user.c **** {
+ 1841              		.loc 1 855 1 is_stmt 1 view -0
+ 1842              		.cfi_startproc
+ 1843              		@ args = 0, pretend = 0, frame = 0
+ 1844              		@ frame_needed = 0, uses_anonymous_args = 0
+ 856:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_FR_SWAP, USBPD_SOPTYPE_SOP);
+ 1845              		.loc 1 856 3 view .LVU325
+ 855:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_FR_SWAP, USBPD_SOPTYPE_SOP);
+ 1846              		.loc 1 855 1 is_stmt 0 view .LVU326
+ 1847 0000 10B5     		push	{r4, lr}
+ 1848              	.LCFI42:
+ 1849              		.cfi_def_cfa_offset 8
+ 1850              		.cfi_offset 4, -8
+ 1851              		.cfi_offset 14, -4
+ 1852              		.loc 1 856 10 view .LVU327
+ 1853 0002 0022     		movs	r2, #0
+ 1854 0004 1321     		movs	r1, #19
+ 1855 0006 FFF7FEFF 		bl	USBPD_PE_Request_CtrlMessage
+ 1856              	.LVL126:
+ 857:Src/usbpd_dpm_user.c **** }
+ 1857              		.loc 1 857 1 view .LVU328
+ 1858              		@ sp needed
+ 1859 000a 10BD     		pop	{r4, pc}
+ 1860              		.cfi_endproc
+ 1861              	.LFE912:
+ 1863              		.section	.text.USBPD_DPM_RequestGetCountryCodes,"ax",%progbits
+ 1864              		.align	1
+ 1865              		.global	USBPD_DPM_RequestGetCountryCodes
+ 1866              		.syntax unified
+ 1867              		.code	16
+ 1868              		.thumb_func
+ 1869              		.fpu softvfp
+ 1871              	USBPD_DPM_RequestGetCountryCodes:
+ 1872              	.LVL127:
+ 1873              	.LFB913:
+ 858:Src/usbpd_dpm_user.c **** 
+ 859:Src/usbpd_dpm_user.c **** /**
+ 860:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a GET_COUNTRY_CODES message
+ 861:Src/usbpd_dpm_user.c ****   * @param  PortNum The current port number
+ 862:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 863:Src/usbpd_dpm_user.c ****   */
+ 864:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestGetCountryCodes(uint8_t PortNum)
+ 865:Src/usbpd_dpm_user.c **** {
+ 1874              		.loc 1 865 1 is_stmt 1 view -0
+ 1875              		.cfi_startproc
+ 1876              		@ args = 0, pretend = 0, frame = 0
+ 1877              		@ frame_needed = 0, uses_anonymous_args = 0
+ 866:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GET_COUNTRY_CODES, USBPD_SOPTYPE_SO
+ 1878              		.loc 1 866 3 view .LVU330
+ 865:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_CtrlMessage(PortNum, USBPD_CONTROLMSG_GET_COUNTRY_CODES, USBPD_SOPTYPE_SO
+ARM GAS  /tmp/ccg4sqYC.s 			page 49
+
+
+ 1879              		.loc 1 865 1 is_stmt 0 view .LVU331
+ 1880 0000 10B5     		push	{r4, lr}
+ 1881              	.LCFI43:
+ 1882              		.cfi_def_cfa_offset 8
+ 1883              		.cfi_offset 4, -8
+ 1884              		.cfi_offset 14, -4
+ 1885              		.loc 1 866 10 view .LVU332
+ 1886 0002 0022     		movs	r2, #0
+ 1887 0004 1521     		movs	r1, #21
+ 1888 0006 FFF7FEFF 		bl	USBPD_PE_Request_CtrlMessage
+ 1889              	.LVL128:
+ 867:Src/usbpd_dpm_user.c **** }
+ 1890              		.loc 1 867 1 view .LVU333
+ 1891              		@ sp needed
+ 1892 000a 10BD     		pop	{r4, pc}
+ 1893              		.cfi_endproc
+ 1894              	.LFE913:
+ 1896              		.section	.text.USBPD_DPM_RequestGetCountryInfo,"ax",%progbits
+ 1897              		.align	1
+ 1898              		.global	USBPD_DPM_RequestGetCountryInfo
+ 1899              		.syntax unified
+ 1900              		.code	16
+ 1901              		.thumb_func
+ 1902              		.fpu softvfp
+ 1904              	USBPD_DPM_RequestGetCountryInfo:
+ 1905              	.LVL129:
+ 1906              	.LFB914:
+ 868:Src/usbpd_dpm_user.c **** 
+ 869:Src/usbpd_dpm_user.c **** /**
+ 870:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a GET_COUNTRY_INFO message
+ 871:Src/usbpd_dpm_user.c ****   * @param  PortNum     The current port number
+ 872:Src/usbpd_dpm_user.c ****   * @param  CountryCode Country code (1st character and 2nd of the Alpha-2 Country)
+ 873:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 874:Src/usbpd_dpm_user.c ****   */
+ 875:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestGetCountryInfo(uint8_t PortNum, uint16_t CountryCode)
+ 876:Src/usbpd_dpm_user.c **** {
+ 1907              		.loc 1 876 1 is_stmt 1 view -0
+ 1908              		.cfi_startproc
+ 1909              		@ args = 0, pretend = 0, frame = 8
+ 1910              		@ frame_needed = 0, uses_anonymous_args = 0
+ 877:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_DataMessage(PortNum, USBPD_DATAMSG_GET_COUNTRY_INFO, (uint32_t*)&CountryC
+ 1911              		.loc 1 877 3 view .LVU335
+ 876:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_DataMessage(PortNum, USBPD_DATAMSG_GET_COUNTRY_INFO, (uint32_t*)&CountryC
+ 1912              		.loc 1 876 1 is_stmt 0 view .LVU336
+ 1913 0000 07B5     		push	{r0, r1, r2, lr}
+ 1914              	.LCFI44:
+ 1915              		.cfi_def_cfa_offset 16
+ 1916              		.cfi_offset 0, -16
+ 1917              		.cfi_offset 1, -12
+ 1918              		.cfi_offset 2, -8
+ 1919              		.cfi_offset 14, -4
+ 876:Src/usbpd_dpm_user.c ****   return USBPD_PE_Request_DataMessage(PortNum, USBPD_DATAMSG_GET_COUNTRY_INFO, (uint32_t*)&CountryC
+ 1920              		.loc 1 876 1 view .LVU337
+ 1921 0002 6B46     		mov	r3, sp
+ 1922 0004 9A1D     		adds	r2, r3, #6
+ 1923 0006 1180     		strh	r1, [r2]
+ 1924              		.loc 1 877 10 view .LVU338
+ARM GAS  /tmp/ccg4sqYC.s 			page 50
+
+
+ 1925 0008 0721     		movs	r1, #7
+ 1926              	.LVL130:
+ 1927              		.loc 1 877 10 view .LVU339
+ 1928 000a FFF7FEFF 		bl	USBPD_PE_Request_DataMessage
+ 1929              	.LVL131:
+ 878:Src/usbpd_dpm_user.c **** }
+ 1930              		.loc 1 878 1 view .LVU340
+ 1931              		@ sp needed
+ 1932 000e 0EBD     		pop	{r1, r2, r3, pc}
+ 1933              		.cfi_endproc
+ 1934              	.LFE914:
+ 1936              		.section	.text.USBPD_DPM_RequestGetBatteryCapability,"ax",%progbits
+ 1937              		.align	1
+ 1938              		.global	USBPD_DPM_RequestGetBatteryCapability
+ 1939              		.syntax unified
+ 1940              		.code	16
+ 1941              		.thumb_func
+ 1942              		.fpu softvfp
+ 1944              	USBPD_DPM_RequestGetBatteryCapability:
+ 1945              	.LVL132:
+ 1946              	.LFB915:
+ 879:Src/usbpd_dpm_user.c **** 
+ 880:Src/usbpd_dpm_user.c **** /**
+ 881:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a GET_BATTERY_CAPA
+ 882:Src/usbpd_dpm_user.c ****   * @param  PortNum         The current port number
+ 883:Src/usbpd_dpm_user.c ****   * @param  pBatteryCapRef  Pointer on the Battery Capability reference
+ 884:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 885:Src/usbpd_dpm_user.c ****   */
+ 886:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestGetBatteryCapability(uint8_t PortNum, uint8_t *pBatteryCapRef)
+ 887:Src/usbpd_dpm_user.c **** {
+ 1947              		.loc 1 887 1 is_stmt 1 view -0
+ 1948              		.cfi_startproc
+ 1949              		@ args = 0, pretend = 0, frame = 0
+ 1950              		@ frame_needed = 0, uses_anonymous_args = 0
+ 888:Src/usbpd_dpm_user.c ****   return USBPD_PE_SendExtendedMessage(PortNum, USBPD_SOPTYPE_SOP, USBPD_EXT_GET_BATTERY_CAP, (uint8
+ 1951              		.loc 1 888 3 view .LVU342
+ 887:Src/usbpd_dpm_user.c ****   return USBPD_PE_SendExtendedMessage(PortNum, USBPD_SOPTYPE_SOP, USBPD_EXT_GET_BATTERY_CAP, (uint8
+ 1952              		.loc 1 887 1 is_stmt 0 view .LVU343
+ 1953 0000 07B5     		push	{r0, r1, r2, lr}
+ 1954              	.LCFI45:
+ 1955              		.cfi_def_cfa_offset 16
+ 1956              		.cfi_offset 0, -16
+ 1957              		.cfi_offset 1, -12
+ 1958              		.cfi_offset 2, -8
+ 1959              		.cfi_offset 14, -4
+ 1960              		.loc 1 888 10 view .LVU344
+ 1961 0002 0122     		movs	r2, #1
+ 887:Src/usbpd_dpm_user.c ****   return USBPD_PE_SendExtendedMessage(PortNum, USBPD_SOPTYPE_SOP, USBPD_EXT_GET_BATTERY_CAP, (uint8
+ 1962              		.loc 1 887 1 view .LVU345
+ 1963 0004 0B00     		movs	r3, r1
+ 1964              		.loc 1 888 10 view .LVU346
+ 1965 0006 0092     		str	r2, [sp]
+ 1966 0008 0021     		movs	r1, #0
+ 1967              	.LVL133:
+ 1968              		.loc 1 888 10 view .LVU347
+ 1969 000a 0232     		adds	r2, r2, #2
+ 1970 000c FFF7FEFF 		bl	USBPD_PE_SendExtendedMessage
+ARM GAS  /tmp/ccg4sqYC.s 			page 51
+
+
+ 1971              	.LVL134:
+ 889:Src/usbpd_dpm_user.c **** }
+ 1972              		.loc 1 889 1 view .LVU348
+ 1973              		@ sp needed
+ 1974 0010 0EBD     		pop	{r1, r2, r3, pc}
+ 1975              		.cfi_endproc
+ 1976              	.LFE915:
+ 1978              		.section	.text.USBPD_DPM_RequestGetBatteryStatus,"ax",%progbits
+ 1979              		.align	1
+ 1980              		.global	USBPD_DPM_RequestGetBatteryStatus
+ 1981              		.syntax unified
+ 1982              		.code	16
+ 1983              		.thumb_func
+ 1984              		.fpu softvfp
+ 1986              	USBPD_DPM_RequestGetBatteryStatus:
+ 1987              	.LVL135:
+ 1988              	.LFB916:
+ 890:Src/usbpd_dpm_user.c **** 
+ 891:Src/usbpd_dpm_user.c **** /**
+ 892:Src/usbpd_dpm_user.c ****   * @brief  Request the PE to send a GET_BATTERY_STATUS
+ 893:Src/usbpd_dpm_user.c ****   * @param  PortNum           The current port number
+ 894:Src/usbpd_dpm_user.c ****   * @param  pBatteryStatusRef Pointer on the Battery Status reference
+ 895:Src/usbpd_dpm_user.c ****   * @retval USBPD Status
+ 896:Src/usbpd_dpm_user.c ****   */
+ 897:Src/usbpd_dpm_user.c **** USBPD_StatusTypeDef USBPD_DPM_RequestGetBatteryStatus(uint8_t PortNum, uint8_t *pBatteryStatusRef)
+ 898:Src/usbpd_dpm_user.c **** {
+ 1989              		.loc 1 898 1 is_stmt 1 view -0
+ 1990              		.cfi_startproc
+ 1991              		@ args = 0, pretend = 0, frame = 0
+ 1992              		@ frame_needed = 0, uses_anonymous_args = 0
+ 899:Src/usbpd_dpm_user.c ****   return USBPD_PE_SendExtendedMessage(PortNum, USBPD_SOPTYPE_SOP, USBPD_EXT_GET_BATTERY_STATUS, (ui
+ 1993              		.loc 1 899 3 view .LVU350
+ 898:Src/usbpd_dpm_user.c ****   return USBPD_PE_SendExtendedMessage(PortNum, USBPD_SOPTYPE_SOP, USBPD_EXT_GET_BATTERY_STATUS, (ui
+ 1994              		.loc 1 898 1 is_stmt 0 view .LVU351
+ 1995 0000 07B5     		push	{r0, r1, r2, lr}
+ 1996              	.LCFI46:
+ 1997              		.cfi_def_cfa_offset 16
+ 1998              		.cfi_offset 0, -16
+ 1999              		.cfi_offset 1, -12
+ 2000              		.cfi_offset 2, -8
+ 2001              		.cfi_offset 14, -4
+ 2002              		.loc 1 899 10 view .LVU352
+ 2003 0002 0122     		movs	r2, #1
+ 898:Src/usbpd_dpm_user.c ****   return USBPD_PE_SendExtendedMessage(PortNum, USBPD_SOPTYPE_SOP, USBPD_EXT_GET_BATTERY_STATUS, (ui
+ 2004              		.loc 1 898 1 view .LVU353
+ 2005 0004 0B00     		movs	r3, r1
+ 2006              		.loc 1 899 10 view .LVU354
+ 2007 0006 0092     		str	r2, [sp]
+ 2008 0008 0021     		movs	r1, #0
+ 2009              	.LVL136:
+ 2010              		.loc 1 899 10 view .LVU355
+ 2011 000a 0332     		adds	r2, r2, #3
+ 2012 000c FFF7FEFF 		bl	USBPD_PE_SendExtendedMessage
+ 2013              	.LVL137:
+ 900:Src/usbpd_dpm_user.c **** }
+ 2014              		.loc 1 900 1 view .LVU356
+ 2015              		@ sp needed
+ARM GAS  /tmp/ccg4sqYC.s 			page 52
+
+
+ 2016 0010 0EBD     		pop	{r1, r2, r3, pc}
+ 2017              		.cfi_endproc
+ 2018              	.LFE916:
+ 2020              		.section	.text.USBPD_DPM_RequestSecurityRequest,"ax",%progbits
+ 2021              		.align	1
+ 2022              		.global	USBPD_DPM_RequestSecurityRequest
+ 2023              		.syntax unified
+ 2024              		.code	16
+ 2025              		.thumb_func
+ 2026              		.fpu softvfp
+ 2028              	USBPD_DPM_RequestSecurityRequest:
+ 2029              	.LFB923:
+ 2030              		.cfi_startproc
+ 2031              		@ args = 0, pretend = 0, frame = 0
+ 2032              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2033              		@ link register save eliminated.
+ 2034 0000 0220     		movs	r0, #2
+ 2035              		@ sp needed
+ 2036 0002 7047     		bx	lr
+ 2037              		.cfi_endproc
+ 2038              	.LFE923:
+ 2040              		.global	DPM_GUI_SaveInfo
+ 2041              		.global	DPM_GUI_FormatAndSendNotification
+ 2042              		.global	DPM_GUI_PostNotificationMessage
+ 2043              		.section	.bss.DPM_GUI_FormatAndSendNotification,"aw",%nobits
+ 2044              		.align	2
+ 2045              		.set	.LANCHOR1,. + 0
+ 2048              	DPM_GUI_FormatAndSendNotification:
+ 2049 0000 00000000 		.space	4
+ 2050              		.section	.bss.DPM_GUI_PostNotificationMessage,"aw",%nobits
+ 2051              		.align	2
+ 2052              		.set	.LANCHOR0,. + 0
+ 2055              	DPM_GUI_PostNotificationMessage:
+ 2056 0000 00000000 		.space	4
+ 2057              		.section	.bss.DPM_GUI_SaveInfo,"aw",%nobits
+ 2058              		.align	2
+ 2059              		.set	.LANCHOR2,. + 0
+ 2062              	DPM_GUI_SaveInfo:
+ 2063 0000 00000000 		.space	4
+ 2064              		.text
+ 2065              	.Letext0:
+ 2066              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 2067              		.file 3 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_def.h"
+ 2068              		.file 4 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_core.h"
+ 2069              		.file 5 "Drivers/CMSIS/Device/ST/STM32G0xx/Include/system_stm32g0xx.h"
+ 2070              		.file 6 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_def.h"
+ 2071              		.file 7 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_flash.h"
+ 2072              		.file 8 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal.h"
+ 2073              		.file 9 "Inc/usbpd_pdo_defs.h"
+ 2074              		.file 10 "Inc/usbpd_dpm_core.h"
+ 2075              		.file 11 "Inc/usbpd_dpm_user.h"
+ 2076              		.file 12 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 2077              		.file 13 "/usr/include/newlib/sys/_types.h"
+ 2078              		.file 14 "/usr/include/newlib/sys/reent.h"
+ 2079              		.file 15 "/usr/include/newlib/sys/lock.h"
+ 2080              		.file 16 "Utilities/GUI_INTERFACE/gui_api.h"
+ 2081              		.file 17 "Inc/usbpd_dpm_conf.h"
+ARM GAS  /tmp/ccg4sqYC.s 			page 53
+
+
+ 2082              		.file 18 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_dma.h"
+ 2083              		.file 19 "/usr/include/newlib/stdio.h"
+ 2084              		.file 20 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_trace.h"
+ 2085              		.file 21 "Inc/usbpd_pwr_if.h"
+ 2086              		.file 22 "/usr/include/newlib/string.h"
+ 2087              		.file 23 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
+ 2088              		.file 24 "<built-in>"
+ARM GAS  /tmp/ccg4sqYC.s 			page 54
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usbpd_dpm_user.c
+     /tmp/ccg4sqYC.s:16     .text.USBPD_DPM_UserInit:0000000000000000 $t
+     /tmp/ccg4sqYC.s:24     .text.USBPD_DPM_UserInit:0000000000000000 USBPD_DPM_UserInit
+     /tmp/ccg4sqYC.s:41     .text.USBPD_DPM_SetNotification_GUI:0000000000000000 $t
+     /tmp/ccg4sqYC.s:48     .text.USBPD_DPM_SetNotification_GUI:0000000000000000 USBPD_DPM_SetNotification_GUI
+     /tmp/ccg4sqYC.s:76     .text.USBPD_DPM_SetNotification_GUI:0000000000000010 $d
+     /tmp/ccg4sqYC.s:83     .text.USBPD_DPM_WaitForTime:0000000000000000 $t
+     /tmp/ccg4sqYC.s:90     .text.USBPD_DPM_WaitForTime:0000000000000000 USBPD_DPM_WaitForTime
+     /tmp/ccg4sqYC.s:114    .text.USBPD_DPM_UserExecute:0000000000000000 $t
+     /tmp/ccg4sqYC.s:121    .text.USBPD_DPM_UserExecute:0000000000000000 USBPD_DPM_UserExecute
+     /tmp/ccg4sqYC.s:139    .text.USBPD_DPM_UserCableDetection:0000000000000000 $t
+     /tmp/ccg4sqYC.s:146    .text.USBPD_DPM_UserCableDetection:0000000000000000 USBPD_DPM_UserCableDetection
+     /tmp/ccg4sqYC.s:228    .text.USBPD_DPM_UserCableDetection:000000000000004c $d
+     /tmp/ccg4sqYC.s:235    .text.USBPD_DPM_UserTimerCounter:0000000000000000 $t
+     /tmp/ccg4sqYC.s:242    .text.USBPD_DPM_UserTimerCounter:0000000000000000 USBPD_DPM_UserTimerCounter
+     /tmp/ccg4sqYC.s:260    .text.USBPD_DPM_HardReset:0000000000000000 $t
+     /tmp/ccg4sqYC.s:267    .text.USBPD_DPM_HardReset:0000000000000000 USBPD_DPM_HardReset
+     /tmp/ccg4sqYC.s:321    .text.USBPD_DPM_HardReset:0000000000000028 $d
+     /tmp/ccg4sqYC.s:326    .text.USBPD_DPM_SetupNewPower:0000000000000000 $t
+     /tmp/ccg4sqYC.s:333    .text.USBPD_DPM_SetupNewPower:0000000000000000 USBPD_DPM_SetupNewPower
+     /tmp/ccg4sqYC.s:357    .text.USBPD_DPM_EvaluatePowerRoleSwap:0000000000000000 $t
+     /tmp/ccg4sqYC.s:364    .text.USBPD_DPM_EvaluatePowerRoleSwap:0000000000000000 USBPD_DPM_EvaluatePowerRoleSwap
+     /tmp/ccg4sqYC.s:383    .text.USBPD_DPM_Notification:0000000000000000 $t
+     /tmp/ccg4sqYC.s:390    .text.USBPD_DPM_Notification:0000000000000000 USBPD_DPM_Notification
+     /tmp/ccg4sqYC.s:424    .text.USBPD_DPM_Notification:0000000000000010 $d
+     /tmp/ccg4sqYC.s:432    .text.USBPD_DPM_GetDataInfo:0000000000000000 $t
+     /tmp/ccg4sqYC.s:439    .text.USBPD_DPM_GetDataInfo:0000000000000000 USBPD_DPM_GetDataInfo
+     /tmp/ccg4sqYC.s:501    .text.USBPD_DPM_GetDataInfo:000000000000002c $d
+     /tmp/ccg4sqYC.s:509    .text.USBPD_DPM_SetDataInfo:0000000000000000 $t
+     /tmp/ccg4sqYC.s:516    .text.USBPD_DPM_SetDataInfo:0000000000000000 USBPD_DPM_SetDataInfo
+     /tmp/ccg4sqYC.s:605    .text.USBPD_DPM_SetDataInfo:0000000000000044 $d
+     /tmp/ccg4sqYC.s:614    .text.USBPD_DPM_EvaluateRequest:0000000000000000 $t
+     /tmp/ccg4sqYC.s:621    .text.USBPD_DPM_EvaluateRequest:0000000000000000 USBPD_DPM_EvaluateRequest
+     /tmp/ccg4sqYC.s:677    .text.USBPD_DPM_EvaluateRequest:0000000000000028 $d
+     /tmp/ccg4sqYC.s:682    .text.USBPD_DPM_SNK_EvaluateCapabilities:0000000000000000 $t
+     /tmp/ccg4sqYC.s:689    .text.USBPD_DPM_SNK_EvaluateCapabilities:0000000000000000 USBPD_DPM_SNK_EvaluateCapabilities
+     /tmp/ccg4sqYC.s:721    .text.USBPD_DPM_SNK_EvaluateCapabilities:000000000000000c $d
+     /tmp/ccg4sqYC.s:729    .text.USBPD_DPM_PowerRoleSwap:0000000000000000 $t
+     /tmp/ccg4sqYC.s:736    .text.USBPD_DPM_PowerRoleSwap:0000000000000000 USBPD_DPM_PowerRoleSwap
+     /tmp/ccg4sqYC.s:790    .text.USBPD_DPM_PowerRoleSwap:0000000000000028 $d
+     /tmp/ccg4sqYC.s:795    .text.USBPD_DPM_EvaluateVconnSwap:0000000000000000 $t
+     /tmp/ccg4sqYC.s:802    .text.USBPD_DPM_EvaluateVconnSwap:0000000000000000 USBPD_DPM_EvaluateVconnSwap
+     /tmp/ccg4sqYC.s:815    .text.USBPD_DPM_PE_VconnPwr:0000000000000000 $t
+     /tmp/ccg4sqYC.s:822    .text.USBPD_DPM_PE_VconnPwr:0000000000000000 USBPD_DPM_PE_VconnPwr
+     /tmp/ccg4sqYC.s:841    .text.USBPD_DPM_ExtendedMessageReceived:0000000000000000 $t
+     /tmp/ccg4sqYC.s:848    .text.USBPD_DPM_ExtendedMessageReceived:0000000000000000 USBPD_DPM_ExtendedMessageReceived
+     /tmp/ccg4sqYC.s:863    .text.USBPD_DPM_EvaluateDataRoleSwap:0000000000000000 $t
+     /tmp/ccg4sqYC.s:870    .text.USBPD_DPM_EvaluateDataRoleSwap:0000000000000000 USBPD_DPM_EvaluateDataRoleSwap
+     /tmp/ccg4sqYC.s:883    .text.USBPD_DPM_IsPowerReady:0000000000000000 $t
+     /tmp/ccg4sqYC.s:890    .text.USBPD_DPM_IsPowerReady:0000000000000000 USBPD_DPM_IsPowerReady
+     /tmp/ccg4sqYC.s:920    .text.USBPD_DPM_RequestHardReset:0000000000000000 $t
+     /tmp/ccg4sqYC.s:927    .text.USBPD_DPM_RequestHardReset:0000000000000000 USBPD_DPM_RequestHardReset
+     /tmp/ccg4sqYC.s:951    .text.USBPD_DPM_RequestCableReset:0000000000000000 $t
+     /tmp/ccg4sqYC.s:958    .text.USBPD_DPM_RequestCableReset:0000000000000000 USBPD_DPM_RequestCableReset
+     /tmp/ccg4sqYC.s:977    .text.USBPD_DPM_RequestGotoMin:0000000000000000 $t
+     /tmp/ccg4sqYC.s:984    .text.USBPD_DPM_RequestGotoMin:0000000000000000 USBPD_DPM_RequestGotoMin
+ARM GAS  /tmp/ccg4sqYC.s 			page 55
+
+
+     /tmp/ccg4sqYC.s:1010   .text.USBPD_DPM_RequestPing:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1017   .text.USBPD_DPM_RequestPing:0000000000000000 USBPD_DPM_RequestPing
+     /tmp/ccg4sqYC.s:1046   .text.USBPD_DPM_RequestMessageRequest:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1053   .text.USBPD_DPM_RequestMessageRequest:0000000000000000 USBPD_DPM_RequestMessageRequest
+     /tmp/ccg4sqYC.s:1111   .text.USBPD_DPM_RequestMessageRequest:0000000000000028 $d
+     /tmp/ccg4sqYC.s:1116   .text.USBPD_DPM_RequestGetSourceCapability:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1123   .text.USBPD_DPM_RequestGetSourceCapability:0000000000000000 USBPD_DPM_RequestGetSourceCapability
+     /tmp/ccg4sqYC.s:1149   .text.USBPD_DPM_RequestGetSinkCapability:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1156   .text.USBPD_DPM_RequestGetSinkCapability:0000000000000000 USBPD_DPM_RequestGetSinkCapability
+     /tmp/ccg4sqYC.s:1182   .text.USBPD_DPM_RequestDataRoleSwap:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1189   .text.USBPD_DPM_RequestDataRoleSwap:0000000000000000 USBPD_DPM_RequestDataRoleSwap
+     /tmp/ccg4sqYC.s:1215   .text.USBPD_DPM_RequestPowerRoleSwap:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1222   .text.USBPD_DPM_RequestPowerRoleSwap:0000000000000000 USBPD_DPM_RequestPowerRoleSwap
+     /tmp/ccg4sqYC.s:1248   .text.USBPD_DPM_RequestVconnSwap:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1255   .text.USBPD_DPM_RequestVconnSwap:0000000000000000 USBPD_DPM_RequestVconnSwap
+     /tmp/ccg4sqYC.s:1281   .text.USBPD_DPM_RequestSoftReset:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1288   .text.USBPD_DPM_RequestSoftReset:0000000000000000 USBPD_DPM_RequestSoftReset
+     /tmp/ccg4sqYC.s:1317   .text.USBPD_DPM_RequestSourceCapability:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1324   .text.USBPD_DPM_RequestSourceCapability:0000000000000000 USBPD_DPM_RequestSourceCapability
+     /tmp/ccg4sqYC.s:1350   .text.USBPD_DPM_RequestVDM_DiscoveryIdentify:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1357   .text.USBPD_DPM_RequestVDM_DiscoveryIdentify:0000000000000000 USBPD_DPM_RequestVDM_DiscoveryIdentify
+     /tmp/ccg4sqYC.s:1393   .text.USBPD_DPM_RequestVDM_DiscoverySVID:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1400   .text.USBPD_DPM_RequestVDM_DiscoverySVID:0000000000000000 USBPD_DPM_RequestVDM_DiscoverySVID
+     /tmp/ccg4sqYC.s:1424   .text.USBPD_DPM_RequestVDM_DiscoveryMode:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1431   .text.USBPD_DPM_RequestVDM_DiscoveryMode:0000000000000000 USBPD_DPM_RequestVDM_DiscoveryMode
+     /tmp/ccg4sqYC.s:1455   .text.USBPD_DPM_RequestVDM_EnterMode:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1462   .text.USBPD_DPM_RequestVDM_EnterMode:0000000000000000 USBPD_DPM_RequestVDM_EnterMode
+     /tmp/ccg4sqYC.s:1486   .text.USBPD_DPM_RequestVDM_ExitMode:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1493   .text.USBPD_DPM_RequestVDM_ExitMode:0000000000000000 USBPD_DPM_RequestVDM_ExitMode
+     /tmp/ccg4sqYC.s:1517   .text.USBPD_DPM_RequestDisplayPortStatus:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1524   .text.USBPD_DPM_RequestDisplayPortStatus:0000000000000000 USBPD_DPM_RequestDisplayPortStatus
+     /tmp/ccg4sqYC.s:1554   .text.USBPD_DPM_RequestDisplayPortConfig:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1561   .text.USBPD_DPM_RequestDisplayPortConfig:0000000000000000 USBPD_DPM_RequestDisplayPortConfig
+     /tmp/ccg4sqYC.s:1591   .text.USBPD_DPM_RequestAttention:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1598   .text.USBPD_DPM_RequestAttention:0000000000000000 USBPD_DPM_RequestAttention
+     /tmp/ccg4sqYC.s:1622   .text.USBPD_DPM_RequestAlert:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1629   .text.USBPD_DPM_RequestAlert:0000000000000000 USBPD_DPM_RequestAlert
+     /tmp/ccg4sqYC.s:1659   .text.USBPD_DPM_RequestGetSourceCapabilityExt:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1666   .text.USBPD_DPM_RequestGetSourceCapabilityExt:0000000000000000 USBPD_DPM_RequestGetSourceCapabilityExt
+     /tmp/ccg4sqYC.s:1692   .text.USBPD_DPM_RequestGetSinkCapabilityExt:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1699   .text.USBPD_DPM_RequestGetSinkCapabilityExt:0000000000000000 USBPD_DPM_RequestGetSinkCapabilityExt
+     /tmp/ccg4sqYC.s:1725   .text.USBPD_DPM_RequestGetManufacturerInfo:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1732   .text.USBPD_DPM_RequestGetManufacturerInfo:0000000000000000 USBPD_DPM_RequestGetManufacturerInfo
+     /tmp/ccg4sqYC.s:1765   .text.USBPD_DPM_RequestGetPPS_Status:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1772   .text.USBPD_DPM_RequestGetPPS_Status:0000000000000000 USBPD_DPM_RequestGetPPS_Status
+     /tmp/ccg4sqYC.s:1798   .text.USBPD_DPM_RequestGetStatus:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1805   .text.USBPD_DPM_RequestGetStatus:0000000000000000 USBPD_DPM_RequestGetStatus
+     /tmp/ccg4sqYC.s:1831   .text.USBPD_DPM_RequestFastRoleSwap:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1838   .text.USBPD_DPM_RequestFastRoleSwap:0000000000000000 USBPD_DPM_RequestFastRoleSwap
+     /tmp/ccg4sqYC.s:1864   .text.USBPD_DPM_RequestGetCountryCodes:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1871   .text.USBPD_DPM_RequestGetCountryCodes:0000000000000000 USBPD_DPM_RequestGetCountryCodes
+     /tmp/ccg4sqYC.s:1897   .text.USBPD_DPM_RequestGetCountryInfo:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1904   .text.USBPD_DPM_RequestGetCountryInfo:0000000000000000 USBPD_DPM_RequestGetCountryInfo
+     /tmp/ccg4sqYC.s:1937   .text.USBPD_DPM_RequestGetBatteryCapability:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1944   .text.USBPD_DPM_RequestGetBatteryCapability:0000000000000000 USBPD_DPM_RequestGetBatteryCapability
+     /tmp/ccg4sqYC.s:1979   .text.USBPD_DPM_RequestGetBatteryStatus:0000000000000000 $t
+     /tmp/ccg4sqYC.s:1986   .text.USBPD_DPM_RequestGetBatteryStatus:0000000000000000 USBPD_DPM_RequestGetBatteryStatus
+ARM GAS  /tmp/ccg4sqYC.s 			page 56
+
+
+     /tmp/ccg4sqYC.s:2021   .text.USBPD_DPM_RequestSecurityRequest:0000000000000000 $t
+     /tmp/ccg4sqYC.s:2028   .text.USBPD_DPM_RequestSecurityRequest:0000000000000000 USBPD_DPM_RequestSecurityRequest
+     /tmp/ccg4sqYC.s:2062   .bss.DPM_GUI_SaveInfo:0000000000000000 DPM_GUI_SaveInfo
+     /tmp/ccg4sqYC.s:2048   .bss.DPM_GUI_FormatAndSendNotification:0000000000000000 DPM_GUI_FormatAndSendNotification
+     /tmp/ccg4sqYC.s:2055   .bss.DPM_GUI_PostNotificationMessage:0000000000000000 DPM_GUI_PostNotificationMessage
+     /tmp/ccg4sqYC.s:2044   .bss.DPM_GUI_FormatAndSendNotification:0000000000000000 $d
+     /tmp/ccg4sqYC.s:2051   .bss.DPM_GUI_PostNotificationMessage:0000000000000000 $d
+     /tmp/ccg4sqYC.s:2058   .bss.DPM_GUI_SaveInfo:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+osDelay
+snprintf
+USBPD_TRACE_Add
+strcpy
+strlen
+USBPD_PWR_IF_SetProfile
+USBPD_PWR_IF_SupplyReady
+USBPD_PE_Request_HardReset
+USBPD_PE_Request_CtrlMessage
+USBPD_PE_Request_DataMessage
+USBPD_PE_SVDM_RequestIdentity
+USBPD_PE_SVDM_RequestSVID
+USBPD_PE_SVDM_RequestMode
+USBPD_PE_SVDM_RequestModeEnter
+USBPD_PE_SVDM_RequestModeExit
+USBPD_PE_SVDM_RequestSpecific
+USBPD_PE_SVDM_RequestAttention
+USBPD_PE_SendExtendedMessage

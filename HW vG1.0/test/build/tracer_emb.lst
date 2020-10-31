@@ -1,0 +1,2053 @@
+ARM GAS  /tmp/ccbqBohW.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 4
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"tracer_emb.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.TRACER_EMB_IRQHandlerDMA,"ax",%progbits
+  16              		.align	1
+  17              		.global	TRACER_EMB_IRQHandlerDMA
+  18              		.arch armv6s-m
+  19              		.syntax unified
+  20              		.code	16
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	TRACER_EMB_IRQHandlerDMA:
+  25              	.LFB909:
+  26              		.file 1 "Utilities/TRACER_EMB/tracer_emb.c"
+   1:Utilities/TRACER_EMB/tracer_emb.c **** /**
+   2:Utilities/TRACER_EMB/tracer_emb.c ****   ******************************************************************************
+   3:Utilities/TRACER_EMB/tracer_emb.c ****   * @file    tracer_emb.c
+   4:Utilities/TRACER_EMB/tracer_emb.c ****   * @author  MCD Application Team
+   5:Utilities/TRACER_EMB/tracer_emb.c ****   * @brief   This file contains embeded tracer control functions.
+   6:Utilities/TRACER_EMB/tracer_emb.c ****   ******************************************************************************
+   7:Utilities/TRACER_EMB/tracer_emb.c ****   * @attention
+   8:Utilities/TRACER_EMB/tracer_emb.c ****   *
+   9:Utilities/TRACER_EMB/tracer_emb.c ****   * <h2><center>&copy; Copyright (c) 2018 STMicroelectronics.
+  10:Utilities/TRACER_EMB/tracer_emb.c ****   * All rights reserved.</center></h2>
+  11:Utilities/TRACER_EMB/tracer_emb.c ****   *
+  12:Utilities/TRACER_EMB/tracer_emb.c ****   * This software component is licensed by ST under BSD 3-Clause license,
+  13:Utilities/TRACER_EMB/tracer_emb.c ****   * the "License"; You may not use this file except in compliance with the
+  14:Utilities/TRACER_EMB/tracer_emb.c ****   * License. You may obtain a copy of the License at:
+  15:Utilities/TRACER_EMB/tracer_emb.c ****   *                        opensource.org/licenses/BSD-3-Clause
+  16:Utilities/TRACER_EMB/tracer_emb.c ****   *
+  17:Utilities/TRACER_EMB/tracer_emb.c ****   ******************************************************************************
+  18:Utilities/TRACER_EMB/tracer_emb.c ****   */
+  19:Utilities/TRACER_EMB/tracer_emb.c **** 
+  20:Utilities/TRACER_EMB/tracer_emb.c **** /* Includes ------------------------------------------------------------------*/
+  21:Utilities/TRACER_EMB/tracer_emb.c **** #include "tracer_emb.h"
+  22:Utilities/TRACER_EMB/tracer_emb.c **** #include "tracer_emb_hw.h"
+  23:Utilities/TRACER_EMB/tracer_emb.c **** 
+  24:Utilities/TRACER_EMB/tracer_emb.c **** /** @addtogroup TRACER_EMB
+  25:Utilities/TRACER_EMB/tracer_emb.c ****   * @{
+  26:Utilities/TRACER_EMB/tracer_emb.c ****   */
+  27:Utilities/TRACER_EMB/tracer_emb.c **** 
+  28:Utilities/TRACER_EMB/tracer_emb.c **** /** @addtogroup TRACER_EMB
+  29:Utilities/TRACER_EMB/tracer_emb.c ****   * @{
+  30:Utilities/TRACER_EMB/tracer_emb.c ****   */
+  31:Utilities/TRACER_EMB/tracer_emb.c **** 
+  32:Utilities/TRACER_EMB/tracer_emb.c **** /** @addtogroup TRACER_EMB
+ARM GAS  /tmp/ccbqBohW.s 			page 2
+
+
+  33:Utilities/TRACER_EMB/tracer_emb.c ****   * @{
+  34:Utilities/TRACER_EMB/tracer_emb.c ****   */
+  35:Utilities/TRACER_EMB/tracer_emb.c **** 
+  36:Utilities/TRACER_EMB/tracer_emb.c **** /* Private enums -------------------------------------------------------------*/
+  37:Utilities/TRACER_EMB/tracer_emb.c **** 
+  38:Utilities/TRACER_EMB/tracer_emb.c **** 
+  39:Utilities/TRACER_EMB/tracer_emb.c **** /* Private typedef -----------------------------------------------------------*/
+  40:Utilities/TRACER_EMB/tracer_emb.c **** /** @defgroup USBPD_CORE_TRACER_EMB_Private_TypeDef EMB TRACER Private typedef
+  41:Utilities/TRACER_EMB/tracer_emb.c ****   * @{
+  42:Utilities/TRACER_EMB/tracer_emb.c ****   */
+  43:Utilities/TRACER_EMB/tracer_emb.c ****  typedef enum {
+  44:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_OK,
+  45:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_KO
+  46:Utilities/TRACER_EMB/tracer_emb.c **** } TRACER_StatusTypedef;
+  47:Utilities/TRACER_EMB/tracer_emb.c **** /**
+  48:Utilities/TRACER_EMB/tracer_emb.c ****   * @}
+  49:Utilities/TRACER_EMB/tracer_emb.c ****   */
+  50:Utilities/TRACER_EMB/tracer_emb.c **** /* Private define ------------------------------------------------------------*/
+  51:Utilities/TRACER_EMB/tracer_emb.c **** 
+  52:Utilities/TRACER_EMB/tracer_emb.c **** /* Private macro -------------------------------------------------------------*/
+  53:Utilities/TRACER_EMB/tracer_emb.c **** /** @defgroup USBPD_CORE_TRACER_EMB_Private_Macros USBPD TRACE Private Macros
+  54:Utilities/TRACER_EMB/tracer_emb.c ****   * @{
+  55:Utilities/TRACER_EMB/tracer_emb.c ****   */
+  56:Utilities/TRACER_EMB/tracer_emb.c **** 
+  57:Utilities/TRACER_EMB/tracer_emb.c **** #define TRACER_WRITE_DATA(_POSITION_,_DATA_)  PtrDataTx[(_POSITION_)% TRACER_EMB_BUFFER_SIZE] = (_D
+  58:Utilities/TRACER_EMB/tracer_emb.c ****                                              (_POSITION_) = ((_POSITION_) + 1u) % TRACER_EMB_BUFFER
+  59:Utilities/TRACER_EMB/tracer_emb.c **** 
+  60:Utilities/TRACER_EMB/tracer_emb.c **** #define TRACER_ENTER_CRITICAL_SECTION()  uint32_t primask= __get_PRIMASK();\
+  61:Utilities/TRACER_EMB/tracer_emb.c ****                                         __disable_irq();
+  62:Utilities/TRACER_EMB/tracer_emb.c **** 
+  63:Utilities/TRACER_EMB/tracer_emb.c **** #define TRACER_LEAVE_CRITICAL_SECTION() __set_PRIMASK(primask)
+  64:Utilities/TRACER_EMB/tracer_emb.c **** 
+  65:Utilities/TRACER_EMB/tracer_emb.c **** 
+  66:Utilities/TRACER_EMB/tracer_emb.c **** /**
+  67:Utilities/TRACER_EMB/tracer_emb.c ****   * @}
+  68:Utilities/TRACER_EMB/tracer_emb.c ****   */
+  69:Utilities/TRACER_EMB/tracer_emb.c **** 
+  70:Utilities/TRACER_EMB/tracer_emb.c **** /* Private function prototypes -----------------------------------------------*/
+  71:Utilities/TRACER_EMB/tracer_emb.c **** /** @defgroup USBPD_CORE_TRACER_EMB_Private_Functions USBPD TRACE Private Functions
+  72:Utilities/TRACER_EMB/tracer_emb.c ****   * @{
+  73:Utilities/TRACER_EMB/tracer_emb.c ****   */
+  74:Utilities/TRACER_EMB/tracer_emb.c **** uint32_t                    TRACER_CallbackRX(uint8_t character, uint8_t error);
+  75:Utilities/TRACER_EMB/tracer_emb.c **** static TRACER_StatusTypedef TRACER_CheckLook(uint32_t *Begin, uint32_t *End);
+  76:Utilities/TRACER_EMB/tracer_emb.c **** #if defined(_TRACE) 
+  77:Utilities/TRACER_EMB/tracer_emb.c **** extern void                 USBPD_DPM_TraceWakeUp(void);
+  78:Utilities/TRACER_EMB/tracer_emb.c **** #endif /* _TRACE */
+  79:Utilities/TRACER_EMB/tracer_emb.c **** 
+  80:Utilities/TRACER_EMB/tracer_emb.c **** /* Function prototypes -----------------------------------------------*/
+  81:Utilities/TRACER_EMB/tracer_emb.c **** uint8_t TRACER_EMB_ReadData(void);
+  82:Utilities/TRACER_EMB/tracer_emb.c **** 
+  83:Utilities/TRACER_EMB/tracer_emb.c **** /**
+  84:Utilities/TRACER_EMB/tracer_emb.c ****   * @}
+  85:Utilities/TRACER_EMB/tracer_emb.c ****   */
+  86:Utilities/TRACER_EMB/tracer_emb.c **** 
+  87:Utilities/TRACER_EMB/tracer_emb.c **** /* Private variables ---------------------------------------------------------*/
+  88:Utilities/TRACER_EMB/tracer_emb.c **** /** @defgroup USBPD_CORE_TRACER_EMB_Private_Variables USBPD TRACE Private Variables
+  89:Utilities/TRACER_EMB/tracer_emb.c ****   * @{
+ARM GAS  /tmp/ccbqBohW.s 			page 3
+
+
+  90:Utilities/TRACER_EMB/tracer_emb.c ****   */
+  91:Utilities/TRACER_EMB/tracer_emb.c **** static uint8_t PtrDataTx[TRACER_EMB_BUFFER_SIZE];
+  92:Utilities/TRACER_EMB/tracer_emb.c **** static uint32_t PtrTx_Read, PtrTx_Write;
+  93:Utilities/TRACER_EMB/tracer_emb.c **** static volatile uint32_t Counter = 0u;
+  94:Utilities/TRACER_EMB/tracer_emb.c **** static uint32_t SizeSent = 0u;
+  95:Utilities/TRACER_EMB/tracer_emb.c **** 
+  96:Utilities/TRACER_EMB/tracer_emb.c **** /**
+  97:Utilities/TRACER_EMB/tracer_emb.c ****   * @}
+  98:Utilities/TRACER_EMB/tracer_emb.c ****   */
+  99:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 100:Utilities/TRACER_EMB/tracer_emb.c **** /* Exported functions ---------------------------------------------------------*/
+ 101:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 102:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 103:Utilities/TRACER_EMB/tracer_emb.c **** /** @addtogroup USBPD_CORE_TRACER_EMB_Exported_Functions
+ 104:Utilities/TRACER_EMB/tracer_emb.c ****   * @{
+ 105:Utilities/TRACER_EMB/tracer_emb.c ****   */
+ 106:Utilities/TRACER_EMB/tracer_emb.c **** void TRACER_EMB_Init(void)
+ 107:Utilities/TRACER_EMB/tracer_emb.c **** {
+ 108:Utilities/TRACER_EMB/tracer_emb.c ****   /* initialize the Ptr for Read/Write */
+ 109:Utilities/TRACER_EMB/tracer_emb.c ****   PtrTx_Read = 0u;
+ 110:Utilities/TRACER_EMB/tracer_emb.c ****   PtrTx_Write = 0u;
+ 111:Utilities/TRACER_EMB/tracer_emb.c ****   /* Initialize trace BUS */
+ 112:Utilities/TRACER_EMB/tracer_emb.c ****   HW_TRACER_EMB_Init();
+ 113:Utilities/TRACER_EMB/tracer_emb.c ****   
+ 114:Utilities/TRACER_EMB/tracer_emb.c ****   /* Initialize the lowpower aspect */
+ 115:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_EMB_LowPowerInit();
+ 116:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 117:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 118:Utilities/TRACER_EMB/tracer_emb.c **** void TRACER_EMB_Add(uint8_t *Ptr, uint32_t Size)
+ 119:Utilities/TRACER_EMB/tracer_emb.c **** {
+ 120:Utilities/TRACER_EMB/tracer_emb.c ****   int32_t _writepos;
+ 121:Utilities/TRACER_EMB/tracer_emb.c ****   uint8_t *data_to_write = Ptr;
+ 122:Utilities/TRACER_EMB/tracer_emb.c ****   uint32_t index;
+ 123:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 124:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_EMB_Lock();
+ 125:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 126:Utilities/TRACER_EMB/tracer_emb.c ****   _writepos = TRACER_EMB_AllocateBufer(Size);
+ 127:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 128:Utilities/TRACER_EMB/tracer_emb.c ****   /* if allocation is ok, write data into the bufffer */
+ 129:Utilities/TRACER_EMB/tracer_emb.c ****   if (_writepos  != -1)
+ 130:Utilities/TRACER_EMB/tracer_emb.c ****   {
+ 131:Utilities/TRACER_EMB/tracer_emb.c ****     /* initialize the Ptr for Read/Write */
+ 132:Utilities/TRACER_EMB/tracer_emb.c ****     for (index = 0u; index < Size; index++)
+ 133:Utilities/TRACER_EMB/tracer_emb.c ****     {
+ 134:Utilities/TRACER_EMB/tracer_emb.c ****       TRACER_WRITE_DATA(_writepos, data_to_write[index]);
+ 135:Utilities/TRACER_EMB/tracer_emb.c ****     }
+ 136:Utilities/TRACER_EMB/tracer_emb.c ****   }
+ 137:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_EMB_UnLock();
+ 138:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 139:Utilities/TRACER_EMB/tracer_emb.c ****   /* Wakeup the trace system */
+ 140:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_EMB_WakeUpProcess();
+ 141:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 142:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 143:Utilities/TRACER_EMB/tracer_emb.c **** #if TRACER_EMB_DMA_MODE == 1UL
+ 144:Utilities/TRACER_EMB/tracer_emb.c **** void TRACER_EMB_IRQHandlerDMA(void)
+ 145:Utilities/TRACER_EMB/tracer_emb.c **** {
+  27              		.loc 1 145 1 view -0
+ARM GAS  /tmp/ccbqBohW.s 			page 4
+
+
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+ 146:Utilities/TRACER_EMB/tracer_emb.c ****   HW_TRACER_EMB_IRQHandlerDMA();
+  31              		.loc 1 146 3 view .LVU1
+ 145:Utilities/TRACER_EMB/tracer_emb.c ****   HW_TRACER_EMB_IRQHandlerDMA();
+  32              		.loc 1 145 1 is_stmt 0 view .LVU2
+  33 0000 10B5     		push	{r4, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 4, -8
+  37              		.cfi_offset 14, -4
+  38              		.loc 1 146 3 view .LVU3
+  39 0002 FFF7FEFF 		bl	HW_TRACER_EMB_IRQHandlerDMA
+  40              	.LVL0:
+ 147:Utilities/TRACER_EMB/tracer_emb.c **** }
+  41              		.loc 1 147 1 view .LVU4
+  42              		@ sp needed
+  43 0006 10BD     		pop	{r4, pc}
+  44              		.cfi_endproc
+  45              	.LFE909:
+  47              		.section	.text.TRACER_EMB_IRQHandlerUSART,"ax",%progbits
+  48              		.align	1
+  49              		.global	TRACER_EMB_IRQHandlerUSART
+  50              		.syntax unified
+  51              		.code	16
+  52              		.thumb_func
+  53              		.fpu softvfp
+  55              	TRACER_EMB_IRQHandlerUSART:
+  56              	.LFB910:
+ 148:Utilities/TRACER_EMB/tracer_emb.c **** #endif
+ 149:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 150:Utilities/TRACER_EMB/tracer_emb.c **** void TRACER_EMB_IRQHandlerUSART(void)
+ 151:Utilities/TRACER_EMB/tracer_emb.c **** {
+  57              		.loc 1 151 1 is_stmt 1 view -0
+  58              		.cfi_startproc
+  59              		@ args = 0, pretend = 0, frame = 0
+  60              		@ frame_needed = 0, uses_anonymous_args = 0
+ 152:Utilities/TRACER_EMB/tracer_emb.c ****   HW_TRACER_EMB_IRQHandlerUSART();
+  61              		.loc 1 152 3 view .LVU6
+ 151:Utilities/TRACER_EMB/tracer_emb.c ****   HW_TRACER_EMB_IRQHandlerUSART();
+  62              		.loc 1 151 1 is_stmt 0 view .LVU7
+  63 0000 10B5     		push	{r4, lr}
+  64              	.LCFI1:
+  65              		.cfi_def_cfa_offset 8
+  66              		.cfi_offset 4, -8
+  67              		.cfi_offset 14, -4
+  68              		.loc 1 152 3 view .LVU8
+  69 0002 FFF7FEFF 		bl	HW_TRACER_EMB_IRQHandlerUSART
+  70              	.LVL1:
+ 153:Utilities/TRACER_EMB/tracer_emb.c **** }
+  71              		.loc 1 153 1 view .LVU9
+  72              		@ sp needed
+  73 0006 10BD     		pop	{r4, pc}
+  74              		.cfi_endproc
+  75              	.LFE910:
+  77              		.section	.text.TRACER_EMB_WriteData,"ax",%progbits
+ARM GAS  /tmp/ccbqBohW.s 			page 5
+
+
+  78              		.align	1
+  79              		.global	TRACER_EMB_WriteData
+  80              		.syntax unified
+  81              		.code	16
+  82              		.thumb_func
+  83              		.fpu softvfp
+  85              	TRACER_EMB_WriteData:
+  86              	.LVL2:
+  87              	.LFB912:
+ 154:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 155:Utilities/TRACER_EMB/tracer_emb.c **** uint32_t TRACER_EMB_TX_Process(void)
+ 156:Utilities/TRACER_EMB/tracer_emb.c **** {
+ 157:Utilities/TRACER_EMB/tracer_emb.c ****   uint32_t _timing = 2u;
+ 158:Utilities/TRACER_EMB/tracer_emb.c ****   uint32_t _begin, _end;
+ 159:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 160:Utilities/TRACER_EMB/tracer_emb.c ****   if (TRACER_OK == TRACER_CheckLook(&_begin, &_end))
+ 161:Utilities/TRACER_EMB/tracer_emb.c ****   {
+ 162:Utilities/TRACER_EMB/tracer_emb.c ****     if (_begin == _end)
+ 163:Utilities/TRACER_EMB/tracer_emb.c ****     {
+ 164:Utilities/TRACER_EMB/tracer_emb.c ****       /* nothing to do */
+ 165:Utilities/TRACER_EMB/tracer_emb.c ****       _timing = 0xFFFFFFFFu;
+ 166:Utilities/TRACER_EMB/tracer_emb.c ****     }
+ 167:Utilities/TRACER_EMB/tracer_emb.c ****     else
+ 168:Utilities/TRACER_EMB/tracer_emb.c ****     {
+ 169:Utilities/TRACER_EMB/tracer_emb.c ****       TRACER_EMB_Lock();
+ 170:Utilities/TRACER_EMB/tracer_emb.c ****       /*  */
+ 171:Utilities/TRACER_EMB/tracer_emb.c ****       if (_end > _begin)
+ 172:Utilities/TRACER_EMB/tracer_emb.c ****       {
+ 173:Utilities/TRACER_EMB/tracer_emb.c ****         SizeSent = _end - _begin;
+ 174:Utilities/TRACER_EMB/tracer_emb.c ****       }
+ 175:Utilities/TRACER_EMB/tracer_emb.c ****       else  /* _begin > _end */
+ 176:Utilities/TRACER_EMB/tracer_emb.c ****       {
+ 177:Utilities/TRACER_EMB/tracer_emb.c ****         SizeSent = TRACER_EMB_BUFFER_SIZE - _begin;
+ 178:Utilities/TRACER_EMB/tracer_emb.c ****       }
+ 179:Utilities/TRACER_EMB/tracer_emb.c ****       TRACER_EMB_LowPowerSendData();
+ 180:Utilities/TRACER_EMB/tracer_emb.c ****       HW_TRACER_EMB_SendData(&PtrDataTx[_begin], SizeSent);
+ 181:Utilities/TRACER_EMB/tracer_emb.c ****     }
+ 182:Utilities/TRACER_EMB/tracer_emb.c ****   }
+ 183:Utilities/TRACER_EMB/tracer_emb.c ****   return _timing;
+ 184:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 185:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 186:Utilities/TRACER_EMB/tracer_emb.c **** void TRACER_EMB_WriteData(uint16_t pos, uint8_t data)
+ 187:Utilities/TRACER_EMB/tracer_emb.c **** {
+  88              		.loc 1 187 1 is_stmt 1 view -0
+  89              		.cfi_startproc
+  90              		@ args = 0, pretend = 0, frame = 0
+  91              		@ frame_needed = 0, uses_anonymous_args = 0
+  92              		@ link register save eliminated.
+ 188:Utilities/TRACER_EMB/tracer_emb.c ****   PtrDataTx[pos % TRACER_EMB_BUFFER_SIZE] = data;
+  93              		.loc 1 188 3 view .LVU11
+  94              		.loc 1 188 43 is_stmt 0 view .LVU12
+  95 0000 024B     		ldr	r3, .L4
+  96              		.loc 1 188 17 view .LVU13
+  97 0002 8005     		lsls	r0, r0, #22
+  98              	.LVL3:
+  99              		.loc 1 188 17 view .LVU14
+ 100 0004 800D     		lsrs	r0, r0, #22
+ARM GAS  /tmp/ccbqBohW.s 			page 6
+
+
+ 189:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 101              		.loc 1 189 1 view .LVU15
+ 102              		@ sp needed
+ 188:Utilities/TRACER_EMB/tracer_emb.c ****   PtrDataTx[pos % TRACER_EMB_BUFFER_SIZE] = data;
+ 103              		.loc 1 188 43 view .LVU16
+ 104 0006 1954     		strb	r1, [r3, r0]
+ 105              		.loc 1 189 1 view .LVU17
+ 106 0008 7047     		bx	lr
+ 107              	.L5:
+ 108 000a C046     		.align	2
+ 109              	.L4:
+ 110 000c 00000000 		.word	PtrDataTx
+ 111              		.cfi_endproc
+ 112              	.LFE912:
+ 114              		.section	.text.TRACER_EMB_StartRX,"ax",%progbits
+ 115              		.align	1
+ 116              		.global	TRACER_EMB_StartRX
+ 117              		.syntax unified
+ 118              		.code	16
+ 119              		.thumb_func
+ 120              		.fpu softvfp
+ 122              	TRACER_EMB_StartRX:
+ 123              	.LVL4:
+ 124              	.LFB913:
+ 190:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 191:Utilities/TRACER_EMB/tracer_emb.c **** void TRACER_EMB_StartRX(void (*callbackRX)(uint8_t, uint8_t))
+ 192:Utilities/TRACER_EMB/tracer_emb.c **** {
+ 125              		.loc 1 192 1 is_stmt 1 view -0
+ 126              		.cfi_startproc
+ 127              		@ args = 0, pretend = 0, frame = 0
+ 128              		@ frame_needed = 0, uses_anonymous_args = 0
+ 193:Utilities/TRACER_EMB/tracer_emb.c ****   HW_TRACER_EMB_RegisterRxCallback(callbackRX);
+ 129              		.loc 1 193 3 view .LVU19
+ 192:Utilities/TRACER_EMB/tracer_emb.c ****   HW_TRACER_EMB_RegisterRxCallback(callbackRX);
+ 130              		.loc 1 192 1 is_stmt 0 view .LVU20
+ 131 0000 10B5     		push	{r4, lr}
+ 132              	.LCFI2:
+ 133              		.cfi_def_cfa_offset 8
+ 134              		.cfi_offset 4, -8
+ 135              		.cfi_offset 14, -4
+ 136              		.loc 1 193 3 view .LVU21
+ 137 0002 FFF7FEFF 		bl	HW_TRACER_EMB_RegisterRxCallback
+ 138              	.LVL5:
+ 194:Utilities/TRACER_EMB/tracer_emb.c ****   HW_TRACER_EMB_StartRX();
+ 139              		.loc 1 194 3 is_stmt 1 view .LVU22
+ 195:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 140              		.loc 1 195 1 is_stmt 0 view .LVU23
+ 141              		@ sp needed
+ 194:Utilities/TRACER_EMB/tracer_emb.c ****   HW_TRACER_EMB_StartRX();
+ 142              		.loc 1 194 3 view .LVU24
+ 143 0006 FFF7FEFF 		bl	HW_TRACER_EMB_StartRX
+ 144              	.LVL6:
+ 145              		.loc 1 195 1 view .LVU25
+ 146 000a 10BD     		pop	{r4, pc}
+ 147              		.cfi_endproc
+ 148              	.LFE913:
+ 150              		.section	.text.TRACER_EMB_ReadData,"ax",%progbits
+ARM GAS  /tmp/ccbqBohW.s 			page 7
+
+
+ 151              		.align	1
+ 152              		.global	TRACER_EMB_ReadData
+ 153              		.syntax unified
+ 154              		.code	16
+ 155              		.thumb_func
+ 156              		.fpu softvfp
+ 158              	TRACER_EMB_ReadData:
+ 159              	.LFB914:
+ 196:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 197:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 198:Utilities/TRACER_EMB/tracer_emb.c **** uint8_t TRACER_EMB_ReadData()
+ 199:Utilities/TRACER_EMB/tracer_emb.c **** {
+ 160              		.loc 1 199 1 is_stmt 1 view -0
+ 161              		.cfi_startproc
+ 162              		@ args = 0, pretend = 0, frame = 0
+ 163              		@ frame_needed = 0, uses_anonymous_args = 0
+ 200:Utilities/TRACER_EMB/tracer_emb.c ****   return HW_TRACER_EMB_ReadData();
+ 164              		.loc 1 200 3 view .LVU27
+ 199:Utilities/TRACER_EMB/tracer_emb.c ****   return HW_TRACER_EMB_ReadData();
+ 165              		.loc 1 199 1 is_stmt 0 view .LVU28
+ 166 0000 10B5     		push	{r4, lr}
+ 167              	.LCFI3:
+ 168              		.cfi_def_cfa_offset 8
+ 169              		.cfi_offset 4, -8
+ 170              		.cfi_offset 14, -4
+ 171              		.loc 1 200 10 view .LVU29
+ 172 0002 FFF7FEFF 		bl	HW_TRACER_EMB_ReadData
+ 173              	.LVL7:
+ 201:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 174              		.loc 1 201 1 view .LVU30
+ 175              		@ sp needed
+ 176 0006 10BD     		pop	{r4, pc}
+ 177              		.cfi_endproc
+ 178              	.LFE914:
+ 180              		.section	.text.TRACER_EMB_Lock,"ax",%progbits
+ 181              		.align	1
+ 182              		.global	TRACER_EMB_Lock
+ 183              		.syntax unified
+ 184              		.code	16
+ 185              		.thumb_func
+ 186              		.fpu softvfp
+ 188              	TRACER_EMB_Lock:
+ 189              	.LFB916:
+ 202:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 203:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 204:Utilities/TRACER_EMB/tracer_emb.c **** /**
+ 205:Utilities/TRACER_EMB/tracer_emb.c ****   * @}
+ 206:Utilities/TRACER_EMB/tracer_emb.c ****   */
+ 207:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 208:Utilities/TRACER_EMB/tracer_emb.c **** /** @defgroup USBPD_CORE_TRACER_EMB_Private_Functions USBPD TRACE Private Functions
+ 209:Utilities/TRACER_EMB/tracer_emb.c ****   * @{
+ 210:Utilities/TRACER_EMB/tracer_emb.c ****   */
+ 211:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 212:Utilities/TRACER_EMB/tracer_emb.c **** /**
+ 213:Utilities/TRACER_EMB/tracer_emb.c ****   * @brief  callback called to end a transfert.
+ 214:Utilities/TRACER_EMB/tracer_emb.c ****   * @param  None.
+ 215:Utilities/TRACER_EMB/tracer_emb.c ****   * @retval None.
+ARM GAS  /tmp/ccbqBohW.s 			page 8
+
+
+ 216:Utilities/TRACER_EMB/tracer_emb.c ****   */
+ 217:Utilities/TRACER_EMB/tracer_emb.c **** void TRACER_EMB_CALLBACK_TX(void)
+ 218:Utilities/TRACER_EMB/tracer_emb.c **** {
+ 219:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_ENTER_CRITICAL_SECTION();
+ 220:Utilities/TRACER_EMB/tracer_emb.c ****   PtrTx_Read = (PtrTx_Read + SizeSent) % TRACER_EMB_BUFFER_SIZE;
+ 221:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_LEAVE_CRITICAL_SECTION();
+ 222:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_EMB_UnLock();
+ 223:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_EMB_LowPowerSendDataComplete();
+ 224:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 225:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 226:Utilities/TRACER_EMB/tracer_emb.c **** /**
+ 227:Utilities/TRACER_EMB/tracer_emb.c ****   * @brief  Lock the trace buffer.
+ 228:Utilities/TRACER_EMB/tracer_emb.c ****   * @param  None.
+ 229:Utilities/TRACER_EMB/tracer_emb.c ****   * @retval None.
+ 230:Utilities/TRACER_EMB/tracer_emb.c ****   */
+ 231:Utilities/TRACER_EMB/tracer_emb.c **** void TRACER_EMB_Lock(void)
+ 232:Utilities/TRACER_EMB/tracer_emb.c **** {
+ 190              		.loc 1 232 1 is_stmt 1 view -0
+ 191              		.cfi_startproc
+ 192              		@ args = 0, pretend = 0, frame = 0
+ 193              		@ frame_needed = 0, uses_anonymous_args = 0
+ 194              		@ link register save eliminated.
+ 233:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_ENTER_CRITICAL_SECTION();
+ 195              		.loc 1 233 3 view .LVU32
+ 196              	.LBB32:
+ 197              	.LBI32:
+ 198              		.file 2 "Drivers/CMSIS/Include/cmsis_gcc.h"
+   1:Drivers/CMSIS/Include/cmsis_gcc.h **** /**************************************************************************//**
+   2:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @version  V5.0.4
+   5:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @date     09. April 2018
+   6:Drivers/CMSIS/Include/cmsis_gcc.h ****  ******************************************************************************/
+   7:Drivers/CMSIS/Include/cmsis_gcc.h **** /*
+   8:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Copyright (c) 2009-2018 Arm Limited. All rights reserved.
+   9:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  10:Drivers/CMSIS/Include/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  12:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:Drivers/CMSIS/Include/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:Drivers/CMSIS/Include/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  16:Drivers/CMSIS/Include/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  18:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:Drivers/CMSIS/Include/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:Drivers/CMSIS/Include/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:Drivers/CMSIS/Include/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:Drivers/CMSIS/Include/cmsis_gcc.h ****  * limitations under the License.
+  23:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+  24:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  25:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  28:Drivers/CMSIS/Include/cmsis_gcc.h **** /* ignore some GCC warnings */
+  29:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic push
+  30:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+ARM GAS  /tmp/ccbqBohW.s 			page 9
+
+
+  31:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  32:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+  33:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  34:Drivers/CMSIS/Include/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  35:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __has_builtin
+  36:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  37:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  38:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  39:Drivers/CMSIS/Include/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  40:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ASM
+  41:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ASM                                  __asm
+  42:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  43:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __INLINE
+  44:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __INLINE                               inline
+  45:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  46:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  47:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+  48:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  49:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_FORCEINLINE                 
+  50:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+  51:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif                                           
+  52:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __NO_RETURN
+  53:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
+  54:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  55:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __USED
+  56:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  57:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  58:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __WEAK
+  59:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  60:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  61:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED
+  62:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  63:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  64:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+  65:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+  66:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  67:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  68:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  69:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  70:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32        /* deprecated */
+  71:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  72:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  73:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  74:Drivers/CMSIS/Include/cmsis_gcc.h ****   struct __attribute__((packed)) T_UINT32 { uint32_t v; };
+  75:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  76:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
+  77:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  78:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  79:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  80:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  81:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  82:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  83:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  84:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  85:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  86:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+  87:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ARM GAS  /tmp/ccbqBohW.s 			page 10
+
+
+  88:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  89:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  90:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  91:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  92:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  93:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  94:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  95:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  96:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  97:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  98:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  99:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 100:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+ 101:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 102:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+ 103:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ 104:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ 105:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ 106:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 107:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 108:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 109:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 110:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 111:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 112:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 113:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 114:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 115:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 116:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 117:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 118:Drivers/CMSIS/Include/cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+ 119:Drivers/CMSIS/Include/cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 120:Drivers/CMSIS/Include/cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ 121:Drivers/CMSIS/Include/cmsis_gcc.h ****   @{
+ 122:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 123:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 124:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 125:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+ 126:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 127:Drivers/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 128:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 129:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_irq(void)
+ 130:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 131:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+ 132:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 133:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 134:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 135:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 136:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
+ 137:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
+ 138:Drivers/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 139:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 140:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_irq(void)
+ 141:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 142:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
+ 143:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 144:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ARM GAS  /tmp/ccbqBohW.s 			page 11
+
+
+ 145:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 146:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 147:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Control Register
+ 148:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the Control Register.
+ 149:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               Control Register value
+ 150:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 151:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_CONTROL(void)
+ 152:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 153:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 154:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 155:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control" : "=r" (result) );
+ 156:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 157:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 158:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 159:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 160:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 161:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 162:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Control Register (non-secure)
+ 163:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the non-secure Control Register when in secure mode.
+ 164:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               non-secure Control Register value
+ 165:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 166:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_CONTROL_NS(void)
+ 167:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 168:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 169:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 170:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control_ns" : "=r" (result) );
+ 171:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 172:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 173:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 174:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 175:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 176:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 177:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Control Register
+ 178:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Writes the given value to the Control Register.
+ 179:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 180:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 181:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_CONTROL(uint32_t control)
+ 182:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 183:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR control, %0" : : "r" (control) : "memory");
+ 184:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 185:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 186:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 187:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 188:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 189:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Control Register (non-secure)
+ 190:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Writes the given value to the non-secure Control Register when in secure state.
+ 191:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 192:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 193:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_CONTROL_NS(uint32_t control)
+ 194:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 195:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR control_ns, %0" : : "r" (control) : "memory");
+ 196:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 197:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 198:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 199:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 200:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 201:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get IPSR Register
+ARM GAS  /tmp/ccbqBohW.s 			page 12
+
+
+ 202:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the IPSR Register.
+ 203:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               IPSR Register value
+ 204:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 205:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_IPSR(void)
+ 206:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 207:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 208:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 209:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
+ 210:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 211:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 212:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 213:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 214:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 215:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get APSR Register
+ 216:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the APSR Register.
+ 217:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               APSR Register value
+ 218:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 219:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_APSR(void)
+ 220:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 221:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 222:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 223:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
+ 224:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 225:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 226:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 227:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 228:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 229:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get xPSR Register
+ 230:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the xPSR Register.
+ 231:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               xPSR Register value
+ 232:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 233:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_xPSR(void)
+ 234:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 235:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 236:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 237:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, xpsr" : "=r" (result) );
+ 238:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 239:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 240:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 241:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 242:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 243:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Process Stack Pointer
+ 244:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the Process Stack Pointer (PSP).
+ 245:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               PSP Register value
+ 246:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 247:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PSP(void)
+ 248:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 249:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 250:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 251:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp"  : "=r" (result) );
+ 252:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 253:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 254:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 255:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 256:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 257:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 258:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Process Stack Pointer (non-secure)
+ARM GAS  /tmp/ccbqBohW.s 			page 13
+
+
+ 259:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Process Stack Pointer (PSP) when in secure s
+ 260:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               PSP Register value
+ 261:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 262:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PSP_NS(void)
+ 263:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 264:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 265:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 266:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp_ns"  : "=r" (result) );
+ 267:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 268:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 269:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 270:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 271:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 272:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 273:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Process Stack Pointer
+ 274:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Process Stack Pointer (PSP).
+ 275:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 276:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 277:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PSP(uint32_t topOfProcStack)
+ 278:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 279:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR psp, %0" : : "r" (topOfProcStack) : );
+ 280:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 281:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 282:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 283:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 284:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 285:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Process Stack Pointer (non-secure)
+ 286:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Process Stack Pointer (PSP) when in secure sta
+ 287:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 288:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 289:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_PSP_NS(uint32_t topOfProcStack)
+ 290:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 291:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR psp_ns, %0" : : "r" (topOfProcStack) : );
+ 292:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 293:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 294:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 295:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 296:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 297:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Main Stack Pointer
+ 298:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer (MSP).
+ 299:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               MSP Register value
+ 300:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 301:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_MSP(void)
+ 302:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 303:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 304:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 305:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp" : "=r" (result) );
+ 306:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 307:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 308:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 309:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 310:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 311:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 312:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Main Stack Pointer (non-secure)
+ 313:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Main Stack Pointer (MSP) when in secure stat
+ 314:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               MSP Register value
+ 315:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ARM GAS  /tmp/ccbqBohW.s 			page 14
+
+
+ 316:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_MSP_NS(void)
+ 317:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 318:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 319:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 320:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp_ns" : "=r" (result) );
+ 321:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 322:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 323:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 324:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 325:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 326:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 327:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Main Stack Pointer
+ 328:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Main Stack Pointer (MSP).
+ 329:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 330:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 331:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_MSP(uint32_t topOfMainStack)
+ 332:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 333:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR msp, %0" : : "r" (topOfMainStack) : );
+ 334:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 335:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 336:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 337:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 338:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 339:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Main Stack Pointer (non-secure)
+ 340:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Main Stack Pointer (MSP) when in secure state.
+ 341:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 342:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 343:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_MSP_NS(uint32_t topOfMainStack)
+ 344:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 345:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR msp_ns, %0" : : "r" (topOfMainStack) : );
+ 346:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 347:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 348:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 349:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 350:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 351:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 352:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Stack Pointer (non-secure)
+ 353:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Stack Pointer (SP) when in secure state.
+ 354:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               SP Register value
+ 355:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 356:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_SP_NS(void)
+ 357:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 358:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 359:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 360:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, sp_ns" : "=r" (result) );
+ 361:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 362:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 363:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 364:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 365:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 366:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Stack Pointer (non-secure)
+ 367:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Stack Pointer (SP) when in secure state.
+ 368:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfStack  Stack Pointer value to set
+ 369:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 370:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_SP_NS(uint32_t topOfStack)
+ 371:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 372:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR sp_ns, %0" : : "r" (topOfStack) : );
+ARM GAS  /tmp/ccbqBohW.s 			page 15
+
+
+ 373:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 374:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 375:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 376:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 377:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 378:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Priority Mask
+ 379:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current state of the priority mask bit from the Priority Mask Register.
+ 380:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               Priority Mask value
+ 381:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 382:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PRIMASK(void)
+ 199              		.loc 2 382 31 view .LVU33
+ 200              	.LBB33:
+ 383:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 384:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 201              		.loc 2 384 3 view .LVU34
+ 385:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 386:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask" : "=r" (result) :: "memory");
+ 202              		.loc 2 386 3 view .LVU35
+ 203              		.syntax divided
+ 204              	@ 386 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 205 0000 EFF31081 		MRS r1, primask
+ 206              	@ 0 "" 2
+ 207              	.LVL8:
+ 387:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 208              		.loc 2 387 3 view .LVU36
+ 209              		.loc 2 387 3 is_stmt 0 view .LVU37
+ 210              		.thumb
+ 211              		.syntax unified
+ 212              	.LBE33:
+ 213              	.LBE32:
+ 214              		.loc 1 233 3 is_stmt 1 view .LVU38
+ 215              	.LBB34:
+ 216              	.LBI34:
+ 140:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 217              		.loc 2 140 27 view .LVU39
+ 218              	.LBB35:
+ 142:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 219              		.loc 2 142 3 view .LVU40
+ 220              		.syntax divided
+ 221              	@ 142 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 222 0004 72B6     		cpsid i
+ 223              	@ 0 "" 2
+ 224              		.thumb
+ 225              		.syntax unified
+ 226              	.LBE35:
+ 227              	.LBE34:
+ 228              		.loc 1 233 34 view .LVU41
+ 234:Utilities/TRACER_EMB/tracer_emb.c ****   Counter++;
+ 229              		.loc 1 234 3 view .LVU42
+ 230              		.loc 1 234 10 is_stmt 0 view .LVU43
+ 231 0006 034A     		ldr	r2, .L9
+ 232 0008 1368     		ldr	r3, [r2]
+ 233 000a 0133     		adds	r3, r3, #1
+ 234 000c 1360     		str	r3, [r2]
+ 235:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_LEAVE_CRITICAL_SECTION();
+ 235              		.loc 1 235 3 is_stmt 1 view .LVU44
+ 236              	.LVL9:
+ARM GAS  /tmp/ccbqBohW.s 			page 16
+
+
+ 237              	.LBB36:
+ 238              	.LBI36:
+ 388:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 389:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 390:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 391:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 392:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 393:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Priority Mask (non-secure)
+ 394:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current state of the non-secure priority mask bit from the Priority Mask Reg
+ 395:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               Priority Mask value
+ 396:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 397:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PRIMASK_NS(void)
+ 398:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 399:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 400:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 401:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask_ns" : "=r" (result) :: "memory");
+ 402:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 403:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 404:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 405:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 406:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 407:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 408:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Priority Mask
+ 409:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Priority Mask Register.
+ 410:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    priMask  Priority Mask
+ 411:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 412:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PRIMASK(uint32_t priMask)
+ 239              		.loc 2 412 27 view .LVU45
+ 240              	.LBB37:
+ 413:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 414:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR primask, %0" : : "r" (priMask) : "memory");
+ 241              		.loc 2 414 3 view .LVU46
+ 242              		.syntax divided
+ 243              	@ 414 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 244 000e 81F31088 		MSR primask, r1
+ 245              	@ 0 "" 2
+ 246              	.LVL10:
+ 247              		.loc 2 414 3 is_stmt 0 view .LVU47
+ 248              		.thumb
+ 249              		.syntax unified
+ 250              	.LBE37:
+ 251              	.LBE36:
+ 236:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 252              		.loc 1 236 1 view .LVU48
+ 253              		@ sp needed
+ 254 0012 7047     		bx	lr
+ 255              	.L10:
+ 256              		.align	2
+ 257              	.L9:
+ 258 0014 00000000 		.word	.LANCHOR0
+ 259              		.cfi_endproc
+ 260              	.LFE916:
+ 262              		.section	.text.TRACER_EMB_UnLock,"ax",%progbits
+ 263              		.align	1
+ 264              		.global	TRACER_EMB_UnLock
+ 265              		.syntax unified
+ 266              		.code	16
+ARM GAS  /tmp/ccbqBohW.s 			page 17
+
+
+ 267              		.thumb_func
+ 268              		.fpu softvfp
+ 270              	TRACER_EMB_UnLock:
+ 271              	.LFB917:
+ 237:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 238:Utilities/TRACER_EMB/tracer_emb.c **** /**
+ 239:Utilities/TRACER_EMB/tracer_emb.c ****   * @brief  UnLock the trace buffer.
+ 240:Utilities/TRACER_EMB/tracer_emb.c ****   * @param  None.
+ 241:Utilities/TRACER_EMB/tracer_emb.c ****   * @retval None.
+ 242:Utilities/TRACER_EMB/tracer_emb.c ****   */
+ 243:Utilities/TRACER_EMB/tracer_emb.c **** void TRACER_EMB_UnLock(void)
+ 244:Utilities/TRACER_EMB/tracer_emb.c **** {
+ 272              		.loc 1 244 1 is_stmt 1 view -0
+ 273              		.cfi_startproc
+ 274              		@ args = 0, pretend = 0, frame = 0
+ 275              		@ frame_needed = 0, uses_anonymous_args = 0
+ 276              		@ link register save eliminated.
+ 245:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_ENTER_CRITICAL_SECTION();
+ 277              		.loc 1 245 3 view .LVU50
+ 278              	.LBB38:
+ 279              	.LBI38:
+ 382:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 280              		.loc 2 382 31 view .LVU51
+ 281              	.LBB39:
+ 384:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 282              		.loc 2 384 3 view .LVU52
+ 386:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 283              		.loc 2 386 3 view .LVU53
+ 284              		.syntax divided
+ 285              	@ 386 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 286 0000 EFF31081 		MRS r1, primask
+ 287              	@ 0 "" 2
+ 288              	.LVL11:
+ 387:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 289              		.loc 2 387 3 view .LVU54
+ 387:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 290              		.loc 2 387 3 is_stmt 0 view .LVU55
+ 291              		.thumb
+ 292              		.syntax unified
+ 293              	.LBE39:
+ 294              	.LBE38:
+ 295              		.loc 1 245 3 is_stmt 1 view .LVU56
+ 296              	.LBB40:
+ 297              	.LBI40:
+ 140:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 298              		.loc 2 140 27 view .LVU57
+ 299              	.LBB41:
+ 142:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 300              		.loc 2 142 3 view .LVU58
+ 301              		.syntax divided
+ 302              	@ 142 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 303 0004 72B6     		cpsid i
+ 304              	@ 0 "" 2
+ 305              		.thumb
+ 306              		.syntax unified
+ 307              	.LBE41:
+ 308              	.LBE40:
+ARM GAS  /tmp/ccbqBohW.s 			page 18
+
+
+ 309              		.loc 1 245 34 view .LVU59
+ 246:Utilities/TRACER_EMB/tracer_emb.c ****   Counter--;
+ 310              		.loc 1 246 3 view .LVU60
+ 311              		.loc 1 246 10 is_stmt 0 view .LVU61
+ 312 0006 034A     		ldr	r2, .L12
+ 313 0008 1368     		ldr	r3, [r2]
+ 314 000a 013B     		subs	r3, r3, #1
+ 315 000c 1360     		str	r3, [r2]
+ 247:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_LEAVE_CRITICAL_SECTION();
+ 316              		.loc 1 247 3 is_stmt 1 view .LVU62
+ 317              	.LVL12:
+ 318              	.LBB42:
+ 319              	.LBI42:
+ 412:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 320              		.loc 2 412 27 view .LVU63
+ 321              	.LBB43:
+ 322              		.loc 2 414 3 view .LVU64
+ 323              		.syntax divided
+ 324              	@ 414 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 325 000e 81F31088 		MSR primask, r1
+ 326              	@ 0 "" 2
+ 327              	.LVL13:
+ 328              		.loc 2 414 3 is_stmt 0 view .LVU65
+ 329              		.thumb
+ 330              		.syntax unified
+ 331              	.LBE43:
+ 332              	.LBE42:
+ 248:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 333              		.loc 1 248 1 view .LVU66
+ 334              		@ sp needed
+ 335 0012 7047     		bx	lr
+ 336              	.L13:
+ 337              		.align	2
+ 338              	.L12:
+ 339 0014 00000000 		.word	.LANCHOR0
+ 340              		.cfi_endproc
+ 341              	.LFE917:
+ 343              		.section	.text.TRACER_EMB_AllocateBufer,"ax",%progbits
+ 344              		.align	1
+ 345              		.global	TRACER_EMB_AllocateBufer
+ 346              		.syntax unified
+ 347              		.code	16
+ 348              		.thumb_func
+ 349              		.fpu softvfp
+ 351              	TRACER_EMB_AllocateBufer:
+ 352              	.LVL14:
+ 353              	.LFB919:
+ 249:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 250:Utilities/TRACER_EMB/tracer_emb.c **** /**
+ 251:Utilities/TRACER_EMB/tracer_emb.c ****   * @brief  if buffer is not locked return a Begin / end @ to transfert over the media.
+ 252:Utilities/TRACER_EMB/tracer_emb.c ****   * @param  address begin of the data
+ 253:Utilities/TRACER_EMB/tracer_emb.c ****   * @param  address end of the data
+ 254:Utilities/TRACER_EMB/tracer_emb.c ****   * @retval USBPD_TRUE if a transfer can be execute else USBPD_FALSE.
+ 255:Utilities/TRACER_EMB/tracer_emb.c ****   */
+ 256:Utilities/TRACER_EMB/tracer_emb.c **** static TRACER_StatusTypedef TRACER_CheckLook(uint32_t *Begin, uint32_t *End)
+ 257:Utilities/TRACER_EMB/tracer_emb.c **** {
+ 258:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_StatusTypedef _status = TRACER_KO;
+ARM GAS  /tmp/ccbqBohW.s 			page 19
+
+
+ 259:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_ENTER_CRITICAL_SECTION();
+ 260:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 261:Utilities/TRACER_EMB/tracer_emb.c ****   if (0u == Counter)
+ 262:Utilities/TRACER_EMB/tracer_emb.c ****   {
+ 263:Utilities/TRACER_EMB/tracer_emb.c ****     *Begin = PtrTx_Read;
+ 264:Utilities/TRACER_EMB/tracer_emb.c ****     *End = PtrTx_Write;
+ 265:Utilities/TRACER_EMB/tracer_emb.c ****     _status = TRACER_OK;
+ 266:Utilities/TRACER_EMB/tracer_emb.c ****   }
+ 267:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 268:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_LEAVE_CRITICAL_SECTION();
+ 269:Utilities/TRACER_EMB/tracer_emb.c ****   return _status;
+ 270:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 271:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 272:Utilities/TRACER_EMB/tracer_emb.c **** /**
+ 273:Utilities/TRACER_EMB/tracer_emb.c ****   * @brief  allocate space inside the buffer to push data
+ 274:Utilities/TRACER_EMB/tracer_emb.c ****   * @param  data size
+ 275:Utilities/TRACER_EMB/tracer_emb.c ****   * @retval write position inside the buffer is -1 no space available.
+ 276:Utilities/TRACER_EMB/tracer_emb.c ****   */
+ 277:Utilities/TRACER_EMB/tracer_emb.c **** int32_t TRACER_EMB_AllocateBufer(uint32_t Size)
+ 278:Utilities/TRACER_EMB/tracer_emb.c **** {
+ 354              		.loc 1 278 1 is_stmt 1 view -0
+ 355              		.cfi_startproc
+ 356              		@ args = 0, pretend = 0, frame = 0
+ 357              		@ frame_needed = 0, uses_anonymous_args = 0
+ 279:Utilities/TRACER_EMB/tracer_emb.c ****   uint32_t _freesize;
+ 358              		.loc 1 279 3 view .LVU68
+ 280:Utilities/TRACER_EMB/tracer_emb.c ****   int32_t _pos = -1;
+ 359              		.loc 1 280 3 view .LVU69
+ 281:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 282:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_ENTER_CRITICAL_SECTION();
+ 360              		.loc 1 282 3 view .LVU70
+ 361              	.LBB44:
+ 362              	.LBI44:
+ 382:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 363              		.loc 2 382 31 view .LVU71
+ 364              	.LBB45:
+ 384:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 365              		.loc 2 384 3 view .LVU72
+ 386:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 366              		.loc 2 386 3 view .LVU73
+ 367              	.LBE45:
+ 368              	.LBE44:
+ 278:Utilities/TRACER_EMB/tracer_emb.c ****   uint32_t _freesize;
+ 369              		.loc 1 278 1 is_stmt 0 view .LVU74
+ 370 0000 0300     		movs	r3, r0
+ 371 0002 30B5     		push	{r4, r5, lr}
+ 372              	.LCFI4:
+ 373              		.cfi_def_cfa_offset 12
+ 374              		.cfi_offset 4, -12
+ 375              		.cfi_offset 5, -8
+ 376              		.cfi_offset 14, -4
+ 377              	.LBB47:
+ 378              	.LBB46:
+ 386:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 379              		.loc 2 386 3 view .LVU75
+ 380              		.syntax divided
+ 381              	@ 386 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ARM GAS  /tmp/ccbqBohW.s 			page 20
+
+
+ 382 0004 EFF31084 		MRS r4, primask
+ 383              	@ 0 "" 2
+ 384              	.LVL15:
+ 387:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 385              		.loc 2 387 3 is_stmt 1 view .LVU76
+ 387:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 386              		.loc 2 387 3 is_stmt 0 view .LVU77
+ 387              		.thumb
+ 388              		.syntax unified
+ 389              	.LBE46:
+ 390              	.LBE47:
+ 391              		.loc 1 282 3 is_stmt 1 view .LVU78
+ 392              	.LBB48:
+ 393              	.LBI48:
+ 140:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 394              		.loc 2 140 27 view .LVU79
+ 395              	.LBB49:
+ 142:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 396              		.loc 2 142 3 view .LVU80
+ 397              		.syntax divided
+ 398              	@ 142 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 399 0008 72B6     		cpsid i
+ 400              	@ 0 "" 2
+ 401              		.thumb
+ 402              		.syntax unified
+ 403              	.LBE49:
+ 404              	.LBE48:
+ 405              		.loc 1 282 34 view .LVU81
+ 283:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 284:Utilities/TRACER_EMB/tracer_emb.c ****   if (PtrTx_Write == PtrTx_Read)
+ 406              		.loc 1 284 3 view .LVU82
+ 407              		.loc 1 284 19 is_stmt 0 view .LVU83
+ 408 000a 0E49     		ldr	r1, .L20
+ 409 000c 0E4A     		ldr	r2, .L20+4
+ 410 000e 0868     		ldr	r0, [r1]
+ 411              	.LVL16:
+ 412              		.loc 1 284 19 view .LVU84
+ 413 0010 1268     		ldr	r2, [r2]
+ 414              		.loc 1 284 6 view .LVU85
+ 415 0012 9042     		cmp	r0, r2
+ 416 0014 0FD0     		beq	.L18
+ 285:Utilities/TRACER_EMB/tracer_emb.c ****   {
+ 286:Utilities/TRACER_EMB/tracer_emb.c ****     // need to add buffer full managment
+ 287:Utilities/TRACER_EMB/tracer_emb.c ****     _freesize = TRACER_EMB_BUFFER_SIZE;
+ 288:Utilities/TRACER_EMB/tracer_emb.c ****   }
+ 289:Utilities/TRACER_EMB/tracer_emb.c ****   else
+ 290:Utilities/TRACER_EMB/tracer_emb.c ****   {
+ 291:Utilities/TRACER_EMB/tracer_emb.c ****     if (PtrTx_Write > PtrTx_Read)
+ 417              		.loc 1 291 5 is_stmt 1 view .LVU86
+ 292:Utilities/TRACER_EMB/tracer_emb.c ****     {
+ 293:Utilities/TRACER_EMB/tracer_emb.c ****       _freesize = TRACER_EMB_BUFFER_SIZE - PtrTx_Write + PtrTx_Read;
+ 294:Utilities/TRACER_EMB/tracer_emb.c ****     }
+ 295:Utilities/TRACER_EMB/tracer_emb.c ****     else
+ 296:Utilities/TRACER_EMB/tracer_emb.c ****     {
+ 297:Utilities/TRACER_EMB/tracer_emb.c ****       _freesize = PtrTx_Read - PtrTx_Write;
+ 418              		.loc 1 297 17 is_stmt 0 view .LVU87
+ 419 0016 151A     		subs	r5, r2, r0
+ARM GAS  /tmp/ccbqBohW.s 			page 21
+
+
+ 291:Utilities/TRACER_EMB/tracer_emb.c ****     {
+ 420              		.loc 1 291 8 view .LVU88
+ 421 0018 9042     		cmp	r0, r2
+ 422 001a 03D9     		bls	.L15
+ 293:Utilities/TRACER_EMB/tracer_emb.c ****     }
+ 423              		.loc 1 293 7 is_stmt 1 view .LVU89
+ 293:Utilities/TRACER_EMB/tracer_emb.c ****     }
+ 424              		.loc 1 293 17 is_stmt 0 view .LVU90
+ 425 001c 8025     		movs	r5, #128
+ 426 001e ED00     		lsls	r5, r5, #3
+ 427 0020 5219     		adds	r2, r2, r5
+ 428 0022 151A     		subs	r5, r2, r0
+ 429              	.LVL17:
+ 430              	.L15:
+ 298:Utilities/TRACER_EMB/tracer_emb.c ****     }
+ 299:Utilities/TRACER_EMB/tracer_emb.c ****   }
+ 300:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 301:Utilities/TRACER_EMB/tracer_emb.c ****   if (_freesize > Size)
+ 431              		.loc 1 301 3 is_stmt 1 view .LVU91
+ 432              		.loc 1 301 6 is_stmt 0 view .LVU92
+ 433 0024 9D42     		cmp	r5, r3
+ 434 0026 09D9     		bls	.L19
+ 302:Utilities/TRACER_EMB/tracer_emb.c ****   {
+ 303:Utilities/TRACER_EMB/tracer_emb.c ****     _pos = (int32_t)PtrTx_Write;
+ 435              		.loc 1 303 5 is_stmt 1 view .LVU93
+ 436              	.LVL18:
+ 304:Utilities/TRACER_EMB/tracer_emb.c ****     PtrTx_Write = (PtrTx_Write + Size) % TRACER_EMB_BUFFER_SIZE;
+ 437              		.loc 1 304 5 view .LVU94
+ 438              		.loc 1 304 32 is_stmt 0 view .LVU95
+ 439 0028 C318     		adds	r3, r0, r3
+ 440              	.LVL19:
+ 441              		.loc 1 304 40 view .LVU96
+ 442 002a 9B05     		lsls	r3, r3, #22
+ 443 002c 9B0D     		lsrs	r3, r3, #22
+ 444              		.loc 1 304 17 view .LVU97
+ 445 002e 0B60     		str	r3, [r1]
+ 446              	.LVL20:
+ 447              	.L17:
+ 305:Utilities/TRACER_EMB/tracer_emb.c ****   }
+ 306:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 307:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_LEAVE_CRITICAL_SECTION();
+ 448              		.loc 1 307 3 is_stmt 1 view .LVU98
+ 449              	.LBB50:
+ 450              	.LBI50:
+ 412:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 451              		.loc 2 412 27 view .LVU99
+ 452              	.LBB51:
+ 453              		.loc 2 414 3 view .LVU100
+ 454              		.syntax divided
+ 455              	@ 414 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 456 0030 84F31088 		MSR primask, r4
+ 457              	@ 0 "" 2
+ 458              	.LVL21:
+ 459              		.loc 2 414 3 is_stmt 0 view .LVU101
+ 460              		.thumb
+ 461              		.syntax unified
+ 462              	.LBE51:
+ARM GAS  /tmp/ccbqBohW.s 			page 22
+
+
+ 463              	.LBE50:
+ 308:Utilities/TRACER_EMB/tracer_emb.c ****   return _pos;
+ 464              		.loc 1 308 3 is_stmt 1 view .LVU102
+ 309:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 465              		.loc 1 309 1 is_stmt 0 view .LVU103
+ 466              		@ sp needed
+ 467              	.LVL22:
+ 468              	.LVL23:
+ 469              		.loc 1 309 1 view .LVU104
+ 470 0034 30BD     		pop	{r4, r5, pc}
+ 471              	.LVL24:
+ 472              	.L18:
+ 287:Utilities/TRACER_EMB/tracer_emb.c ****   }
+ 473              		.loc 1 287 15 view .LVU105
+ 474 0036 8025     		movs	r5, #128
+ 475 0038 ED00     		lsls	r5, r5, #3
+ 476 003a F3E7     		b	.L15
+ 477              	.LVL25:
+ 478              	.L19:
+ 280:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 479              		.loc 1 280 11 view .LVU106
+ 480 003c 0120     		movs	r0, #1
+ 481 003e 4042     		rsbs	r0, r0, #0
+ 482 0040 F6E7     		b	.L17
+ 483              	.L21:
+ 484 0042 C046     		.align	2
+ 485              	.L20:
+ 486 0044 00000000 		.word	.LANCHOR1
+ 487 0048 00000000 		.word	.LANCHOR2
+ 488              		.cfi_endproc
+ 489              	.LFE919:
+ 491              		.section	.text.TRACER_EMB_LowPowerInit,"ax",%progbits
+ 492              		.align	1
+ 493              		.weak	TRACER_EMB_LowPowerInit
+ 494              		.syntax unified
+ 495              		.code	16
+ 496              		.thumb_func
+ 497              		.fpu softvfp
+ 499              	TRACER_EMB_LowPowerInit:
+ 500              	.LFB920:
+ 310:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 311:Utilities/TRACER_EMB/tracer_emb.c **** __weak void TRACER_EMB_LowPowerInit(void)
+ 312:Utilities/TRACER_EMB/tracer_emb.c **** {
+ 501              		.loc 1 312 1 is_stmt 1 view -0
+ 502              		.cfi_startproc
+ 503              		@ args = 0, pretend = 0, frame = 0
+ 504              		@ frame_needed = 0, uses_anonymous_args = 0
+ 505              		@ link register save eliminated.
+ 313:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 506              		.loc 1 313 1 view .LVU108
+ 507              		@ sp needed
+ 508 0000 7047     		bx	lr
+ 509              		.cfi_endproc
+ 510              	.LFE920:
+ 512              		.section	.text.TRACER_EMB_Init,"ax",%progbits
+ 513              		.align	1
+ 514              		.global	TRACER_EMB_Init
+ARM GAS  /tmp/ccbqBohW.s 			page 23
+
+
+ 515              		.syntax unified
+ 516              		.code	16
+ 517              		.thumb_func
+ 518              		.fpu softvfp
+ 520              	TRACER_EMB_Init:
+ 521              	.LFB907:
+ 107:Utilities/TRACER_EMB/tracer_emb.c ****   /* initialize the Ptr for Read/Write */
+ 522              		.loc 1 107 1 view -0
+ 523              		.cfi_startproc
+ 524              		@ args = 0, pretend = 0, frame = 0
+ 525              		@ frame_needed = 0, uses_anonymous_args = 0
+ 109:Utilities/TRACER_EMB/tracer_emb.c ****   PtrTx_Write = 0u;
+ 526              		.loc 1 109 3 view .LVU110
+ 109:Utilities/TRACER_EMB/tracer_emb.c ****   PtrTx_Write = 0u;
+ 527              		.loc 1 109 14 is_stmt 0 view .LVU111
+ 528 0000 0023     		movs	r3, #0
+ 107:Utilities/TRACER_EMB/tracer_emb.c ****   /* initialize the Ptr for Read/Write */
+ 529              		.loc 1 107 1 view .LVU112
+ 530 0002 10B5     		push	{r4, lr}
+ 531              	.LCFI5:
+ 532              		.cfi_def_cfa_offset 8
+ 533              		.cfi_offset 4, -8
+ 534              		.cfi_offset 14, -4
+ 109:Utilities/TRACER_EMB/tracer_emb.c ****   PtrTx_Write = 0u;
+ 535              		.loc 1 109 14 view .LVU113
+ 536 0004 044A     		ldr	r2, .L24
+ 116:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 537              		.loc 1 116 1 view .LVU114
+ 538              		@ sp needed
+ 109:Utilities/TRACER_EMB/tracer_emb.c ****   PtrTx_Write = 0u;
+ 539              		.loc 1 109 14 view .LVU115
+ 540 0006 1360     		str	r3, [r2]
+ 110:Utilities/TRACER_EMB/tracer_emb.c ****   /* Initialize trace BUS */
+ 541              		.loc 1 110 3 is_stmt 1 view .LVU116
+ 110:Utilities/TRACER_EMB/tracer_emb.c ****   /* Initialize trace BUS */
+ 542              		.loc 1 110 15 is_stmt 0 view .LVU117
+ 543 0008 044A     		ldr	r2, .L24+4
+ 544 000a 1360     		str	r3, [r2]
+ 112:Utilities/TRACER_EMB/tracer_emb.c ****   
+ 545              		.loc 1 112 3 is_stmt 1 view .LVU118
+ 546 000c FFF7FEFF 		bl	HW_TRACER_EMB_Init
+ 547              	.LVL26:
+ 115:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 548              		.loc 1 115 3 view .LVU119
+ 549 0010 FFF7FEFF 		bl	TRACER_EMB_LowPowerInit
+ 550              	.LVL27:
+ 116:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 551              		.loc 1 116 1 is_stmt 0 view .LVU120
+ 552 0014 10BD     		pop	{r4, pc}
+ 553              	.L25:
+ 554 0016 C046     		.align	2
+ 555              	.L24:
+ 556 0018 00000000 		.word	.LANCHOR2
+ 557 001c 00000000 		.word	.LANCHOR1
+ 558              		.cfi_endproc
+ 559              	.LFE907:
+ 561              		.section	.text.TRACER_EMB_LowPowerSendData,"ax",%progbits
+ARM GAS  /tmp/ccbqBohW.s 			page 24
+
+
+ 562              		.align	1
+ 563              		.weak	TRACER_EMB_LowPowerSendData
+ 564              		.syntax unified
+ 565              		.code	16
+ 566              		.thumb_func
+ 567              		.fpu softvfp
+ 569              	TRACER_EMB_LowPowerSendData:
+ 570              	.LFB925:
+ 571              		.cfi_startproc
+ 572              		@ args = 0, pretend = 0, frame = 0
+ 573              		@ frame_needed = 0, uses_anonymous_args = 0
+ 574              		@ link register save eliminated.
+ 575              		@ sp needed
+ 576 0000 7047     		bx	lr
+ 577              		.cfi_endproc
+ 578              	.LFE925:
+ 580              		.section	.text.TRACER_EMB_TX_Process,"ax",%progbits
+ 581              		.align	1
+ 582              		.global	TRACER_EMB_TX_Process
+ 583              		.syntax unified
+ 584              		.code	16
+ 585              		.thumb_func
+ 586              		.fpu softvfp
+ 588              	TRACER_EMB_TX_Process:
+ 589              	.LFB911:
+ 156:Utilities/TRACER_EMB/tracer_emb.c ****   uint32_t _timing = 2u;
+ 590              		.loc 1 156 1 is_stmt 1 view -0
+ 591              		.cfi_startproc
+ 592              		@ args = 0, pretend = 0, frame = 0
+ 593              		@ frame_needed = 0, uses_anonymous_args = 0
+ 157:Utilities/TRACER_EMB/tracer_emb.c ****   uint32_t _begin, _end;
+ 594              		.loc 1 157 3 view .LVU122
+ 595              	.LVL28:
+ 158:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 596              		.loc 1 158 3 view .LVU123
+ 160:Utilities/TRACER_EMB/tracer_emb.c ****   {
+ 597              		.loc 1 160 3 view .LVU124
+ 598              	.LBB60:
+ 599              	.LBI60:
+ 256:Utilities/TRACER_EMB/tracer_emb.c **** {
+ 600              		.loc 1 256 29 view .LVU125
+ 601              	.LBB61:
+ 258:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_ENTER_CRITICAL_SECTION();
+ 602              		.loc 1 258 3 view .LVU126
+ 259:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 603              		.loc 1 259 3 view .LVU127
+ 604              	.LBB62:
+ 605              	.LBI62:
+ 382:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 606              		.loc 2 382 31 view .LVU128
+ 607              	.LBB63:
+ 384:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 608              		.loc 2 384 3 view .LVU129
+ 386:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 609              		.loc 2 386 3 view .LVU130
+ 610              	.LBE63:
+ 611              	.LBE62:
+ARM GAS  /tmp/ccbqBohW.s 			page 25
+
+
+ 612              	.LBE61:
+ 613              	.LBE60:
+ 156:Utilities/TRACER_EMB/tracer_emb.c ****   uint32_t _timing = 2u;
+ 614              		.loc 1 156 1 is_stmt 0 view .LVU131
+ 615 0000 70B5     		push	{r4, r5, r6, lr}
+ 616              	.LCFI6:
+ 617              		.cfi_def_cfa_offset 16
+ 618              		.cfi_offset 4, -16
+ 619              		.cfi_offset 5, -12
+ 620              		.cfi_offset 6, -8
+ 621              		.cfi_offset 14, -4
+ 622              	.LBB71:
+ 623              	.LBB70:
+ 624              	.LBB65:
+ 625              	.LBB64:
+ 386:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 626              		.loc 2 386 3 view .LVU132
+ 627              		.syntax divided
+ 628              	@ 386 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 629 0002 EFF31081 		MRS r1, primask
+ 630              	@ 0 "" 2
+ 631              	.LVL29:
+ 387:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 632              		.loc 2 387 3 is_stmt 1 view .LVU133
+ 387:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 633              		.loc 2 387 3 is_stmt 0 view .LVU134
+ 634              		.thumb
+ 635              		.syntax unified
+ 636              	.LBE64:
+ 637              	.LBE65:
+ 259:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 638              		.loc 1 259 3 is_stmt 1 view .LVU135
+ 639              	.LBB66:
+ 640              	.LBI66:
+ 140:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 641              		.loc 2 140 27 view .LVU136
+ 642              	.LBB67:
+ 142:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 643              		.loc 2 142 3 view .LVU137
+ 644              		.syntax divided
+ 645              	@ 142 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 646 0006 72B6     		cpsid i
+ 647              	@ 0 "" 2
+ 648              		.thumb
+ 649              		.syntax unified
+ 650              	.LBE67:
+ 651              	.LBE66:
+ 259:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 652              		.loc 1 259 34 view .LVU138
+ 261:Utilities/TRACER_EMB/tracer_emb.c ****   {
+ 653              		.loc 1 261 3 view .LVU139
+ 261:Utilities/TRACER_EMB/tracer_emb.c ****   {
+ 654              		.loc 1 261 10 is_stmt 0 view .LVU140
+ 655 0008 134B     		ldr	r3, .L36
+ 656 000a 1A68     		ldr	r2, [r3]
+ 258:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_ENTER_CRITICAL_SECTION();
+ 657              		.loc 1 258 24 view .LVU141
+ARM GAS  /tmp/ccbqBohW.s 			page 26
+
+
+ 658 000c 0123     		movs	r3, #1
+ 261:Utilities/TRACER_EMB/tracer_emb.c ****   {
+ 659              		.loc 1 261 6 view .LVU142
+ 660 000e 002A     		cmp	r2, #0
+ 661 0010 04D1     		bne	.L28
+ 263:Utilities/TRACER_EMB/tracer_emb.c ****     *End = PtrTx_Write;
+ 662              		.loc 1 263 5 is_stmt 1 view .LVU143
+ 263:Utilities/TRACER_EMB/tracer_emb.c ****     *End = PtrTx_Write;
+ 663              		.loc 1 263 12 is_stmt 0 view .LVU144
+ 664 0012 124B     		ldr	r3, .L36+4
+ 665 0014 1D68     		ldr	r5, [r3]
+ 666              	.LVL30:
+ 264:Utilities/TRACER_EMB/tracer_emb.c ****     _status = TRACER_OK;
+ 667              		.loc 1 264 5 is_stmt 1 view .LVU145
+ 264:Utilities/TRACER_EMB/tracer_emb.c ****     _status = TRACER_OK;
+ 668              		.loc 1 264 10 is_stmt 0 view .LVU146
+ 669 0016 124B     		ldr	r3, .L36+8
+ 670 0018 1C68     		ldr	r4, [r3]
+ 671              	.LVL31:
+ 265:Utilities/TRACER_EMB/tracer_emb.c ****   }
+ 672              		.loc 1 265 5 is_stmt 1 view .LVU147
+ 265:Utilities/TRACER_EMB/tracer_emb.c ****   }
+ 673              		.loc 1 265 13 is_stmt 0 view .LVU148
+ 674 001a 1300     		movs	r3, r2
+ 675              	.LVL32:
+ 676              	.L28:
+ 268:Utilities/TRACER_EMB/tracer_emb.c ****   return _status;
+ 677              		.loc 1 268 3 is_stmt 1 view .LVU149
+ 678              	.LBB68:
+ 679              	.LBI68:
+ 412:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 680              		.loc 2 412 27 view .LVU150
+ 681              	.LBB69:
+ 682              		.loc 2 414 3 view .LVU151
+ 683              		.syntax divided
+ 684              	@ 414 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 685 001c 81F31088 		MSR primask, r1
+ 686              	@ 0 "" 2
+ 687              	.LVL33:
+ 688              		.loc 2 414 3 is_stmt 0 view .LVU152
+ 689              		.thumb
+ 690              		.syntax unified
+ 691              	.LBE69:
+ 692              	.LBE68:
+ 269:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 693              		.loc 1 269 3 is_stmt 1 view .LVU153
+ 269:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 694              		.loc 1 269 3 is_stmt 0 view .LVU154
+ 695              	.LBE70:
+ 696              	.LBE71:
+ 157:Utilities/TRACER_EMB/tracer_emb.c ****   uint32_t _begin, _end;
+ 697              		.loc 1 157 12 view .LVU155
+ 698 0020 0220     		movs	r0, #2
+ 160:Utilities/TRACER_EMB/tracer_emb.c ****   {
+ 699              		.loc 1 160 6 view .LVU156
+ 700 0022 002B     		cmp	r3, #0
+ 701 0024 10D1     		bne	.L27
+ARM GAS  /tmp/ccbqBohW.s 			page 27
+
+
+ 162:Utilities/TRACER_EMB/tracer_emb.c ****     {
+ 702              		.loc 1 162 5 is_stmt 1 view .LVU157
+ 162:Utilities/TRACER_EMB/tracer_emb.c ****     {
+ 703              		.loc 1 162 8 is_stmt 0 view .LVU158
+ 704 0026 A542     		cmp	r5, r4
+ 705 0028 12D0     		beq	.L34
+ 169:Utilities/TRACER_EMB/tracer_emb.c ****       /*  */
+ 706              		.loc 1 169 7 is_stmt 1 view .LVU159
+ 707 002a FFF7FEFF 		bl	TRACER_EMB_Lock
+ 708              	.LVL34:
+ 171:Utilities/TRACER_EMB/tracer_emb.c ****       {
+ 709              		.loc 1 171 7 view .LVU160
+ 171:Utilities/TRACER_EMB/tracer_emb.c ****       {
+ 710              		.loc 1 171 10 is_stmt 0 view .LVU161
+ 711 002e A542     		cmp	r5, r4
+ 712 0030 0BD2     		bcs	.L30
+ 713              	.LVL35:
+ 714              	.L35:
+ 171:Utilities/TRACER_EMB/tracer_emb.c ****       {
+ 715              		.loc 1 171 10 view .LVU162
+ 716 0032 0C4E     		ldr	r6, .L36+12
+ 177:Utilities/TRACER_EMB/tracer_emb.c ****       }
+ 717              		.loc 1 177 43 view .LVU163
+ 718 0034 641B     		subs	r4, r4, r5
+ 719 0036 3460     		str	r4, [r6]
+ 179:Utilities/TRACER_EMB/tracer_emb.c ****       HW_TRACER_EMB_SendData(&PtrDataTx[_begin], SizeSent);
+ 720              		.loc 1 179 7 is_stmt 1 view .LVU164
+ 721 0038 FFF7FEFF 		bl	TRACER_EMB_LowPowerSendData
+ 722              	.LVL36:
+ 180:Utilities/TRACER_EMB/tracer_emb.c ****     }
+ 723              		.loc 1 180 7 view .LVU165
+ 724 003c 0A48     		ldr	r0, .L36+16
+ 725 003e 3168     		ldr	r1, [r6]
+ 726 0040 2818     		adds	r0, r5, r0
+ 727 0042 FFF7FEFF 		bl	HW_TRACER_EMB_SendData
+ 728              	.LVL37:
+ 157:Utilities/TRACER_EMB/tracer_emb.c ****   uint32_t _begin, _end;
+ 729              		.loc 1 157 12 is_stmt 0 view .LVU166
+ 730 0046 0220     		movs	r0, #2
+ 731              	.LVL38:
+ 732              	.L27:
+ 184:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 733              		.loc 1 184 1 view .LVU167
+ 734              		@ sp needed
+ 735 0048 70BD     		pop	{r4, r5, r6, pc}
+ 736              	.LVL39:
+ 737              	.L30:
+ 177:Utilities/TRACER_EMB/tracer_emb.c ****       }
+ 738              		.loc 1 177 9 is_stmt 1 view .LVU168
+ 177:Utilities/TRACER_EMB/tracer_emb.c ****       }
+ 739              		.loc 1 177 43 is_stmt 0 view .LVU169
+ 740 004a 8024     		movs	r4, #128
+ 741              	.LVL40:
+ 177:Utilities/TRACER_EMB/tracer_emb.c ****       }
+ 742              		.loc 1 177 43 view .LVU170
+ 743 004c E400     		lsls	r4, r4, #3
+ 744 004e F0E7     		b	.L35
+ARM GAS  /tmp/ccbqBohW.s 			page 28
+
+
+ 745              	.LVL41:
+ 746              	.L34:
+ 165:Utilities/TRACER_EMB/tracer_emb.c ****     }
+ 747              		.loc 1 165 15 view .LVU171
+ 748 0050 0120     		movs	r0, #1
+ 749 0052 4042     		rsbs	r0, r0, #0
+ 750              	.LVL42:
+ 183:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 751              		.loc 1 183 3 is_stmt 1 view .LVU172
+ 183:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 752              		.loc 1 183 10 is_stmt 0 view .LVU173
+ 753 0054 F8E7     		b	.L27
+ 754              	.L37:
+ 755 0056 C046     		.align	2
+ 756              	.L36:
+ 757 0058 00000000 		.word	.LANCHOR0
+ 758 005c 00000000 		.word	.LANCHOR2
+ 759 0060 00000000 		.word	.LANCHOR1
+ 760 0064 00000000 		.word	.LANCHOR3
+ 761 0068 00000000 		.word	PtrDataTx
+ 762              		.cfi_endproc
+ 763              	.LFE911:
+ 765              		.section	.text.TRACER_EMB_LowPowerSendDataComplete,"ax",%progbits
+ 766              		.align	1
+ 767              		.weak	TRACER_EMB_LowPowerSendDataComplete
+ 768              		.syntax unified
+ 769              		.code	16
+ 770              		.thumb_func
+ 771              		.fpu softvfp
+ 773              	TRACER_EMB_LowPowerSendDataComplete:
+ 774              	.LFB927:
+ 775              		.cfi_startproc
+ 776              		@ args = 0, pretend = 0, frame = 0
+ 777              		@ frame_needed = 0, uses_anonymous_args = 0
+ 778              		@ link register save eliminated.
+ 779              		@ sp needed
+ 780 0000 7047     		bx	lr
+ 781              		.cfi_endproc
+ 782              	.LFE927:
+ 784              		.section	.text.TRACER_EMB_CALLBACK_TX,"ax",%progbits
+ 785              		.align	1
+ 786              		.global	TRACER_EMB_CALLBACK_TX
+ 787              		.syntax unified
+ 788              		.code	16
+ 789              		.thumb_func
+ 790              		.fpu softvfp
+ 792              	TRACER_EMB_CALLBACK_TX:
+ 793              	.LFB915:
+ 218:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_ENTER_CRITICAL_SECTION();
+ 794              		.loc 1 218 1 is_stmt 1 view -0
+ 795              		.cfi_startproc
+ 796              		@ args = 0, pretend = 0, frame = 0
+ 797              		@ frame_needed = 0, uses_anonymous_args = 0
+ 219:Utilities/TRACER_EMB/tracer_emb.c ****   PtrTx_Read = (PtrTx_Read + SizeSent) % TRACER_EMB_BUFFER_SIZE;
+ 798              		.loc 1 219 3 view .LVU175
+ 799              	.LBB72:
+ 800              	.LBI72:
+ARM GAS  /tmp/ccbqBohW.s 			page 29
+
+
+ 382:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 801              		.loc 2 382 31 view .LVU176
+ 802              	.LBB73:
+ 384:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 803              		.loc 2 384 3 view .LVU177
+ 386:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 804              		.loc 2 386 3 view .LVU178
+ 805              	.LBE73:
+ 806              	.LBE72:
+ 218:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_ENTER_CRITICAL_SECTION();
+ 807              		.loc 1 218 1 is_stmt 0 view .LVU179
+ 808 0000 10B5     		push	{r4, lr}
+ 809              	.LCFI7:
+ 810              		.cfi_def_cfa_offset 8
+ 811              		.cfi_offset 4, -8
+ 812              		.cfi_offset 14, -4
+ 813              	.LBB75:
+ 814              	.LBB74:
+ 386:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 815              		.loc 2 386 3 view .LVU180
+ 816              		.syntax divided
+ 817              	@ 386 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 818 0002 EFF31081 		MRS r1, primask
+ 819              	@ 0 "" 2
+ 820              	.LVL43:
+ 387:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 821              		.loc 2 387 3 is_stmt 1 view .LVU181
+ 387:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 822              		.loc 2 387 3 is_stmt 0 view .LVU182
+ 823              		.thumb
+ 824              		.syntax unified
+ 825              	.LBE74:
+ 826              	.LBE75:
+ 219:Utilities/TRACER_EMB/tracer_emb.c ****   PtrTx_Read = (PtrTx_Read + SizeSent) % TRACER_EMB_BUFFER_SIZE;
+ 827              		.loc 1 219 3 is_stmt 1 view .LVU183
+ 828              	.LBB76:
+ 829              	.LBI76:
+ 140:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 830              		.loc 2 140 27 view .LVU184
+ 831              	.LBB77:
+ 142:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 832              		.loc 2 142 3 view .LVU185
+ 833              		.syntax divided
+ 834              	@ 142 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 835 0006 72B6     		cpsid i
+ 836              	@ 0 "" 2
+ 837              		.thumb
+ 838              		.syntax unified
+ 839              	.LBE77:
+ 840              	.LBE76:
+ 219:Utilities/TRACER_EMB/tracer_emb.c ****   PtrTx_Read = (PtrTx_Read + SizeSent) % TRACER_EMB_BUFFER_SIZE;
+ 841              		.loc 1 219 34 view .LVU186
+ 220:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_LEAVE_CRITICAL_SECTION();
+ 842              		.loc 1 220 3 view .LVU187
+ 220:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_LEAVE_CRITICAL_SECTION();
+ 843              		.loc 1 220 14 is_stmt 0 view .LVU188
+ 844 0008 074A     		ldr	r2, .L40
+ARM GAS  /tmp/ccbqBohW.s 			page 30
+
+
+ 220:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_LEAVE_CRITICAL_SECTION();
+ 845              		.loc 1 220 28 view .LVU189
+ 846 000a 084B     		ldr	r3, .L40+4
+ 847 000c 1068     		ldr	r0, [r2]
+ 848 000e 1B68     		ldr	r3, [r3]
+ 849 0010 C318     		adds	r3, r0, r3
+ 220:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_LEAVE_CRITICAL_SECTION();
+ 850              		.loc 1 220 40 view .LVU190
+ 851 0012 9B05     		lsls	r3, r3, #22
+ 852 0014 9B0D     		lsrs	r3, r3, #22
+ 220:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_LEAVE_CRITICAL_SECTION();
+ 853              		.loc 1 220 14 view .LVU191
+ 854 0016 1360     		str	r3, [r2]
+ 221:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_EMB_UnLock();
+ 855              		.loc 1 221 3 is_stmt 1 view .LVU192
+ 856              	.LVL44:
+ 857              	.LBB78:
+ 858              	.LBI78:
+ 412:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 859              		.loc 2 412 27 view .LVU193
+ 860              	.LBB79:
+ 861              		.loc 2 414 3 view .LVU194
+ 862              		.syntax divided
+ 863              	@ 414 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 864 0018 81F31088 		MSR primask, r1
+ 865              	@ 0 "" 2
+ 866              	.LVL45:
+ 867              		.loc 2 414 3 is_stmt 0 view .LVU195
+ 868              		.thumb
+ 869              		.syntax unified
+ 870              	.LBE79:
+ 871              	.LBE78:
+ 222:Utilities/TRACER_EMB/tracer_emb.c ****   TRACER_EMB_LowPowerSendDataComplete();
+ 872              		.loc 1 222 3 is_stmt 1 view .LVU196
+ 873 001c FFF7FEFF 		bl	TRACER_EMB_UnLock
+ 874              	.LVL46:
+ 223:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 875              		.loc 1 223 3 view .LVU197
+ 224:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 876              		.loc 1 224 1 is_stmt 0 view .LVU198
+ 877              		@ sp needed
+ 223:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 878              		.loc 1 223 3 view .LVU199
+ 879 0020 FFF7FEFF 		bl	TRACER_EMB_LowPowerSendDataComplete
+ 880              	.LVL47:
+ 224:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 881              		.loc 1 224 1 view .LVU200
+ 882 0024 10BD     		pop	{r4, pc}
+ 883              	.L41:
+ 884 0026 C046     		.align	2
+ 885              	.L40:
+ 886 0028 00000000 		.word	.LANCHOR2
+ 887 002c 00000000 		.word	.LANCHOR3
+ 888              		.cfi_endproc
+ 889              	.LFE915:
+ 891              		.section	.text.TRACER_EMB_WakeUpProcess,"ax",%progbits
+ 892              		.align	1
+ARM GAS  /tmp/ccbqBohW.s 			page 31
+
+
+ 893              		.weak	TRACER_EMB_WakeUpProcess
+ 894              		.syntax unified
+ 895              		.code	16
+ 896              		.thumb_func
+ 897              		.fpu softvfp
+ 899              	TRACER_EMB_WakeUpProcess:
+ 900              	.LFB929:
+ 901              		.cfi_startproc
+ 902              		@ args = 0, pretend = 0, frame = 0
+ 903              		@ frame_needed = 0, uses_anonymous_args = 0
+ 904              		@ link register save eliminated.
+ 905              		@ sp needed
+ 906 0000 7047     		bx	lr
+ 907              		.cfi_endproc
+ 908              	.LFE929:
+ 910              		.section	.text.TRACER_EMB_Add,"ax",%progbits
+ 911              		.align	1
+ 912              		.global	TRACER_EMB_Add
+ 913              		.syntax unified
+ 914              		.code	16
+ 915              		.thumb_func
+ 916              		.fpu softvfp
+ 918              	TRACER_EMB_Add:
+ 919              	.LVL48:
+ 920              	.LFB908:
+ 119:Utilities/TRACER_EMB/tracer_emb.c ****   int32_t _writepos;
+ 921              		.loc 1 119 1 is_stmt 1 view -0
+ 922              		.cfi_startproc
+ 923              		@ args = 0, pretend = 0, frame = 0
+ 924              		@ frame_needed = 0, uses_anonymous_args = 0
+ 120:Utilities/TRACER_EMB/tracer_emb.c ****   uint8_t *data_to_write = Ptr;
+ 925              		.loc 1 120 3 view .LVU202
+ 121:Utilities/TRACER_EMB/tracer_emb.c ****   uint32_t index;
+ 926              		.loc 1 121 3 view .LVU203
+ 122:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 927              		.loc 1 122 3 view .LVU204
+ 124:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 928              		.loc 1 124 3 view .LVU205
+ 119:Utilities/TRACER_EMB/tracer_emb.c ****   int32_t _writepos;
+ 929              		.loc 1 119 1 is_stmt 0 view .LVU206
+ 930 0000 70B5     		push	{r4, r5, r6, lr}
+ 931              	.LCFI8:
+ 932              		.cfi_def_cfa_offset 16
+ 933              		.cfi_offset 4, -16
+ 934              		.cfi_offset 5, -12
+ 935              		.cfi_offset 6, -8
+ 936              		.cfi_offset 14, -4
+ 119:Utilities/TRACER_EMB/tracer_emb.c ****   int32_t _writepos;
+ 937              		.loc 1 119 1 view .LVU207
+ 938 0002 0C00     		movs	r4, r1
+ 939 0004 0500     		movs	r5, r0
+ 124:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 940              		.loc 1 124 3 view .LVU208
+ 941 0006 FFF7FEFF 		bl	TRACER_EMB_Lock
+ 942              	.LVL49:
+ 126:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 943              		.loc 1 126 3 is_stmt 1 view .LVU209
+ARM GAS  /tmp/ccbqBohW.s 			page 32
+
+
+ 126:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 944              		.loc 1 126 15 is_stmt 0 view .LVU210
+ 945 000a 2000     		movs	r0, r4
+ 946 000c FFF7FEFF 		bl	TRACER_EMB_AllocateBufer
+ 947              	.LVL50:
+ 129:Utilities/TRACER_EMB/tracer_emb.c ****   {
+ 948              		.loc 1 129 3 is_stmt 1 view .LVU211
+ 129:Utilities/TRACER_EMB/tracer_emb.c ****   {
+ 949              		.loc 1 129 6 is_stmt 0 view .LVU212
+ 950 0010 431C     		adds	r3, r0, #1
+ 951 0012 04D0     		beq	.L44
+ 952 0014 2B00     		movs	r3, r5
+ 134:Utilities/TRACER_EMB/tracer_emb.c ****     }
+ 953              		.loc 1 134 7 view .LVU213
+ 954 0016 0949     		ldr	r1, .L51
+ 955 0018 2C19     		adds	r4, r5, r4
+ 956              	.LVL51:
+ 957              	.L45:
+ 132:Utilities/TRACER_EMB/tracer_emb.c ****     {
+ 958              		.loc 1 132 22 is_stmt 1 discriminator 1 view .LVU214
+ 132:Utilities/TRACER_EMB/tracer_emb.c ****     {
+ 959              		.loc 1 132 5 is_stmt 0 discriminator 1 view .LVU215
+ 960 001a A342     		cmp	r3, r4
+ 961 001c 04D1     		bne	.L46
+ 962              	.LVL52:
+ 963              	.L44:
+ 137:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 964              		.loc 1 137 3 is_stmt 1 view .LVU216
+ 965 001e FFF7FEFF 		bl	TRACER_EMB_UnLock
+ 966              	.LVL53:
+ 140:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 967              		.loc 1 140 3 view .LVU217
+ 141:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 968              		.loc 1 141 1 is_stmt 0 view .LVU218
+ 969              		@ sp needed
+ 140:Utilities/TRACER_EMB/tracer_emb.c **** }
+ 970              		.loc 1 140 3 view .LVU219
+ 971 0022 FFF7FEFF 		bl	TRACER_EMB_WakeUpProcess
+ 972              	.LVL54:
+ 141:Utilities/TRACER_EMB/tracer_emb.c **** 
+ 973              		.loc 1 141 1 view .LVU220
+ 974 0026 70BD     		pop	{r4, r5, r6, pc}
+ 975              	.LVL55:
+ 976              	.L46:
+ 134:Utilities/TRACER_EMB/tracer_emb.c ****     }
+ 977              		.loc 1 134 7 is_stmt 1 discriminator 3 view .LVU221
+ 978 0028 1D78     		ldrb	r5, [r3]
+ 979 002a 8205     		lsls	r2, r0, #22
+ 980 002c 0130     		adds	r0, r0, #1
+ 981              	.LVL56:
+ 134:Utilities/TRACER_EMB/tracer_emb.c ****     }
+ 982              		.loc 1 134 7 is_stmt 0 discriminator 3 view .LVU222
+ 983 002e 920D     		lsrs	r2, r2, #22
+ 984 0030 8005     		lsls	r0, r0, #22
+ 985              	.LVL57:
+ 134:Utilities/TRACER_EMB/tracer_emb.c ****     }
+ 986              		.loc 1 134 7 discriminator 3 view .LVU223
+ARM GAS  /tmp/ccbqBohW.s 			page 33
+
+
+ 987 0032 8D54     		strb	r5, [r1, r2]
+ 134:Utilities/TRACER_EMB/tracer_emb.c ****     }
+ 988              		.loc 1 134 7 is_stmt 1 discriminator 3 view .LVU224
+ 989 0034 800D     		lsrs	r0, r0, #22
+ 990              	.LVL58:
+ 134:Utilities/TRACER_EMB/tracer_emb.c ****     }
+ 991              		.loc 1 134 57 discriminator 3 view .LVU225
+ 132:Utilities/TRACER_EMB/tracer_emb.c ****     {
+ 992              		.loc 1 132 36 discriminator 3 view .LVU226
+ 132:Utilities/TRACER_EMB/tracer_emb.c ****     {
+ 993              		.loc 1 132 36 is_stmt 0 discriminator 3 view .LVU227
+ 994 0036 0133     		adds	r3, r3, #1
+ 995              	.LVL59:
+ 132:Utilities/TRACER_EMB/tracer_emb.c ****     {
+ 996              		.loc 1 132 36 discriminator 3 view .LVU228
+ 997 0038 EFE7     		b	.L45
+ 998              	.L52:
+ 999 003a C046     		.align	2
+ 1000              	.L51:
+ 1001 003c 00000000 		.word	PtrDataTx
+ 1002              		.cfi_endproc
+ 1003              	.LFE908:
+ 1005              		.section	.bss.Counter,"aw",%nobits
+ 1006              		.align	2
+ 1007              		.set	.LANCHOR0,. + 0
+ 1010              	Counter:
+ 1011 0000 00000000 		.space	4
+ 1012              		.section	.bss.PtrDataTx,"aw",%nobits
+ 1015              	PtrDataTx:
+ 1016 0000 00000000 		.space	1024
+ 1016      00000000 
+ 1016      00000000 
+ 1016      00000000 
+ 1016      00000000 
+ 1017              		.section	.bss.PtrTx_Read,"aw",%nobits
+ 1018              		.align	2
+ 1019              		.set	.LANCHOR2,. + 0
+ 1022              	PtrTx_Read:
+ 1023 0000 00000000 		.space	4
+ 1024              		.section	.bss.PtrTx_Write,"aw",%nobits
+ 1025              		.align	2
+ 1026              		.set	.LANCHOR1,. + 0
+ 1029              	PtrTx_Write:
+ 1030 0000 00000000 		.space	4
+ 1031              		.section	.bss.SizeSent,"aw",%nobits
+ 1032              		.align	2
+ 1033              		.set	.LANCHOR3,. + 0
+ 1036              	SizeSent:
+ 1037 0000 00000000 		.space	4
+ 1038              		.text
+ 1039              	.Letext0:
+ 1040              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 1041              		.file 4 "Drivers/CMSIS/Device/ST/STM32G0xx/Include/system_stm32g0xx.h"
+ 1042              		.file 5 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_def.h"
+ 1043              		.file 6 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_flash.h"
+ 1044              		.file 7 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal.h"
+ 1045              		.file 8 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_dma.h"
+ARM GAS  /tmp/ccbqBohW.s 			page 34
+
+
+ 1046              		.file 9 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_usart.h"
+ 1047              		.file 10 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_lpuart.h"
+ 1048              		.file 11 "Utilities/TRACER_EMB/tracer_emb_hw.h"
+ARM GAS  /tmp/ccbqBohW.s 			page 35
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 tracer_emb.c
+     /tmp/ccbqBohW.s:16     .text.TRACER_EMB_IRQHandlerDMA:0000000000000000 $t
+     /tmp/ccbqBohW.s:24     .text.TRACER_EMB_IRQHandlerDMA:0000000000000000 TRACER_EMB_IRQHandlerDMA
+     /tmp/ccbqBohW.s:48     .text.TRACER_EMB_IRQHandlerUSART:0000000000000000 $t
+     /tmp/ccbqBohW.s:55     .text.TRACER_EMB_IRQHandlerUSART:0000000000000000 TRACER_EMB_IRQHandlerUSART
+     /tmp/ccbqBohW.s:78     .text.TRACER_EMB_WriteData:0000000000000000 $t
+     /tmp/ccbqBohW.s:85     .text.TRACER_EMB_WriteData:0000000000000000 TRACER_EMB_WriteData
+     /tmp/ccbqBohW.s:110    .text.TRACER_EMB_WriteData:000000000000000c $d
+     /tmp/ccbqBohW.s:1015   .bss.PtrDataTx:0000000000000000 PtrDataTx
+     /tmp/ccbqBohW.s:115    .text.TRACER_EMB_StartRX:0000000000000000 $t
+     /tmp/ccbqBohW.s:122    .text.TRACER_EMB_StartRX:0000000000000000 TRACER_EMB_StartRX
+     /tmp/ccbqBohW.s:151    .text.TRACER_EMB_ReadData:0000000000000000 $t
+     /tmp/ccbqBohW.s:158    .text.TRACER_EMB_ReadData:0000000000000000 TRACER_EMB_ReadData
+     /tmp/ccbqBohW.s:181    .text.TRACER_EMB_Lock:0000000000000000 $t
+     /tmp/ccbqBohW.s:188    .text.TRACER_EMB_Lock:0000000000000000 TRACER_EMB_Lock
+     /tmp/ccbqBohW.s:258    .text.TRACER_EMB_Lock:0000000000000014 $d
+     /tmp/ccbqBohW.s:263    .text.TRACER_EMB_UnLock:0000000000000000 $t
+     /tmp/ccbqBohW.s:270    .text.TRACER_EMB_UnLock:0000000000000000 TRACER_EMB_UnLock
+     /tmp/ccbqBohW.s:339    .text.TRACER_EMB_UnLock:0000000000000014 $d
+     /tmp/ccbqBohW.s:344    .text.TRACER_EMB_AllocateBufer:0000000000000000 $t
+     /tmp/ccbqBohW.s:351    .text.TRACER_EMB_AllocateBufer:0000000000000000 TRACER_EMB_AllocateBufer
+     /tmp/ccbqBohW.s:486    .text.TRACER_EMB_AllocateBufer:0000000000000044 $d
+     /tmp/ccbqBohW.s:492    .text.TRACER_EMB_LowPowerInit:0000000000000000 $t
+     /tmp/ccbqBohW.s:499    .text.TRACER_EMB_LowPowerInit:0000000000000000 TRACER_EMB_LowPowerInit
+     /tmp/ccbqBohW.s:513    .text.TRACER_EMB_Init:0000000000000000 $t
+     /tmp/ccbqBohW.s:520    .text.TRACER_EMB_Init:0000000000000000 TRACER_EMB_Init
+     /tmp/ccbqBohW.s:556    .text.TRACER_EMB_Init:0000000000000018 $d
+     /tmp/ccbqBohW.s:562    .text.TRACER_EMB_LowPowerSendData:0000000000000000 $t
+     /tmp/ccbqBohW.s:569    .text.TRACER_EMB_LowPowerSendData:0000000000000000 TRACER_EMB_LowPowerSendData
+     /tmp/ccbqBohW.s:581    .text.TRACER_EMB_TX_Process:0000000000000000 $t
+     /tmp/ccbqBohW.s:588    .text.TRACER_EMB_TX_Process:0000000000000000 TRACER_EMB_TX_Process
+     /tmp/ccbqBohW.s:757    .text.TRACER_EMB_TX_Process:0000000000000058 $d
+     /tmp/ccbqBohW.s:766    .text.TRACER_EMB_LowPowerSendDataComplete:0000000000000000 $t
+     /tmp/ccbqBohW.s:773    .text.TRACER_EMB_LowPowerSendDataComplete:0000000000000000 TRACER_EMB_LowPowerSendDataComplete
+     /tmp/ccbqBohW.s:785    .text.TRACER_EMB_CALLBACK_TX:0000000000000000 $t
+     /tmp/ccbqBohW.s:792    .text.TRACER_EMB_CALLBACK_TX:0000000000000000 TRACER_EMB_CALLBACK_TX
+     /tmp/ccbqBohW.s:886    .text.TRACER_EMB_CALLBACK_TX:0000000000000028 $d
+     /tmp/ccbqBohW.s:892    .text.TRACER_EMB_WakeUpProcess:0000000000000000 $t
+     /tmp/ccbqBohW.s:899    .text.TRACER_EMB_WakeUpProcess:0000000000000000 TRACER_EMB_WakeUpProcess
+     /tmp/ccbqBohW.s:911    .text.TRACER_EMB_Add:0000000000000000 $t
+     /tmp/ccbqBohW.s:918    .text.TRACER_EMB_Add:0000000000000000 TRACER_EMB_Add
+     /tmp/ccbqBohW.s:1001   .text.TRACER_EMB_Add:000000000000003c $d
+     /tmp/ccbqBohW.s:1006   .bss.Counter:0000000000000000 $d
+     /tmp/ccbqBohW.s:1010   .bss.Counter:0000000000000000 Counter
+     /tmp/ccbqBohW.s:1016   .bss.PtrDataTx:0000000000000000 $d
+     /tmp/ccbqBohW.s:1018   .bss.PtrTx_Read:0000000000000000 $d
+     /tmp/ccbqBohW.s:1022   .bss.PtrTx_Read:0000000000000000 PtrTx_Read
+     /tmp/ccbqBohW.s:1025   .bss.PtrTx_Write:0000000000000000 $d
+     /tmp/ccbqBohW.s:1029   .bss.PtrTx_Write:0000000000000000 PtrTx_Write
+     /tmp/ccbqBohW.s:1032   .bss.SizeSent:0000000000000000 $d
+     /tmp/ccbqBohW.s:1036   .bss.SizeSent:0000000000000000 SizeSent
+
+UNDEFINED SYMBOLS
+HW_TRACER_EMB_IRQHandlerDMA
+HW_TRACER_EMB_IRQHandlerUSART
+HW_TRACER_EMB_RegisterRxCallback
+ARM GAS  /tmp/ccbqBohW.s 			page 36
+
+
+HW_TRACER_EMB_StartRX
+HW_TRACER_EMB_ReadData
+HW_TRACER_EMB_Init
+HW_TRACER_EMB_SendData

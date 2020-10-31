@@ -1,0 +1,495 @@
+ARM GAS  /tmp/cc2dwxDI.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 4
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"usbpd.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.GetHWBoardVersionName,"ax",%progbits
+  16              		.align	1
+  17              		.arch armv6s-m
+  18              		.syntax unified
+  19              		.code	16
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	GetHWBoardVersionName:
+  24              	.LFB1070:
+  25              		.file 1 "Src/usbpd.c"
+   1:Src/usbpd.c   **** /* USER CODE BEGIN Header */
+   2:Src/usbpd.c   **** /**
+   3:Src/usbpd.c   ****   ******************************************************************************
+   4:Src/usbpd.c   ****   * @file    usbpd.c
+   5:Src/usbpd.c   ****   * @author  MCD Application Team
+   6:Src/usbpd.c   ****   * @brief   This file contains the device define.
+   7:Src/usbpd.c   ****   ******************************************************************************
+   8:Src/usbpd.c   ****   * @attention
+   9:Src/usbpd.c   ****   *
+  10:Src/usbpd.c   ****   * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+  11:Src/usbpd.c   ****   * All rights reserved.</center></h2>
+  12:Src/usbpd.c   ****   *
+  13:Src/usbpd.c   ****   * This software component is licensed by ST under Ultimate Liberty license
+  14:Src/usbpd.c   ****   * SLA0044, the "License"; You may not use this file except in compliance with
+  15:Src/usbpd.c   ****   * the License. You may obtain a copy of the License at:
+  16:Src/usbpd.c   ****   *                             www.st.com/SLA0044
+  17:Src/usbpd.c   ****   *
+  18:Src/usbpd.c   ****   ******************************************************************************
+  19:Src/usbpd.c   ****   */
+  20:Src/usbpd.c   **** /* USER CODE END Header */
+  21:Src/usbpd.c   **** 
+  22:Src/usbpd.c   **** /* Includes ------------------------------------------------------------------*/
+  23:Src/usbpd.c   **** #include "usbpd.h"
+  24:Src/usbpd.c   **** #include "gui_api.h"
+  25:Src/usbpd.c   **** 
+  26:Src/usbpd.c   **** /* USER CODE BEGIN 0 */
+  27:Src/usbpd.c   **** /* USER CODE END 0 */
+  28:Src/usbpd.c   **** 
+  29:Src/usbpd.c   **** /* USER CODE BEGIN 1 */
+  30:Src/usbpd.c   **** /* USER CODE END 1 */
+  31:Src/usbpd.c   **** 
+  32:Src/usbpd.c   **** /* Private variables ---------------------------------------------------------*/
+  33:Src/usbpd.c   **** const uint8_t HWBoardVersionName[] = "OtterBoard";
+ARM GAS  /tmp/cc2dwxDI.s 			page 2
+
+
+  34:Src/usbpd.c   **** const uint8_t PDTypeName[] = "V1.0";
+  35:Src/usbpd.c   **** 
+  36:Src/usbpd.c   **** /* Private functions ---------------------------------------------------------*/
+  37:Src/usbpd.c   **** static const uint8_t*          GetHWBoardVersionName(void);
+  38:Src/usbpd.c   **** static const uint8_t*          GetPDTypeName(void);
+  39:Src/usbpd.c   **** 
+  40:Src/usbpd.c   **** /* USER CODE BEGIN 2 */
+  41:Src/usbpd.c   **** /* USER CODE END 2 */
+  42:Src/usbpd.c   **** 
+  43:Src/usbpd.c   **** /* USBPD init function */
+  44:Src/usbpd.c   **** void MX_USBPD_Init(void)
+  45:Src/usbpd.c   **** {
+  46:Src/usbpd.c   **** 
+  47:Src/usbpd.c   ****   /* Global Init of USBPD HW */
+  48:Src/usbpd.c   ****   USBPD_HW_IF_GlobalHwInit();
+  49:Src/usbpd.c   **** 
+  50:Src/usbpd.c   ****   /* Initialize the Device Policy Manager */
+  51:Src/usbpd.c   ****   if(USBPD_OK != USBPD_DPM_InitCore())
+  52:Src/usbpd.c   ****   {
+  53:Src/usbpd.c   ****     while(1);
+  54:Src/usbpd.c   ****   }
+  55:Src/usbpd.c   **** 
+  56:Src/usbpd.c   ****   /* Initialize GUI before retrieving PDO from RAM */
+  57:Src/usbpd.c   ****   GUI_Init(GetHWBoardVersionName, GetPDTypeName, HW_IF_PWR_GetVoltage, HW_IF_PWR_GetCurrent);
+  58:Src/usbpd.c   **** 
+  59:Src/usbpd.c   ****   /* Initialise the DPM application */
+  60:Src/usbpd.c   ****   if (USBPD_OK != USBPD_DPM_UserInit())
+  61:Src/usbpd.c   ****   {
+  62:Src/usbpd.c   ****     while(1);
+  63:Src/usbpd.c   ****   }
+  64:Src/usbpd.c   **** 
+  65:Src/usbpd.c   ****   /* USER CODE BEGIN 3 */
+  66:Src/usbpd.c   ****   /* USER CODE END 3 */
+  67:Src/usbpd.c   **** 
+  68:Src/usbpd.c   ****   if(USBPD_OK != USBPD_DPM_InitOS())
+  69:Src/usbpd.c   ****   {
+  70:Src/usbpd.c   ****     while(1);
+  71:Src/usbpd.c   ****   }
+  72:Src/usbpd.c   **** 
+  73:Src/usbpd.c   ****   /* USER CODE BEGIN EnableIRQ */
+  74:Src/usbpd.c   ****   /* Enable IRQ which has been disabled by FreeRTOS services */
+  75:Src/usbpd.c   ****   __enable_irq();
+  76:Src/usbpd.c   ****   /* USER CODE END EnableIRQ */
+  77:Src/usbpd.c   **** 
+  78:Src/usbpd.c   **** }
+  79:Src/usbpd.c   **** /**
+  80:Src/usbpd.c   ****   * @brief  This method returns HW board version name
+  81:Src/usbpd.c   ****   * @retval HW Board version name
+  82:Src/usbpd.c   ****   */
+  83:Src/usbpd.c   **** static const uint8_t* GetHWBoardVersionName(void)
+  84:Src/usbpd.c   **** {
+  26              		.loc 1 84 1 view -0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              		@ link register save eliminated.
+  85:Src/usbpd.c   ****   return HWBoardVersionName;
+ARM GAS  /tmp/cc2dwxDI.s 			page 3
+
+
+  31              		.loc 1 85 3 view .LVU1
+  86:Src/usbpd.c   **** }
+  32              		.loc 1 86 1 is_stmt 0 view .LVU2
+  33 0000 0048     		ldr	r0, .L2
+  34              		@ sp needed
+  35 0002 7047     		bx	lr
+  36              	.L3:
+  37              		.align	2
+  38              	.L2:
+  39 0004 00000000 		.word	.LANCHOR0
+  40              		.cfi_endproc
+  41              	.LFE1070:
+  43              		.section	.text.GetPDTypeName,"ax",%progbits
+  44              		.align	1
+  45              		.syntax unified
+  46              		.code	16
+  47              		.thumb_func
+  48              		.fpu softvfp
+  50              	GetPDTypeName:
+  51              	.LFB1071:
+  87:Src/usbpd.c   **** 
+  88:Src/usbpd.c   **** /**
+  89:Src/usbpd.c   ****   * @brief  This method returns HW PD Type name
+  90:Src/usbpd.c   ****   * @retval HW Board version name
+  91:Src/usbpd.c   ****   */
+  92:Src/usbpd.c   **** static const uint8_t* GetPDTypeName(void)
+  93:Src/usbpd.c   **** {
+  52              		.loc 1 93 1 is_stmt 1 view -0
+  53              		.cfi_startproc
+  54              		@ args = 0, pretend = 0, frame = 0
+  55              		@ frame_needed = 0, uses_anonymous_args = 0
+  56              		@ link register save eliminated.
+  94:Src/usbpd.c   ****   return PDTypeName;
+  57              		.loc 1 94 3 view .LVU4
+  95:Src/usbpd.c   **** }
+  58              		.loc 1 95 1 is_stmt 0 view .LVU5
+  59 0000 0048     		ldr	r0, .L5
+  60              		@ sp needed
+  61 0002 7047     		bx	lr
+  62              	.L6:
+  63              		.align	2
+  64              	.L5:
+  65 0004 00000000 		.word	.LANCHOR1
+  66              		.cfi_endproc
+  67              	.LFE1071:
+  69              		.section	.text.MX_USBPD_Init,"ax",%progbits
+  70              		.align	1
+  71              		.global	MX_USBPD_Init
+  72              		.syntax unified
+  73              		.code	16
+  74              		.thumb_func
+  75              		.fpu softvfp
+  77              	MX_USBPD_Init:
+  78              	.LFB1069:
+  45:Src/usbpd.c   **** 
+  79              		.loc 1 45 1 is_stmt 1 view -0
+  80              		.cfi_startproc
+ARM GAS  /tmp/cc2dwxDI.s 			page 4
+
+
+  81              		@ args = 0, pretend = 0, frame = 0
+  82              		@ frame_needed = 0, uses_anonymous_args = 0
+  48:Src/usbpd.c   **** 
+  83              		.loc 1 48 3 view .LVU7
+  45:Src/usbpd.c   **** 
+  84              		.loc 1 45 1 is_stmt 0 view .LVU8
+  85 0000 10B5     		push	{r4, lr}
+  86              	.LCFI0:
+  87              		.cfi_def_cfa_offset 8
+  88              		.cfi_offset 4, -8
+  89              		.cfi_offset 14, -4
+  48:Src/usbpd.c   **** 
+  90              		.loc 1 48 3 view .LVU9
+  91 0002 FFF7FEFF 		bl	USBPD_HW_IF_GlobalHwInit
+  92              	.LVL0:
+  51:Src/usbpd.c   ****   {
+  93              		.loc 1 51 3 is_stmt 1 view .LVU10
+  51:Src/usbpd.c   ****   {
+  94              		.loc 1 51 18 is_stmt 0 view .LVU11
+  95 0006 FFF7FEFF 		bl	USBPD_DPM_InitCore
+  96              	.LVL1:
+  51:Src/usbpd.c   ****   {
+  97              		.loc 1 51 5 view .LVU12
+  98 000a 0028     		cmp	r0, #0
+  99 000c 00D0     		beq	.L8
+ 100              	.L9:
+  53:Src/usbpd.c   ****   }
+ 101              		.loc 1 53 5 is_stmt 1 discriminator 1 view .LVU13
+  53:Src/usbpd.c   ****   }
+ 102              		.loc 1 53 13 discriminator 1 view .LVU14
+  53:Src/usbpd.c   ****   }
+ 103              		.loc 1 53 10 discriminator 1 view .LVU15
+ 104 000e FEE7     		b	.L9
+ 105              	.L8:
+  57:Src/usbpd.c   **** 
+ 106              		.loc 1 57 3 view .LVU16
+ 107 0010 084B     		ldr	r3, .L14
+ 108 0012 094A     		ldr	r2, .L14+4
+ 109 0014 0949     		ldr	r1, .L14+8
+ 110 0016 0A48     		ldr	r0, .L14+12
+ 111 0018 FFF7FEFF 		bl	GUI_Init
+ 112              	.LVL2:
+  60:Src/usbpd.c   ****   {
+ 113              		.loc 1 60 3 view .LVU17
+  60:Src/usbpd.c   ****   {
+ 114              		.loc 1 60 19 is_stmt 0 view .LVU18
+ 115 001c FFF7FEFF 		bl	USBPD_DPM_UserInit
+ 116              	.LVL3:
+  60:Src/usbpd.c   ****   {
+ 117              		.loc 1 60 6 view .LVU19
+ 118 0020 0028     		cmp	r0, #0
+ 119 0022 00D0     		beq	.L10
+ 120              	.L11:
+  62:Src/usbpd.c   ****   }
+ 121              		.loc 1 62 5 is_stmt 1 discriminator 2 view .LVU20
+  62:Src/usbpd.c   ****   }
+ 122              		.loc 1 62 13 discriminator 2 view .LVU21
+ARM GAS  /tmp/cc2dwxDI.s 			page 5
+
+
+  62:Src/usbpd.c   ****   }
+ 123              		.loc 1 62 10 discriminator 2 view .LVU22
+ 124 0024 FEE7     		b	.L11
+ 125              	.L10:
+  68:Src/usbpd.c   ****   {
+ 126              		.loc 1 68 3 view .LVU23
+  68:Src/usbpd.c   ****   {
+ 127              		.loc 1 68 18 is_stmt 0 view .LVU24
+ 128 0026 FFF7FEFF 		bl	USBPD_DPM_InitOS
+ 129              	.LVL4:
+  68:Src/usbpd.c   ****   {
+ 130              		.loc 1 68 5 view .LVU25
+ 131 002a 0028     		cmp	r0, #0
+ 132 002c 00D0     		beq	.L12
+ 133              	.L13:
+  70:Src/usbpd.c   ****   }
+ 134              		.loc 1 70 5 is_stmt 1 discriminator 3 view .LVU26
+  70:Src/usbpd.c   ****   }
+ 135              		.loc 1 70 13 discriminator 3 view .LVU27
+  70:Src/usbpd.c   ****   }
+ 136              		.loc 1 70 10 discriminator 3 view .LVU28
+ 137 002e FEE7     		b	.L13
+ 138              	.L12:
+  75:Src/usbpd.c   ****   /* USER CODE END EnableIRQ */
+ 139              		.loc 1 75 3 view .LVU29
+ 140              	.LBB4:
+ 141              	.LBI4:
+ 142              		.file 2 "Drivers/CMSIS/Include/cmsis_gcc.h"
+   1:Drivers/CMSIS/Include/cmsis_gcc.h **** /**************************************************************************//**
+   2:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @version  V5.0.4
+   5:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @date     09. April 2018
+   6:Drivers/CMSIS/Include/cmsis_gcc.h ****  ******************************************************************************/
+   7:Drivers/CMSIS/Include/cmsis_gcc.h **** /*
+   8:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Copyright (c) 2009-2018 Arm Limited. All rights reserved.
+   9:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  10:Drivers/CMSIS/Include/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  12:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:Drivers/CMSIS/Include/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:Drivers/CMSIS/Include/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  16:Drivers/CMSIS/Include/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  18:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:Drivers/CMSIS/Include/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:Drivers/CMSIS/Include/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:Drivers/CMSIS/Include/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:Drivers/CMSIS/Include/cmsis_gcc.h ****  * limitations under the License.
+  23:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+  24:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  25:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  28:Drivers/CMSIS/Include/cmsis_gcc.h **** /* ignore some GCC warnings */
+  29:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic push
+ARM GAS  /tmp/cc2dwxDI.s 			page 6
+
+
+  30:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+  31:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  32:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+  33:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  34:Drivers/CMSIS/Include/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  35:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __has_builtin
+  36:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  37:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  38:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  39:Drivers/CMSIS/Include/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  40:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ASM
+  41:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ASM                                  __asm
+  42:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  43:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __INLINE
+  44:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __INLINE                               inline
+  45:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  46:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  47:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+  48:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  49:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_FORCEINLINE                 
+  50:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+  51:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif                                           
+  52:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __NO_RETURN
+  53:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
+  54:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  55:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __USED
+  56:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  57:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  58:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __WEAK
+  59:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  60:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  61:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED
+  62:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  63:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  64:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+  65:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+  66:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  67:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  68:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  69:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  70:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32        /* deprecated */
+  71:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  72:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  73:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  74:Drivers/CMSIS/Include/cmsis_gcc.h ****   struct __attribute__((packed)) T_UINT32 { uint32_t v; };
+  75:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  76:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
+  77:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  78:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  79:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  80:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  81:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  82:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  83:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  84:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  85:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  86:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+ARM GAS  /tmp/cc2dwxDI.s 			page 7
+
+
+  87:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  88:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  89:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  90:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  91:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  92:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  93:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  94:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  95:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  96:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  97:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  98:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  99:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 100:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+ 101:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 102:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+ 103:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ 104:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ 105:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ 106:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 107:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 108:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 109:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 110:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 111:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 112:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 113:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 114:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 115:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 116:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 117:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 118:Drivers/CMSIS/Include/cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+ 119:Drivers/CMSIS/Include/cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 120:Drivers/CMSIS/Include/cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ 121:Drivers/CMSIS/Include/cmsis_gcc.h ****   @{
+ 122:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 123:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 124:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 125:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+ 126:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 127:Drivers/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 128:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 129:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_irq(void)
+ 143              		.loc 2 129 27 view .LVU30
+ 144              	.LBB5:
+ 130:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 131:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+ 145              		.loc 2 131 3 view .LVU31
+ 146              		.syntax divided
+ 147              	@ 131 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 148 0030 62B6     		cpsie i
+ 149              	@ 0 "" 2
+ 150              		.thumb
+ 151              		.syntax unified
+ 152              	.LBE5:
+ 153              	.LBE4:
+  78:Src/usbpd.c   **** /**
+ARM GAS  /tmp/cc2dwxDI.s 			page 8
+
+
+ 154              		.loc 1 78 1 is_stmt 0 view .LVU32
+ 155              		@ sp needed
+ 156 0032 10BD     		pop	{r4, pc}
+ 157              	.L15:
+ 158              		.align	2
+ 159              	.L14:
+ 160 0034 00000000 		.word	HW_IF_PWR_GetCurrent
+ 161 0038 00000000 		.word	HW_IF_PWR_GetVoltage
+ 162 003c 00000000 		.word	GetPDTypeName
+ 163 0040 00000000 		.word	GetHWBoardVersionName
+ 164              		.cfi_endproc
+ 165              	.LFE1069:
+ 167              		.global	PDTypeName
+ 168              		.global	HWBoardVersionName
+ 169              		.section	.rodata.HWBoardVersionName,"a"
+ 170              		.set	.LANCHOR0,. + 0
+ 173              	HWBoardVersionName:
+ 174 0000 4F747465 		.ascii	"OtterBoard\000"
+ 174      72426F61 
+ 174      726400
+ 175              		.section	.rodata.PDTypeName,"a"
+ 176              		.set	.LANCHOR1,. + 0
+ 179              	PDTypeName:
+ 180 0000 56312E30 		.ascii	"V1.0\000"
+ 180      00
+ 181              		.text
+ 182              	.Letext0:
+ 183              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 184              		.file 4 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_def.h"
+ 185              		.file 5 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_core.h"
+ 186              		.file 6 "Inc/usbpd_dpm_core.h"
+ 187              		.file 7 "Inc/FreeRTOSConfig.h"
+ 188              		.file 8 "Drivers/CMSIS/Device/ST/STM32G0xx/Include/system_stm32g0xx.h"
+ 189              		.file 9 "Drivers/CMSIS/Device/ST/STM32G0xx/Include/stm32g071xx.h"
+ 190              		.file 10 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_def.h"
+ 191              		.file 11 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_flash.h"
+ 192              		.file 12 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal.h"
+ 193              		.file 13 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_dma.h"
+ 194              		.file 14 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_tim.h"
+ 195              		.file 15 "Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/inc/usbpd_hw_if.h"
+ 196              		.file 16 "Inc/usbpd_pdo_defs.h"
+ 197              		.file 17 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 198              		.file 18 "/usr/include/newlib/sys/_types.h"
+ 199              		.file 19 "/usr/include/newlib/sys/reent.h"
+ 200              		.file 20 "/usr/include/newlib/sys/lock.h"
+ 201              		.file 21 "Utilities/GUI_INTERFACE/gui_api.h"
+ 202              		.file 22 "Inc/usbpd_dpm_user.h"
+ARM GAS  /tmp/cc2dwxDI.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usbpd.c
+     /tmp/cc2dwxDI.s:16     .text.GetHWBoardVersionName:0000000000000000 $t
+     /tmp/cc2dwxDI.s:23     .text.GetHWBoardVersionName:0000000000000000 GetHWBoardVersionName
+     /tmp/cc2dwxDI.s:39     .text.GetHWBoardVersionName:0000000000000004 $d
+     /tmp/cc2dwxDI.s:44     .text.GetPDTypeName:0000000000000000 $t
+     /tmp/cc2dwxDI.s:50     .text.GetPDTypeName:0000000000000000 GetPDTypeName
+     /tmp/cc2dwxDI.s:65     .text.GetPDTypeName:0000000000000004 $d
+     /tmp/cc2dwxDI.s:70     .text.MX_USBPD_Init:0000000000000000 $t
+     /tmp/cc2dwxDI.s:77     .text.MX_USBPD_Init:0000000000000000 MX_USBPD_Init
+     /tmp/cc2dwxDI.s:160    .text.MX_USBPD_Init:0000000000000034 $d
+     /tmp/cc2dwxDI.s:179    .rodata.PDTypeName:0000000000000000 PDTypeName
+     /tmp/cc2dwxDI.s:173    .rodata.HWBoardVersionName:0000000000000000 HWBoardVersionName
+
+UNDEFINED SYMBOLS
+USBPD_HW_IF_GlobalHwInit
+USBPD_DPM_InitCore
+GUI_Init
+USBPD_DPM_UserInit
+USBPD_DPM_InitOS
+HW_IF_PWR_GetCurrent
+HW_IF_PWR_GetVoltage

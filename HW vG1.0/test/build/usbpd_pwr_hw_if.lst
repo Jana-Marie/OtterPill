@@ -1,0 +1,285 @@
+ARM GAS  /tmp/ccSTrwxn.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 4
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"usbpd_pwr_hw_if.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.HW_IF_PWR_SetVoltage,"ax",%progbits
+  16              		.align	1
+  17              		.global	HW_IF_PWR_SetVoltage
+  18              		.arch armv6s-m
+  19              		.syntax unified
+  20              		.code	16
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	HW_IF_PWR_SetVoltage:
+  25              	.LVL0:
+  26              	.LFB829:
+  27              		.file 1 "Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c"
+   1:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** /**
+   2:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   ******************************************************************************
+   3:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   * @file    usbpd_pwr_hw_if.c
+   4:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   * @author  MCD Application Team
+   5:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   * @brief   This file contains power hardware interface functions.
+   6:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   ******************************************************************************
+   7:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   * @attention
+   8:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   *
+   9:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
+  10:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   * All rights reserved.</center></h2>
+  11:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   *
+  12:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   * This software component is licensed by ST under Ultimate Liberty license
+  13:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   * SLA0044, the "License"; You may not use this file except in compliance with
+  14:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   * the License. You may obtain a copy of the License at:
+  15:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   *                             www.st.com/SLA0044
+  16:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   *
+  17:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   ******************************************************************************
+  18:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   */
+  19:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** 
+  20:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** /* Includes ------------------------------------------------------------------*/
+  21:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #include "usbpd_hw_if.h"
+  22:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** 
+  23:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** 
+  24:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #define _USBPD_POWER_DEBUG
+  25:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #ifdef _USBPD_POWER_DEBUG
+  26:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #include "usbpd_core.h"
+  27:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #include "usbpd_trace.h"
+  28:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #endif
+  29:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** 
+  30:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** /* Private typedef -----------------------------------------------------------*/
+  31:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** /* Private define ------------------------------------------------------------*/
+ARM GAS  /tmp/ccSTrwxn.s 			page 2
+
+
+  32:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #if defined(_USBPD_POWER_DEBUG) && defined(_TRACE)
+  33:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #define POWER_DEBUG(__MSG__,__SIZE__)   USBPD_TRACE_Add(USBPD_TRACE_DEBUG, PortNum, 0,__MSG__,__SIZ
+  34:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #else
+  35:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #define POWER_DEBUG(__MSG__,__SIZE__)
+  36:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #endif
+  37:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** 
+  38:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** /* Private macro -------------------------------------------------------------*/
+  39:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** /* Private variables ---------------------------------------------------------*/
+  40:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** /* Private function prototypes -----------------------------------------------*/
+  41:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** /* Private functions ---------------------------------------------------------*/
+  42:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** USBPD_StatusTypeDef HW_IF_PWR_SetVoltage(uint8_t PortNum, uint16_t voltage)
+  43:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** {
+  28              		.loc 1 43 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  44:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   UNUSED(PortNum);
+  33              		.loc 1 44 3 view .LVU1
+  45:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   UNUSED(voltage);
+  34              		.loc 1 45 3 view .LVU2
+  46:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   /* Section below has been commented for the P-Nucleo Demo */
+  47:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   /*
+  48:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   uint32_t off = (PortNum == 0) ? 0 : 2;
+  49:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   switch (voltage)
+  50:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   {
+  51:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   case 12000:
+  52:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****     HAL_GPIO_WritePin(USBPDM1_POWSELs[0+off].GPIOx, USBPDM1_POWSELs[0+off].GPIO_Pin, GPIO_PIN_SET);
+  53:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****     break;
+  54:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   case 5000:
+  55:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   default:
+  56:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****     HAL_GPIO_WritePin(USBPDM1_POWSELs[0+off].GPIOx, USBPDM1_POWSELs[0+off].GPIO_Pin, GPIO_PIN_RESET
+  57:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****     break;
+  58:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   }
+  59:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   */
+  60:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   return USBPD_OK;
+  35              		.loc 1 60 3 view .LVU3
+  61:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** }
+  36              		.loc 1 61 1 is_stmt 0 view .LVU4
+  37 0000 0020     		movs	r0, #0
+  38              	.LVL1:
+  39              		.loc 1 61 1 view .LVU5
+  40              		@ sp needed
+  41 0002 7047     		bx	lr
+  42              		.cfi_endproc
+  43              	.LFE829:
+  45              		.section	.text.HW_IF_PWR_GetVoltage,"ax",%progbits
+  46              		.align	1
+  47              		.global	HW_IF_PWR_GetVoltage
+  48              		.syntax unified
+  49              		.code	16
+  50              		.thumb_func
+  51              		.fpu softvfp
+  53              	HW_IF_PWR_GetVoltage:
+  54              	.LVL2:
+  55              	.LFB830:
+  62:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** 
+ARM GAS  /tmp/ccSTrwxn.s 			page 3
+
+
+  63:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** uint32_t HW_IF_PWR_GetVoltage(uint8_t PortNum)
+  64:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** {
+  56              		.loc 1 64 1 is_stmt 1 view -0
+  57              		.cfi_startproc
+  58              		@ args = 0, pretend = 0, frame = 0
+  59              		@ frame_needed = 0, uses_anonymous_args = 0
+  65:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   return BSP_PWR_VBUSGetVoltage(PortNum);;
+  60              		.loc 1 65 3 view .LVU7
+  64:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   return BSP_PWR_VBUSGetVoltage(PortNum);;
+  61              		.loc 1 64 1 is_stmt 0 view .LVU8
+  62 0000 10B5     		push	{r4, lr}
+  63              	.LCFI0:
+  64              		.cfi_def_cfa_offset 8
+  65              		.cfi_offset 4, -8
+  66              		.cfi_offset 14, -4
+  67              		.loc 1 65 10 view .LVU9
+  68 0002 FFF7FEFF 		bl	BSP_PWR_VBUSGetVoltage
+  69              	.LVL3:
+  70              		.loc 1 65 42 is_stmt 1 view .LVU10
+  66:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** }
+  71              		.loc 1 66 1 is_stmt 0 view .LVU11
+  72              		@ sp needed
+  73 0006 10BD     		pop	{r4, pc}
+  74              		.cfi_endproc
+  75              	.LFE830:
+  77              		.section	.text.HW_IF_PWR_GetCurrent,"ax",%progbits
+  78              		.align	1
+  79              		.global	HW_IF_PWR_GetCurrent
+  80              		.syntax unified
+  81              		.code	16
+  82              		.thumb_func
+  83              		.fpu softvfp
+  85              	HW_IF_PWR_GetCurrent:
+  86              	.LVL4:
+  87              	.LFB831:
+  67:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** 
+  68:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** int32_t HW_IF_PWR_GetCurrent(uint8_t PortNum)
+  69:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** {
+  88              		.loc 1 69 1 is_stmt 1 view -0
+  89              		.cfi_startproc
+  90              		@ args = 0, pretend = 0, frame = 0
+  91              		@ frame_needed = 0, uses_anonymous_args = 0
+  70:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   return BSP_PWR_VBUSGetCurrent(PortNum);;
+  92              		.loc 1 70 3 view .LVU13
+  69:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   return BSP_PWR_VBUSGetCurrent(PortNum);;
+  93              		.loc 1 69 1 is_stmt 0 view .LVU14
+  94 0000 10B5     		push	{r4, lr}
+  95              	.LCFI1:
+  96              		.cfi_def_cfa_offset 8
+  97              		.cfi_offset 4, -8
+  98              		.cfi_offset 14, -4
+  99              		.loc 1 70 10 view .LVU15
+ 100 0002 FFF7FEFF 		bl	BSP_PWR_VBUSGetCurrent
+ 101              	.LVL5:
+ 102              		.loc 1 70 42 is_stmt 1 view .LVU16
+  71:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** }
+ 103              		.loc 1 71 1 is_stmt 0 view .LVU17
+ARM GAS  /tmp/ccSTrwxn.s 			page 4
+
+
+ 104              		@ sp needed
+ 105 0006 10BD     		pop	{r4, pc}
+ 106              		.cfi_endproc
+ 107              	.LFE831:
+ 109              		.section	.text.HW_IF_PWR_VBUSIsEnabled,"ax",%progbits
+ 110              		.align	1
+ 111              		.global	HW_IF_PWR_VBUSIsEnabled
+ 112              		.syntax unified
+ 113              		.code	16
+ 114              		.thumb_func
+ 115              		.fpu softvfp
+ 117              	HW_IF_PWR_VBUSIsEnabled:
+ 118              	.LVL6:
+ 119              	.LFB832:
+  72:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** 
+  73:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #if defined(_SRC) || defined(_DRP)
+  74:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** USBPD_StatusTypeDef HW_IF_PWR_Enable(uint8_t PortNum, USBPD_FunctionalState state, CCxPin_TypeDef C
+  75:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** {
+  76:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   UNUSED(role);
+  77:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   PWR_StatusTypeDef status;
+  78:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   if(USBPD_ENABLE == state)
+  79:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   {
+  80:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****      POWER_DEBUG((uint8_t *)"VBUS ON", 7);
+  81:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #if defined(_VCONN_SUPPORT)
+  82:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****      if (USBPD_TRUE == VconnState) {
+  83:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****        POWER_DEBUG((uint8_t *)"VCONN ON", 8);
+  84:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****        (void)BSP_PWR_VCONNOn(PortNum, Cc);
+  85:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****      }
+  86:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #endif /* _VCONN_SUPPORT */
+  87:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****      status = BSP_PWR_VBUSOn(PortNum);
+  88:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   }
+  89:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   else
+  90:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   {
+  91:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****     POWER_DEBUG((uint8_t *)"VBUS OFF", 8);
+  92:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #if defined(_VCONN_SUPPORT)
+  93:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****     if (VconnState == USBPD_TRUE){
+  94:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****       POWER_DEBUG((uint8_t *)"VCONN OFF", 9);
+  95:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****       (void)BSP_PWR_VCONNOff(PortNum, Cc);
+  96:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****     }
+  97:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #endif /* _VCONN_SUPPORT */
+  98:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****     status = BSP_PWR_VBUSOff(PortNum);
+  99:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   }
+ 100:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   return (status == PWR_OK) ? USBPD_OK : USBPD_FAIL;
+ 101:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** }
+ 102:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #endif /* _SRC || _DRP */
+ 103:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** 
+ 104:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** USBPD_FunctionalState HW_IF_PWR_VBUSIsEnabled(uint8_t PortNum)
+ 105:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** {
+ 120              		.loc 1 105 1 is_stmt 1 view -0
+ 121              		.cfi_startproc
+ 122              		@ args = 0, pretend = 0, frame = 0
+ 123              		@ frame_needed = 0, uses_anonymous_args = 0
+ 124              		@ link register save eliminated.
+ 106:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #if defined(_SRC)||defined(_DRP)
+ 107:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   return (BSP_PWR_VBUSIsOn(PortNum) == 0) ? USBPD_DISABLE : USBPD_ENABLE;
+ 108:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #else
+ 109:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c ****   return USBPD_DISABLE;
+ARM GAS  /tmp/ccSTrwxn.s 			page 5
+
+
+ 125              		.loc 1 109 3 view .LVU19
+ 110:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** #endif /* _SRC || _DRP */
+ 111:Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_pwr_hw_if.c **** }
+ 126              		.loc 1 111 1 is_stmt 0 view .LVU20
+ 127 0000 0020     		movs	r0, #0
+ 128              	.LVL7:
+ 129              		.loc 1 111 1 view .LVU21
+ 130              		@ sp needed
+ 131 0002 7047     		bx	lr
+ 132              		.cfi_endproc
+ 133              	.LFE832:
+ 135              		.text
+ 136              	.Letext0:
+ 137              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 138              		.file 3 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_def.h"
+ 139              		.file 4 "Drivers/CMSIS/Device/ST/STM32G0xx/Include/system_stm32g0xx.h"
+ 140              		.file 5 "Drivers/CMSIS/Device/ST/STM32G0xx/Include/stm32g071xx.h"
+ 141              		.file 6 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_def.h"
+ 142              		.file 7 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_flash.h"
+ 143              		.file 8 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal.h"
+ 144              		.file 9 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_dma.h"
+ 145              		.file 10 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_tim.h"
+ 146              		.file 11 "Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/inc/usbpd_hw_if.h"
+ 147              		.file 12 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_core.h"
+ 148              		.file 13 "Inc/usbpd_pwr_user.h"
+ARM GAS  /tmp/ccSTrwxn.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usbpd_pwr_hw_if.c
+     /tmp/ccSTrwxn.s:16     .text.HW_IF_PWR_SetVoltage:0000000000000000 $t
+     /tmp/ccSTrwxn.s:24     .text.HW_IF_PWR_SetVoltage:0000000000000000 HW_IF_PWR_SetVoltage
+     /tmp/ccSTrwxn.s:46     .text.HW_IF_PWR_GetVoltage:0000000000000000 $t
+     /tmp/ccSTrwxn.s:53     .text.HW_IF_PWR_GetVoltage:0000000000000000 HW_IF_PWR_GetVoltage
+     /tmp/ccSTrwxn.s:78     .text.HW_IF_PWR_GetCurrent:0000000000000000 $t
+     /tmp/ccSTrwxn.s:85     .text.HW_IF_PWR_GetCurrent:0000000000000000 HW_IF_PWR_GetCurrent
+     /tmp/ccSTrwxn.s:110    .text.HW_IF_PWR_VBUSIsEnabled:0000000000000000 $t
+     /tmp/ccSTrwxn.s:117    .text.HW_IF_PWR_VBUSIsEnabled:0000000000000000 HW_IF_PWR_VBUSIsEnabled
+
+UNDEFINED SYMBOLS
+BSP_PWR_VBUSGetVoltage
+BSP_PWR_VBUSGetCurrent

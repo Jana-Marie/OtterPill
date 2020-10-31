@@ -1,0 +1,1246 @@
+ARM GAS  /tmp/ccUxpk8G.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 4
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"data_struct_tlv.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.TLV_init_encode,"ax",%progbits
+  16              		.align	1
+  17              		.global	TLV_init_encode
+  18              		.arch armv6s-m
+  19              		.syntax unified
+  20              		.code	16
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	TLV_init_encode:
+  25              	.LVL0:
+  26              	.LFB0:
+  27              		.file 1 "Utilities/GUI_INTERFACE/data_struct_tlv.c"
+   1:Utilities/GUI_INTERFACE/data_struct_tlv.c **** /**
+   2:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ******************************************************************************
+   3:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @file    data_struct_tlv.c
+   4:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @author  MCD Application Team
+   5:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @brief   data_struct_tlv provides function to manipulate TLV structures
+   6:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *          and/or strings.
+   7:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ******************************************************************************
+   8:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @attention
+   9:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *
+  10:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * <h2><center>&copy; Copyright (c) 2018 STMicroelectronics.
+  11:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * All rights reserved.</center></h2>
+  12:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *
+  13:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * This software component is licensed by ST under BSD 3-Clause license,
+  14:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * the "License"; You may not use this file except in compliance with the
+  15:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * License. You may obtain a copy of the License at:
+  16:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *                        opensource.org/licenses/BSD-3-Clause
+  17:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *
+  18:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ******************************************************************************
+  19:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   */
+  20:Utilities/GUI_INTERFACE/data_struct_tlv.c **** #if defined(_GUI_INTERFACE)
+  21:Utilities/GUI_INTERFACE/data_struct_tlv.c **** 
+  22:Utilities/GUI_INTERFACE/data_struct_tlv.c **** #include <stdint.h>
+  23:Utilities/GUI_INTERFACE/data_struct_tlv.c **** #include <stdlib.h>
+  24:Utilities/GUI_INTERFACE/data_struct_tlv.c **** #include "data_struct_tlv.h"
+  25:Utilities/GUI_INTERFACE/data_struct_tlv.c **** 
+  26:Utilities/GUI_INTERFACE/data_struct_tlv.c **** /**
+  27:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @brief    TLV_init_encode initializes a TLV_ToSend_Data structure, to have it ready to be used 
+  28:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @note     TLV_add and TLV_deinit_encode must not be called without calling this function first.
+  29:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *           SOF and EOF are created too.
+  30:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    ToSendTLV    The TLV_ToSend_Data structure that will be used.
+  31:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    Tag          The Tag to put as the master Tag in this instruction.
+ARM GAS  /tmp/ccUxpk8G.s 			page 2
+
+
+  32:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    SizeMax      The maximal size of the instruction. Will be used to protect writting ag
+  33:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    Ptr          A pointer to the value. This function does not allocate memory, it is th
+  34:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @return   0 if everything went fine, 0xFF otherwise.
+  35:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   */
+  36:Utilities/GUI_INTERFACE/data_struct_tlv.c **** uint8_t TLV_init_encode(TLV_ToSend_Data *ToSendTLV, uint8_t Tag, uint16_t SizeMax, uint8_t *Ptr)
+  37:Utilities/GUI_INTERFACE/data_struct_tlv.c **** {
+  28              		.loc 1 37 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  38:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(Ptr == NULL) return 0xFF;                  /* Buffer is NULL*/
+  32              		.loc 1 38 3 view .LVU1
+  37:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(Ptr == NULL) return 0xFF;                  /* Buffer is NULL*/
+  33              		.loc 1 37 1 is_stmt 0 view .LVU2
+  34 0000 10B5     		push	{r4, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 4, -8
+  38              		.cfi_offset 14, -4
+  37:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(Ptr == NULL) return 0xFF;                  /* Buffer is NULL*/
+  39              		.loc 1 37 1 view .LVU3
+  40 0002 0400     		movs	r4, r0
+  41              		.loc 1 38 26 view .LVU4
+  42 0004 FF20     		movs	r0, #255
+  43              	.LVL1:
+  44              		.loc 1 38 5 view .LVU5
+  45 0006 002B     		cmp	r3, #0
+  46 0008 1DD0     		beq	.L2
+  39:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(SizeMax < 11) return 0xFF;                 /* Because of his small max size, the buffer can't 
+  47              		.loc 1 39 3 is_stmt 1 view .LVU6
+  48              		.loc 1 39 5 is_stmt 0 view .LVU7
+  49 000a 0A2A     		cmp	r2, #10
+  50 000c 1BD9     		bls	.L2
+  40:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+  41:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data = Ptr;
+  51              		.loc 1 41 3 is_stmt 1 view .LVU8
+  42:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->maxSize = SizeMax;
+  52              		.loc 1 42 22 is_stmt 0 view .LVU9
+  53 000e A280     		strh	r2, [r4, #4]
+  43:Utilities/GUI_INTERFACE/data_struct_tlv.c ****    
+  44:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[0]
+  45:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     = ToSendTLV->data[1]
+  46:Utilities/GUI_INTERFACE/data_struct_tlv.c ****       = ToSendTLV->data[2]
+  47:Utilities/GUI_INTERFACE/data_struct_tlv.c ****         = ToSendTLV->data[3] = TLV_SOF;          /* SOF*/
+  54              		.loc 1 47 30 view .LVU10
+  55 0010 FD22     		movs	r2, #253
+  56              	.LVL2:
+  48:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+  49:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[4] = Tag;                      /* Tag*/
+  50:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+  51:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[5]
+  52:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     = ToSendTLV->data[6] = 0;                    /* Size*/
+  57              		.loc 1 52 26 view .LVU11
+  58 0012 0020     		movs	r0, #0
+  41:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->maxSize = SizeMax;
+  59              		.loc 1 41 19 view .LVU12
+  60 0014 2360     		str	r3, [r4]
+ARM GAS  /tmp/ccUxpk8G.s 			page 3
+
+
+  42:Utilities/GUI_INTERFACE/data_struct_tlv.c ****    
+  61              		.loc 1 42 3 is_stmt 1 view .LVU13
+  44:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     = ToSendTLV->data[1]
+  62              		.loc 1 44 3 view .LVU14
+  47:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+  63              		.loc 1 47 30 is_stmt 0 view .LVU15
+  64 0016 DA70     		strb	r2, [r3, #3]
+  65              	.LVL3:
+  47:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+  66              		.loc 1 47 9 view .LVU16
+  67 0018 2368     		ldr	r3, [r4]
+  68              	.LVL4:
+  47:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+  69              		.loc 1 47 9 view .LVU17
+  70 001a 9A70     		strb	r2, [r3, #2]
+  46:Utilities/GUI_INTERFACE/data_struct_tlv.c ****         = ToSendTLV->data[3] = TLV_SOF;          /* SOF*/
+  71              		.loc 1 46 7 view .LVU18
+  72 001c 2368     		ldr	r3, [r4]
+  73 001e 5A70     		strb	r2, [r3, #1]
+  45:Utilities/GUI_INTERFACE/data_struct_tlv.c ****       = ToSendTLV->data[2]
+  74              		.loc 1 45 5 view .LVU19
+  75 0020 2368     		ldr	r3, [r4]
+  76 0022 1A70     		strb	r2, [r3]
+  49:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+  77              		.loc 1 49 3 is_stmt 1 view .LVU20
+  49:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+  78              		.loc 1 49 22 is_stmt 0 view .LVU21
+  79 0024 2368     		ldr	r3, [r4]
+  80 0026 1971     		strb	r1, [r3, #4]
+  51:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     = ToSendTLV->data[6] = 0;                    /* Size*/
+  81              		.loc 1 51 3 is_stmt 1 view .LVU22
+  82              		.loc 1 52 26 is_stmt 0 view .LVU23
+  83 0028 2368     		ldr	r3, [r4]
+  84 002a 9871     		strb	r0, [r3, #6]
+  85              		.loc 1 52 5 view .LVU24
+  86 002c 2368     		ldr	r3, [r4]
+  87 002e 5871     		strb	r0, [r3, #5]
+  53:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+  54:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[7]
+  88              		.loc 1 54 3 is_stmt 1 view .LVU25
+  55:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     = ToSendTLV->data[8]
+  56:Utilities/GUI_INTERFACE/data_struct_tlv.c ****       = ToSendTLV->data[9]
+  57:Utilities/GUI_INTERFACE/data_struct_tlv.c ****         = ToSendTLV->data[10] = TLV_EOF;         /* EOF*/
+  89              		.loc 1 57 31 is_stmt 0 view .LVU26
+  90 0030 A523     		movs	r3, #165
+  91 0032 2268     		ldr	r2, [r4]
+  92 0034 9372     		strb	r3, [r2, #10]
+  93              		.loc 1 57 9 view .LVU27
+  94 0036 2268     		ldr	r2, [r4]
+  95 0038 5372     		strb	r3, [r2, #9]
+  56:Utilities/GUI_INTERFACE/data_struct_tlv.c ****         = ToSendTLV->data[10] = TLV_EOF;         /* EOF*/
+  96              		.loc 1 56 7 view .LVU28
+  97 003a 2268     		ldr	r2, [r4]
+  98 003c 1372     		strb	r3, [r2, #8]
+  55:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     = ToSendTLV->data[8]
+  99              		.loc 1 55 5 view .LVU29
+ 100 003e 2268     		ldr	r2, [r4]
+ARM GAS  /tmp/ccUxpk8G.s 			page 4
+
+
+ 101 0040 D371     		strb	r3, [r2, #7]
+  58:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+  59:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->EOFposition = 7;
+ 102              		.loc 1 59 3 is_stmt 1 view .LVU30
+ 103              		.loc 1 59 26 is_stmt 0 view .LVU31
+ 104 0042 9E3B     		subs	r3, r3, #158
+ 105 0044 E380     		strh	r3, [r4, #6]
+  60:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+  61:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   return 0;
+ 106              		.loc 1 61 3 is_stmt 1 view .LVU32
+ 107              	.L2:
+  62:Utilities/GUI_INTERFACE/data_struct_tlv.c **** }
+ 108              		.loc 1 62 1 is_stmt 0 view .LVU33
+ 109              		@ sp needed
+ 110              	.LVL5:
+ 111              		.loc 1 62 1 view .LVU34
+ 112 0046 10BD     		pop	{r4, pc}
+ 113              		.cfi_endproc
+ 114              	.LFE0:
+ 116              		.section	.text.TLV_add,"ax",%progbits
+ 117              		.align	1
+ 118              		.global	TLV_add
+ 119              		.syntax unified
+ 120              		.code	16
+ 121              		.thumb_func
+ 122              		.fpu softvfp
+ 124              	TLV_add:
+ 125              	.LVL6:
+ 126              	.LFB1:
+  63:Utilities/GUI_INTERFACE/data_struct_tlv.c **** 
+  64:Utilities/GUI_INTERFACE/data_struct_tlv.c **** /**
+  65:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @brief    TLV_add inserts data in the TLV format inside the value of a host TLV instruction.
+  66:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @note     Refer to the USB-PD GUI INTERFACE SPECIFICATION DOCUMENT for more info about this pra
+  67:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *           TLV_init_encode must be called with the same TLV_ToSend_Data structure before calling
+  68:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *           This function can add data to the same TLV_ToSend_Data structure indefinitely as long
+  69:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *           SOF and EOF keeps being handled as data is added.
+  70:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    ToSendTLV    The TLV_ToSend_Data structure in which we add data.
+  71:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    Tag          The byte to put as Tag of the data we add
+  72:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    Size         The Size of the data, in bytes.
+  73:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    Value        A pointer to the Value to add.
+  74:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @return   The number of bytes written if everything went fine, 0xFFFF otherwise.
+  75:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *
+  76:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   */
+  77:Utilities/GUI_INTERFACE/data_struct_tlv.c **** uint16_t TLV_add(TLV_ToSend_Data *ToSendTLV, uint8_t Tag, uint16_t Size, const uint8_t *Value)
+  78:Utilities/GUI_INTERFACE/data_struct_tlv.c **** {
+ 127              		.loc 1 78 1 is_stmt 1 view -0
+ 128              		.cfi_startproc
+ 129              		@ args = 0, pretend = 0, frame = 8
+ 130              		@ frame_needed = 0, uses_anonymous_args = 0
+  79:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToSendTLV->data[ToSendTLV->EOFposition] != TLV_EOF)                return 0xFFFF;       /* EOF
+ 131              		.loc 1 79 3 view .LVU36
+  78:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToSendTLV->data[ToSendTLV->EOFposition] != TLV_EOF)                return 0xFFFF;       /* EOF
+ 132              		.loc 1 78 1 is_stmt 0 view .LVU37
+ 133 0000 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
+ 134              	.LCFI1:
+ 135              		.cfi_def_cfa_offset 32
+ 136              		.cfi_offset 0, -32
+ARM GAS  /tmp/ccUxpk8G.s 			page 5
+
+
+ 137              		.cfi_offset 1, -28
+ 138              		.cfi_offset 2, -24
+ 139              		.cfi_offset 4, -20
+ 140              		.cfi_offset 5, -16
+ 141              		.cfi_offset 6, -12
+ 142              		.cfi_offset 7, -8
+ 143              		.cfi_offset 14, -4
+  78:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToSendTLV->data[ToSendTLV->EOFposition] != TLV_EOF)                return 0xFFFF;       /* EOF
+ 144              		.loc 1 78 1 view .LVU38
+ 145 0002 0193     		str	r3, [sp, #4]
+ 146 0004 0091     		str	r1, [sp]
+ 147              		.loc 1 79 15 view .LVU39
+ 148 0006 0568     		ldr	r5, [r0]
+  78:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToSendTLV->data[ToSendTLV->EOFposition] != TLV_EOF)                return 0xFFFF;       /* EOF
+ 149              		.loc 1 78 1 view .LVU40
+ 150 0008 0400     		movs	r4, r0
+ 151              		.loc 1 79 31 view .LVU41
+ 152 000a C088     		ldrh	r0, [r0, #6]
+ 153              	.LVL7:
+ 154              		.loc 1 79 31 view .LVU42
+ 155 000c 244B     		ldr	r3, .L12
+ 156              	.LVL8:
+ 157              		.loc 1 79 5 view .LVU43
+ 158 000e 2E5C     		ldrb	r6, [r5, r0]
+ 159              		.loc 1 79 21 view .LVU44
+ 160 0010 2F18     		adds	r7, r5, r0
+ 161              		.loc 1 79 5 view .LVU45
+ 162 0012 A52E     		cmp	r6, #165
+ 163 0014 42D1     		bne	.L11
+  80:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if((ToSendTLV->EOFposition + 4 + 3 + Size) > ToSendTLV->maxSize)      return 0xFFFF;       /* Can
+ 164              		.loc 1 80 3 is_stmt 1 view .LVU46
+ 165              		.loc 1 80 34 is_stmt 0 view .LVU47
+ 166 0016 C61D     		adds	r6, r0, #7
+ 167              		.loc 1 80 57 view .LVU48
+ 168 0018 A188     		ldrh	r1, [r4, #4]
+ 169              	.LVL9:
+ 170              		.loc 1 80 38 view .LVU49
+ 171 001a B618     		adds	r6, r6, r2
+ 172              		.loc 1 80 5 view .LVU50
+ 173 001c 8E42     		cmp	r6, r1
+ 174 001e 3DDC     		bgt	.L11
+  81:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToSendTLV->data == NULL)                                          return 0xFFFF;        /* Dat
+ 175              		.loc 1 81 3 is_stmt 1 view .LVU51
+ 176              		.loc 1 81 5 is_stmt 0 view .LVU52
+ 177 0020 002D     		cmp	r5, #0
+ 178 0022 3BD0     		beq	.L11
+  82:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToSendTLV->EOFposition == 0xFFFF)                                 return 0xFFFF;        /* EOF
+ 179              		.loc 1 82 3 is_stmt 1 view .LVU53
+ 180              		.loc 1 82 5 is_stmt 0 view .LVU54
+ 181 0024 9842     		cmp	r0, r3
+ 182 0026 30D0     		beq	.L6
+  83:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+  84:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[ToSendTLV->EOFposition] = Tag;                           /* Tag*/
+ 183              		.loc 1 84 3 is_stmt 1 view .LVU55
+ 184              		.loc 1 84 43 is_stmt 0 view .LVU56
+ 185 0028 009B     		ldr	r3, [sp]
+  85:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->EOFposition++;
+ARM GAS  /tmp/ccUxpk8G.s 			page 6
+
+
+  86:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->SizePosition = ToSendTLV->EOFposition;
+  87:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+  88:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[ToSendTLV->EOFposition]   = (Size >> 8) & 0x00FF;        /* Size*/
+ 186              		.loc 1 88 45 view .LVU57
+ 187 002a 110A     		lsrs	r1, r2, #8
+  84:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->EOFposition++;
+ 188              		.loc 1 84 43 view .LVU58
+ 189 002c 3B70     		strb	r3, [r7]
+  85:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->EOFposition++;
+ 190              		.loc 1 85 3 is_stmt 1 view .LVU59
+  85:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->EOFposition++;
+ 191              		.loc 1 85 25 is_stmt 0 view .LVU60
+ 192 002e E388     		ldrh	r3, [r4, #6]
+ 193              		.loc 1 88 45 view .LVU61
+ 194 0030 2068     		ldr	r0, [r4]
+  85:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->EOFposition++;
+ 195              		.loc 1 85 25 view .LVU62
+ 196 0032 0133     		adds	r3, r3, #1
+ 197 0034 9BB2     		uxth	r3, r3
+ 198 0036 E380     		strh	r3, [r4, #6]
+  86:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+ 199              		.loc 1 86 3 is_stmt 1 view .LVU63
+  86:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+ 200              		.loc 1 86 27 is_stmt 0 view .LVU64
+ 201 0038 2381     		strh	r3, [r4, #8]
+ 202              		.loc 1 88 3 is_stmt 1 view .LVU65
+ 203              		.loc 1 88 45 is_stmt 0 view .LVU66
+ 204 003a C154     		strb	r1, [r0, r3]
+  89:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[ToSendTLV->EOFposition+1] = (Size     ) & 0x00FF;
+ 205              		.loc 1 89 3 is_stmt 1 view .LVU67
+ 206              	.LBB2:
+  90:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->EOFposition += 2;
+  91:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+  92:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   for(uint32_t index = 0; index < Size; index++)                                          /* Value*
+ 207              		.loc 1 92 16 is_stmt 0 view .LVU68
+ 208 003c 0020     		movs	r0, #0
+ 209              	.LBE2:
+  89:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[ToSendTLV->EOFposition+1] = (Size     ) & 0x00FF;
+ 210              		.loc 1 89 28 view .LVU69
+ 211 003e E388     		ldrh	r3, [r4, #6]
+  89:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[ToSendTLV->EOFposition+1] = (Size     ) & 0x00FF;
+ 212              		.loc 1 89 45 view .LVU70
+ 213 0040 2168     		ldr	r1, [r4]
+ 214 0042 CB18     		adds	r3, r1, r3
+ 215 0044 5A70     		strb	r2, [r3, #1]
+  90:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->EOFposition += 2;
+ 216              		.loc 1 90 3 is_stmt 1 view .LVU71
+  90:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->EOFposition += 2;
+ 217              		.loc 1 90 26 is_stmt 0 view .LVU72
+ 218 0046 E388     		ldrh	r3, [r4, #6]
+ 219 0048 0233     		adds	r3, r3, #2
+ 220 004a E380     		strh	r3, [r4, #6]
+ 221              		.loc 1 92 3 is_stmt 1 view .LVU73
+ 222              	.LBB3:
+ 223              		.loc 1 92 7 view .LVU74
+ 224              	.LVL10:
+ 225              	.L7:
+ARM GAS  /tmp/ccUxpk8G.s 			page 7
+
+
+ 226              		.loc 1 92 27 discriminator 1 view .LVU75
+ 227 004c 2368     		ldr	r3, [r4]
+ 228 004e E188     		ldrh	r1, [r4, #6]
+ 229              		.loc 1 92 3 is_stmt 0 discriminator 1 view .LVU76
+ 230 0050 8242     		cmp	r2, r0
+ 231 0052 1BD8     		bhi	.L8
+ 232              	.LBE3:
+  93:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   {
+  94:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     ToSendTLV->data[ToSendTLV->EOFposition] = Value[index];
+  95:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     ToSendTLV->EOFposition++;
+  96:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   }
+  97:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+  98:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[ToSendTLV->EOFposition]
+ 233              		.loc 1 98 3 is_stmt 1 view .LVU77
+  99:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     = ToSendTLV->data[ToSendTLV->EOFposition+1]
+ 100:Utilities/GUI_INTERFACE/data_struct_tlv.c ****       = ToSendTLV->data[ToSendTLV->EOFposition+2]
+ 101:Utilities/GUI_INTERFACE/data_struct_tlv.c ****         = ToSendTLV->data[ToSendTLV->EOFposition+3] = TLV_EOF;             /* EOF*/
+ 234              		.loc 1 101 53 is_stmt 0 view .LVU78
+ 235 0054 5918     		adds	r1, r3, r1
+ 236 0056 A523     		movs	r3, #165
+ 237 0058 CB70     		strb	r3, [r1, #3]
+ 238              		.loc 1 101 9 view .LVU79
+ 239 005a 2068     		ldr	r0, [r4]
+ 240              	.LVL11:
+ 100:Utilities/GUI_INTERFACE/data_struct_tlv.c ****         = ToSendTLV->data[ToSendTLV->EOFposition+3] = TLV_EOF;             /* EOF*/
+ 241              		.loc 1 100 34 view .LVU80
+ 242 005c E188     		ldrh	r1, [r4, #6]
+ 243 005e 0332     		adds	r2, r2, #3
+ 244              	.LVL12:
+ 245              		.loc 1 101 9 view .LVU81
+ 246 0060 4118     		adds	r1, r0, r1
+ 247 0062 8B70     		strb	r3, [r1, #2]
+ 100:Utilities/GUI_INTERFACE/data_struct_tlv.c ****         = ToSendTLV->data[ToSendTLV->EOFposition+3] = TLV_EOF;             /* EOF*/
+ 248              		.loc 1 100 7 view .LVU82
+ 249 0064 2068     		ldr	r0, [r4]
+  99:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     = ToSendTLV->data[ToSendTLV->EOFposition+1]
+ 250              		.loc 1 99 32 view .LVU83
+ 251 0066 E188     		ldrh	r1, [r4, #6]
+ 100:Utilities/GUI_INTERFACE/data_struct_tlv.c ****         = ToSendTLV->data[ToSendTLV->EOFposition+3] = TLV_EOF;             /* EOF*/
+ 252              		.loc 1 100 7 view .LVU84
+ 253 0068 4118     		adds	r1, r0, r1
+ 254 006a 4B70     		strb	r3, [r1, #1]
+  98:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     = ToSendTLV->data[ToSendTLV->EOFposition+1]
+ 255              		.loc 1 98 28 view .LVU85
+ 256 006c E188     		ldrh	r1, [r4, #6]
+  99:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     = ToSendTLV->data[ToSendTLV->EOFposition+1]
+ 257              		.loc 1 99 5 view .LVU86
+ 258 006e 2068     		ldr	r0, [r4]
+ 259 0070 4354     		strb	r3, [r0, r1]
+ 102:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+ 103:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   uint16_t total_lgth = (ToSendTLV->data[5] << 8) + ToSendTLV->data[6] + 3 + Size; /* Update of the
+ 260              		.loc 1 103 3 is_stmt 1 view .LVU87
+ 261              		.loc 1 103 35 is_stmt 0 view .LVU88
+ 262 0072 2168     		ldr	r1, [r4]
+ 263 0074 90B2     		uxth	r0, r2
+ 264              		.loc 1 103 41 view .LVU89
+ 265 0076 4B79     		ldrb	r3, [r1, #5]
+ARM GAS  /tmp/ccUxpk8G.s 			page 8
+
+
+ 266              		.loc 1 103 68 view .LVU90
+ 267 0078 8A79     		ldrb	r2, [r1, #6]
+ 268              		.loc 1 103 45 view .LVU91
+ 269 007a 1B02     		lsls	r3, r3, #8
+ 270              		.loc 1 103 12 view .LVU92
+ 271 007c 8218     		adds	r2, r0, r2
+ 272 007e 9B18     		adds	r3, r3, r2
+ 273 0080 9BB2     		uxth	r3, r3
+ 274              	.LVL13:
+ 104:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[5] = total_lgth >> 8;
+ 275              		.loc 1 104 3 is_stmt 1 view .LVU93
+ 276              		.loc 1 104 22 is_stmt 0 view .LVU94
+ 277 0082 1A0A     		lsrs	r2, r3, #8
+ 278 0084 4A71     		strb	r2, [r1, #5]
+ 105:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[6] = total_lgth;
+ 279              		.loc 1 105 3 is_stmt 1 view .LVU95
+ 280              		.loc 1 105 12 is_stmt 0 view .LVU96
+ 281 0086 2268     		ldr	r2, [r4]
+ 282              		.loc 1 105 22 view .LVU97
+ 283 0088 9371     		strb	r3, [r2, #6]
+ 106:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+ 107:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   return 3 + Size;
+ 284              		.loc 1 107 3 is_stmt 1 view .LVU98
+ 285              	.LVL14:
+ 286              	.L6:
+ 108:Utilities/GUI_INTERFACE/data_struct_tlv.c **** }
+ 287              		.loc 1 108 1 is_stmt 0 view .LVU99
+ 288              		@ sp needed
+ 289              	.LVL15:
+ 290              		.loc 1 108 1 view .LVU100
+ 291 008a FEBD     		pop	{r1, r2, r3, r4, r5, r6, r7, pc}
+ 292              	.LVL16:
+ 293              	.L8:
+ 294              	.LBB4:
+  94:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     ToSendTLV->EOFposition++;
+ 295              		.loc 1 94 5 is_stmt 1 discriminator 3 view .LVU101
+  94:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     ToSendTLV->EOFposition++;
+ 296              		.loc 1 94 52 is_stmt 0 discriminator 3 view .LVU102
+ 297 008c 019D     		ldr	r5, [sp, #4]
+ 298 008e 2D5C     		ldrb	r5, [r5, r0]
+  92:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   {
+ 299              		.loc 1 92 46 discriminator 3 view .LVU103
+ 300 0090 0130     		adds	r0, r0, #1
+ 301              	.LVL17:
+  94:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     ToSendTLV->EOFposition++;
+ 302              		.loc 1 94 45 discriminator 3 view .LVU104
+ 303 0092 5D54     		strb	r5, [r3, r1]
+  95:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   }
+ 304              		.loc 1 95 5 is_stmt 1 discriminator 3 view .LVU105
+  95:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   }
+ 305              		.loc 1 95 27 is_stmt 0 discriminator 3 view .LVU106
+ 306 0094 E388     		ldrh	r3, [r4, #6]
+ 307 0096 0133     		adds	r3, r3, #1
+ 308 0098 E380     		strh	r3, [r4, #6]
+  92:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   {
+ 309              		.loc 1 92 41 is_stmt 1 discriminator 3 view .LVU107
+ 310              	.LVL18:
+ARM GAS  /tmp/ccUxpk8G.s 			page 9
+
+
+  92:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   {
+ 311              		.loc 1 92 41 is_stmt 0 discriminator 3 view .LVU108
+ 312 009a D7E7     		b	.L7
+ 313              	.LVL19:
+ 314              	.L11:
+  92:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   {
+ 315              		.loc 1 92 41 discriminator 3 view .LVU109
+ 316              	.LBE4:
+  79:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if((ToSendTLV->EOFposition + 4 + 3 + Size) > ToSendTLV->maxSize)      return 0xFFFF;       /* Can
+ 317              		.loc 1 79 80 view .LVU110
+ 318 009c 1800     		movs	r0, r3
+ 319 009e F4E7     		b	.L6
+ 320              	.L13:
+ 321              		.align	2
+ 322              	.L12:
+ 323 00a0 FFFF0000 		.word	65535
+ 324              		.cfi_endproc
+ 325              	.LFE1:
+ 327              		.section	.text.TLV_addValue,"ax",%progbits
+ 328              		.align	1
+ 329              		.global	TLV_addValue
+ 330              		.syntax unified
+ 331              		.code	16
+ 332              		.thumb_func
+ 333              		.fpu softvfp
+ 335              	TLV_addValue:
+ 336              	.LVL20:
+ 337              	.LFB2:
+ 109:Utilities/GUI_INTERFACE/data_struct_tlv.c **** 
+ 110:Utilities/GUI_INTERFACE/data_struct_tlv.c **** /**
+ 111:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @brief    Inserts value inside the TLV packet
+ 112:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    ToSendTLV    The TLV_ToSend_Data structure in which we add data.
+ 113:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    Size         The Size of the data, in bytes.
+ 114:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    Value        A pointer to the Value to add.
+ 115:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @return   The number of bytes written if everything went fine, 0xFFFF otherwise.
+ 116:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *
+ 117:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   */
+ 118:Utilities/GUI_INTERFACE/data_struct_tlv.c **** uint16_t TLV_addValue(TLV_ToSend_Data *ToSendTLV, const uint8_t *Value, uint16_t Size)
+ 119:Utilities/GUI_INTERFACE/data_struct_tlv.c **** {
+ 338              		.loc 1 119 1 is_stmt 1 view -0
+ 339              		.cfi_startproc
+ 340              		@ args = 0, pretend = 0, frame = 0
+ 341              		@ frame_needed = 0, uses_anonymous_args = 0
+ 120:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToSendTLV->data[ToSendTLV->EOFposition] != TLV_EOF)                return 0xFFFF;       /* EOF
+ 342              		.loc 1 120 3 view .LVU112
+ 119:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToSendTLV->data[ToSendTLV->EOFposition] != TLV_EOF)                return 0xFFFF;       /* EOF
+ 343              		.loc 1 119 1 is_stmt 0 view .LVU113
+ 344 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 345              	.LCFI2:
+ 346              		.cfi_def_cfa_offset 20
+ 347              		.cfi_offset 4, -20
+ 348              		.cfi_offset 5, -16
+ 349              		.cfi_offset 6, -12
+ 350              		.cfi_offset 7, -8
+ 351              		.cfi_offset 14, -4
+ 119:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToSendTLV->data[ToSendTLV->EOFposition] != TLV_EOF)                return 0xFFFF;       /* EOF
+ 352              		.loc 1 119 1 view .LVU114
+ARM GAS  /tmp/ccUxpk8G.s 			page 10
+
+
+ 353 0002 0300     		movs	r3, r0
+ 354              		.loc 1 120 15 view .LVU115
+ 355 0004 0668     		ldr	r6, [r0]
+ 356              		.loc 1 120 31 view .LVU116
+ 357 0006 C088     		ldrh	r0, [r0, #6]
+ 358              	.LVL21:
+ 359              		.loc 1 120 31 view .LVU117
+ 360 0008 1B4C     		ldr	r4, .L21
+ 361              		.loc 1 120 5 view .LVU118
+ 362 000a 355C     		ldrb	r5, [r6, r0]
+ 363 000c A52D     		cmp	r5, #165
+ 364 000e 30D1     		bne	.L20
+ 121:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if((ToSendTLV->EOFposition + 4 + 3 + Size) > ToSendTLV->maxSize)      return 0xFFFF;       /* Can
+ 365              		.loc 1 121 3 is_stmt 1 view .LVU119
+ 366              		.loc 1 121 34 is_stmt 0 view .LVU120
+ 367 0010 C51D     		adds	r5, r0, #7
+ 368              		.loc 1 121 57 view .LVU121
+ 369 0012 9F88     		ldrh	r7, [r3, #4]
+ 370              		.loc 1 121 38 view .LVU122
+ 371 0014 AD18     		adds	r5, r5, r2
+ 372              		.loc 1 121 5 view .LVU123
+ 373 0016 BD42     		cmp	r5, r7
+ 374 0018 2BDC     		bgt	.L20
+ 122:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToSendTLV->data == NULL)                                          return 0xFFFF;        /* Dat
+ 375              		.loc 1 122 3 is_stmt 1 view .LVU124
+ 376              		.loc 1 122 5 is_stmt 0 view .LVU125
+ 377 001a 002E     		cmp	r6, #0
+ 378 001c 29D0     		beq	.L20
+ 123:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToSendTLV->EOFposition == 0xFFFF)                                 return 0xFFFF;        /* EOF
+ 379              		.loc 1 123 3 is_stmt 1 view .LVU126
+ 380              		.loc 1 123 5 is_stmt 0 view .LVU127
+ 381 001e A042     		cmp	r0, r4
+ 382 0020 1FD0     		beq	.L15
+ 383              	.LBB5:
+ 124:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+ 125:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   for(uint32_t index = 0; index < Size; index++)                                          /* Value*
+ 384              		.loc 1 125 16 view .LVU128
+ 385 0022 0024     		movs	r4, #0
+ 386              	.L16:
+ 387              	.LVL22:
+ 388              		.loc 1 125 27 is_stmt 1 discriminator 1 view .LVU129
+ 389 0024 1868     		ldr	r0, [r3]
+ 390 0026 DD88     		ldrh	r5, [r3, #6]
+ 391              		.loc 1 125 3 is_stmt 0 discriminator 1 view .LVU130
+ 392 0028 A242     		cmp	r2, r4
+ 393 002a 1BD8     		bhi	.L17
+ 394              	.LBE5:
+ 126:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   {
+ 127:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     ToSendTLV->data[ToSendTLV->EOFposition] = Value[index];
+ 128:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     ToSendTLV->EOFposition++;
+ 129:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   }
+ 130:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+ 131:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[ToSendTLV->EOFposition]
+ 395              		.loc 1 131 3 is_stmt 1 view .LVU131
+ 132:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     = ToSendTLV->data[ToSendTLV->EOFposition+1]
+ 133:Utilities/GUI_INTERFACE/data_struct_tlv.c ****       = ToSendTLV->data[ToSendTLV->EOFposition+2]
+ 134:Utilities/GUI_INTERFACE/data_struct_tlv.c ****         = ToSendTLV->data[ToSendTLV->EOFposition+3] = TLV_EOF;             /* EOF*/
+ARM GAS  /tmp/ccUxpk8G.s 			page 11
+
+
+ 396              		.loc 1 134 53 is_stmt 0 view .LVU132
+ 397 002c A521     		movs	r1, #165
+ 398              	.LVL23:
+ 399              		.loc 1 134 53 view .LVU133
+ 400 002e 4019     		adds	r0, r0, r5
+ 401 0030 C170     		strb	r1, [r0, #3]
+ 133:Utilities/GUI_INTERFACE/data_struct_tlv.c ****         = ToSendTLV->data[ToSendTLV->EOFposition+3] = TLV_EOF;             /* EOF*/
+ 402              		.loc 1 133 34 view .LVU134
+ 403 0032 D888     		ldrh	r0, [r3, #6]
+ 404              		.loc 1 134 9 view .LVU135
+ 405 0034 1C68     		ldr	r4, [r3]
+ 406              	.LVL24:
+ 407              		.loc 1 134 9 view .LVU136
+ 408 0036 2018     		adds	r0, r4, r0
+ 409 0038 8170     		strb	r1, [r0, #2]
+ 132:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     = ToSendTLV->data[ToSendTLV->EOFposition+1]
+ 410              		.loc 1 132 32 view .LVU137
+ 411 003a D888     		ldrh	r0, [r3, #6]
+ 133:Utilities/GUI_INTERFACE/data_struct_tlv.c ****         = ToSendTLV->data[ToSendTLV->EOFposition+3] = TLV_EOF;             /* EOF*/
+ 412              		.loc 1 133 7 view .LVU138
+ 413 003c 1C68     		ldr	r4, [r3]
+ 414 003e 2018     		adds	r0, r4, r0
+ 415 0040 4170     		strb	r1, [r0, #1]
+ 131:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     = ToSendTLV->data[ToSendTLV->EOFposition+1]
+ 416              		.loc 1 131 28 view .LVU139
+ 417 0042 D888     		ldrh	r0, [r3, #6]
+ 132:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     = ToSendTLV->data[ToSendTLV->EOFposition+1]
+ 418              		.loc 1 132 5 view .LVU140
+ 419 0044 1C68     		ldr	r4, [r3]
+ 420 0046 2154     		strb	r1, [r4, r0]
+ 135:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+ 136:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   uint16_t total_lgth = (ToSendTLV->data[5] << 8) + ToSendTLV->data[6] + Size; /* Update of the top
+ 421              		.loc 1 136 3 is_stmt 1 view .LVU141
+ 422              		.loc 1 136 35 is_stmt 0 view .LVU142
+ 423 0048 1868     		ldr	r0, [r3]
+ 424              		.loc 1 136 41 view .LVU143
+ 425 004a 4179     		ldrb	r1, [r0, #5]
+ 426              		.loc 1 136 68 view .LVU144
+ 427 004c 8479     		ldrb	r4, [r0, #6]
+ 428              		.loc 1 136 45 view .LVU145
+ 429 004e 0902     		lsls	r1, r1, #8
+ 430              		.loc 1 136 12 view .LVU146
+ 431 0050 1419     		adds	r4, r2, r4
+ 432 0052 0919     		adds	r1, r1, r4
+ 433 0054 89B2     		uxth	r1, r1
+ 434              	.LVL25:
+ 137:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[5] = total_lgth >> 8;
+ 435              		.loc 1 137 3 is_stmt 1 view .LVU147
+ 436              		.loc 1 137 22 is_stmt 0 view .LVU148
+ 437 0056 0C0A     		lsrs	r4, r1, #8
+ 438 0058 4471     		strb	r4, [r0, #5]
+ 138:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[6] = total_lgth;
+ 439              		.loc 1 138 3 is_stmt 1 view .LVU149
+ 440              		.loc 1 138 12 is_stmt 0 view .LVU150
+ 441 005a 1B68     		ldr	r3, [r3]
+ 442              	.LVL26:
+ 139:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+ARM GAS  /tmp/ccUxpk8G.s 			page 12
+
+
+ 140:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   return 3 + Size;
+ 443              		.loc 1 140 12 view .LVU151
+ 444 005c 0332     		adds	r2, r2, #3
+ 445              	.LVL27:
+ 138:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[6] = total_lgth;
+ 446              		.loc 1 138 22 view .LVU152
+ 447 005e 9971     		strb	r1, [r3, #6]
+ 448              		.loc 1 140 3 is_stmt 1 view .LVU153
+ 449              		.loc 1 140 12 is_stmt 0 view .LVU154
+ 450 0060 90B2     		uxth	r0, r2
+ 451              	.LVL28:
+ 452              	.L15:
+ 141:Utilities/GUI_INTERFACE/data_struct_tlv.c **** }
+ 453              		.loc 1 141 1 view .LVU155
+ 454              		@ sp needed
+ 455 0062 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 456              	.LVL29:
+ 457              	.L17:
+ 458              	.LBB6:
+ 127:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     ToSendTLV->EOFposition++;
+ 459              		.loc 1 127 5 is_stmt 1 discriminator 3 view .LVU156
+ 127:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     ToSendTLV->EOFposition++;
+ 460              		.loc 1 127 52 is_stmt 0 discriminator 3 view .LVU157
+ 461 0064 0E5D     		ldrb	r6, [r1, r4]
+ 125:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   {
+ 462              		.loc 1 125 46 discriminator 3 view .LVU158
+ 463 0066 0134     		adds	r4, r4, #1
+ 464              	.LVL30:
+ 127:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     ToSendTLV->EOFposition++;
+ 465              		.loc 1 127 45 discriminator 3 view .LVU159
+ 466 0068 4655     		strb	r6, [r0, r5]
+ 128:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   }
+ 467              		.loc 1 128 5 is_stmt 1 discriminator 3 view .LVU160
+ 128:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   }
+ 468              		.loc 1 128 27 is_stmt 0 discriminator 3 view .LVU161
+ 469 006a D888     		ldrh	r0, [r3, #6]
+ 470 006c 0130     		adds	r0, r0, #1
+ 471 006e D880     		strh	r0, [r3, #6]
+ 125:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   {
+ 472              		.loc 1 125 41 is_stmt 1 discriminator 3 view .LVU162
+ 473              	.LVL31:
+ 125:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   {
+ 474              		.loc 1 125 41 is_stmt 0 discriminator 3 view .LVU163
+ 475 0070 D8E7     		b	.L16
+ 476              	.LVL32:
+ 477              	.L20:
+ 125:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   {
+ 478              		.loc 1 125 41 discriminator 3 view .LVU164
+ 479              	.LBE6:
+ 120:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if((ToSendTLV->EOFposition + 4 + 3 + Size) > ToSendTLV->maxSize)      return 0xFFFF;       /* Can
+ 480              		.loc 1 120 80 view .LVU165
+ 481 0072 2000     		movs	r0, r4
+ 482 0074 F5E7     		b	.L15
+ 483              	.L22:
+ 484 0076 C046     		.align	2
+ 485              	.L21:
+ 486 0078 FFFF0000 		.word	65535
+ARM GAS  /tmp/ccUxpk8G.s 			page 13
+
+
+ 487              		.cfi_endproc
+ 488              	.LFE2:
+ 490              		.section	.text.TLV_UpdateSizeTag,"ax",%progbits
+ 491              		.align	1
+ 492              		.global	TLV_UpdateSizeTag
+ 493              		.syntax unified
+ 494              		.code	16
+ 495              		.thumb_func
+ 496              		.fpu softvfp
+ 498              	TLV_UpdateSizeTag:
+ 499              	.LVL33:
+ 500              	.LFB3:
+ 142:Utilities/GUI_INTERFACE/data_struct_tlv.c **** 
+ 143:Utilities/GUI_INTERFACE/data_struct_tlv.c **** /**
+ 144:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @brief    Update size of previous inserted TAG inside the TLV packet
+ 145:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    ToSendTLV    The TLV_ToSend_Data structure in which we add data.
+ 146:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    Size         The Size of the data, in bytes.
+ 147:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @return   None
+ 148:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *
+ 149:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   */
+ 150:Utilities/GUI_INTERFACE/data_struct_tlv.c **** void TLV_UpdateSizeTag(TLV_ToSend_Data *ToSendTLV, uint16_t Size)
+ 151:Utilities/GUI_INTERFACE/data_struct_tlv.c **** {
+ 501              		.loc 1 151 1 is_stmt 1 view -0
+ 502              		.cfi_startproc
+ 503              		@ args = 0, pretend = 0, frame = 0
+ 504              		@ frame_needed = 0, uses_anonymous_args = 0
+ 152:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[ToSendTLV->SizePosition]     = (Size >> 8) & 0x00FF;        /* Size*/
+ 505              		.loc 1 152 3 view .LVU167
+ 151:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[ToSendTLV->SizePosition]     = (Size >> 8) & 0x00FF;        /* Size*/
+ 506              		.loc 1 151 1 is_stmt 0 view .LVU168
+ 507 0000 10B5     		push	{r4, lr}
+ 508              	.LCFI3:
+ 509              		.cfi_def_cfa_offset 8
+ 510              		.cfi_offset 4, -8
+ 511              		.cfi_offset 14, -4
+ 512              		.loc 1 152 28 view .LVU169
+ 513 0002 0389     		ldrh	r3, [r0, #8]
+ 514              		.loc 1 152 48 view .LVU170
+ 515 0004 0468     		ldr	r4, [r0]
+ 516 0006 0A0A     		lsrs	r2, r1, #8
+ 517 0008 E254     		strb	r2, [r4, r3]
+ 153:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[ToSendTLV->SizePosition + 1] = (Size     ) & 0x00FF;
+ 518              		.loc 1 153 3 is_stmt 1 view .LVU171
+ 519              		.loc 1 153 28 is_stmt 0 view .LVU172
+ 520 000a 0289     		ldrh	r2, [r0, #8]
+ 521              		.loc 1 153 48 view .LVU173
+ 522 000c 0368     		ldr	r3, [r0]
+ 154:Utilities/GUI_INTERFACE/data_struct_tlv.c **** }
+ 523              		.loc 1 154 1 view .LVU174
+ 524              		@ sp needed
+ 153:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data[ToSendTLV->SizePosition + 1] = (Size     ) & 0x00FF;
+ 525              		.loc 1 153 48 view .LVU175
+ 526 000e 9B18     		adds	r3, r3, r2
+ 527 0010 5970     		strb	r1, [r3, #1]
+ 528              		.loc 1 154 1 view .LVU176
+ 529 0012 10BD     		pop	{r4, pc}
+ 530              		.cfi_endproc
+ARM GAS  /tmp/ccUxpk8G.s 			page 14
+
+
+ 531              	.LFE3:
+ 533              		.section	.text.TLV_deinit_encode,"ax",%progbits
+ 534              		.align	1
+ 535              		.global	TLV_deinit_encode
+ 536              		.syntax unified
+ 537              		.code	16
+ 538              		.thumb_func
+ 539              		.fpu softvfp
+ 541              	TLV_deinit_encode:
+ 542              	.LVL34:
+ 543              	.LFB4:
+ 155:Utilities/GUI_INTERFACE/data_struct_tlv.c **** /**
+ 156:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @brief    TLV_deinit_encode deinitialize a TLV_ToSend_Data structure.
+ 157:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @note     After this, TLV_add can no longer be used with this structure (unless if it is reinit
+ 158:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *           If a TLV_ToSend_Data structure is used without deinitialization, the associated strin
+ 159:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *           Once deinitialization is done, the string used can directly be send.
+ 160:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    ToSendTLV    The TLV_ToSend_Data structure to deinitialize.
+ 161:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @return   None
+ 162:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   */
+ 163:Utilities/GUI_INTERFACE/data_struct_tlv.c **** void TLV_deinit_encode(TLV_ToSend_Data *ToSendTLV)
+ 164:Utilities/GUI_INTERFACE/data_struct_tlv.c **** {
+ 544              		.loc 1 164 1 is_stmt 1 view -0
+ 545              		.cfi_startproc
+ 546              		@ args = 0, pretend = 0, frame = 0
+ 547              		@ frame_needed = 0, uses_anonymous_args = 0
+ 548              		@ link register save eliminated.
+ 165:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->data        = NULL;
+ 549              		.loc 1 165 3 view .LVU178
+ 166:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->EOFposition = 0xFFFF;
+ 550              		.loc 1 166 3 view .LVU179
+ 167:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->maxSize     = 0;
+ 551              		.loc 1 167 3 view .LVU180
+ 552              		.loc 1 167 26 is_stmt 0 view .LVU181
+ 553 0000 0022     		movs	r2, #0
+ 554 0002 014B     		ldr	r3, .L25
+ 168:Utilities/GUI_INTERFACE/data_struct_tlv.c **** }
+ 555              		.loc 1 168 1 view .LVU182
+ 556              		@ sp needed
+ 167:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToSendTLV->maxSize     = 0;
+ 557              		.loc 1 167 26 view .LVU183
+ 558 0004 0CC0     		stmia	r0!, {r2, r3}
+ 559              	.LVL35:
+ 560              		.loc 1 168 1 view .LVU184
+ 561 0006 7047     		bx	lr
+ 562              	.L26:
+ 563              		.align	2
+ 564              	.L25:
+ 565 0008 0000FFFF 		.word	-65536
+ 566              		.cfi_endproc
+ 567              	.LFE4:
+ 569              		.section	.text.TLV_init_decode,"ax",%progbits
+ 570              		.align	1
+ 571              		.global	TLV_init_decode
+ 572              		.syntax unified
+ 573              		.code	16
+ 574              		.thumb_func
+ 575              		.fpu softvfp
+ARM GAS  /tmp/ccUxpk8G.s 			page 15
+
+
+ 577              	TLV_init_decode:
+ 578              	.LVL36:
+ 579              	.LFB5:
+ 169:Utilities/GUI_INTERFACE/data_struct_tlv.c **** 
+ 170:Utilities/GUI_INTERFACE/data_struct_tlv.c **** /**
+ 171:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @brief    TLV_init_decode initializes a TLV_Received_Data structure, to have it ready to be use
+ 172:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *           TLV_get and TLV_deinit_decode must not be called without calling this function first.
+ 173:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @note     This function places a cursor on the first parameter.
+ 174:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    ToProcessTLV    The TLV_Received_Data that will be used.
+ 175:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    pReceivedString          The string which will be decoded.
+ 176:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @return   The position of the cursor if everything went fine, 0xFF otherwise.
+ 177:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   */
+ 178:Utilities/GUI_INTERFACE/data_struct_tlv.c **** uint8_t TLV_init_decode(TLV_Received_Data *ToProcessTLV, uint8_t *pReceivedString)
+ 179:Utilities/GUI_INTERFACE/data_struct_tlv.c **** {
+ 580              		.loc 1 179 1 is_stmt 1 view -0
+ 581              		.cfi_startproc
+ 582              		@ args = 0, pretend = 0, frame = 0
+ 583              		@ frame_needed = 0, uses_anonymous_args = 0
+ 584              		@ link register save eliminated.
+ 180:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(pReceivedString == NULL) return 0xFF;               /* Received string is NULL*/
+ 585              		.loc 1 180 3 view .LVU186
+ 179:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(pReceivedString == NULL) return 0xFF;               /* Received string is NULL*/
+ 586              		.loc 1 179 1 is_stmt 0 view .LVU187
+ 587 0000 0300     		movs	r3, r0
+ 588              		.loc 1 180 38 view .LVU188
+ 589 0002 FF20     		movs	r0, #255
+ 590              	.LVL37:
+ 591              		.loc 1 180 5 view .LVU189
+ 592 0004 0029     		cmp	r1, #0
+ 593 0006 0ED0     		beq	.L28
+ 181:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(  (pReceivedString[0] != TLV_SOF)
+ 594              		.loc 1 181 3 is_stmt 1 view .LVU190
+ 595              		.loc 1 181 5 is_stmt 0 view .LVU191
+ 596 0008 0A78     		ldrb	r2, [r1]
+ 597 000a FD2A     		cmp	r2, #253
+ 598 000c 0BD1     		bne	.L28
+ 182:Utilities/GUI_INTERFACE/data_struct_tlv.c ****      ||(pReceivedString[1] != TLV_SOF)
+ 599              		.loc 1 182 6 view .LVU192
+ 600 000e 4A78     		ldrb	r2, [r1, #1]
+ 601 0010 FD2A     		cmp	r2, #253
+ 602 0012 08D1     		bne	.L28
+ 183:Utilities/GUI_INTERFACE/data_struct_tlv.c ****      ||(pReceivedString[2] != TLV_SOF)
+ 603              		.loc 1 183 6 view .LVU193
+ 604 0014 8A78     		ldrb	r2, [r1, #2]
+ 605 0016 FD2A     		cmp	r2, #253
+ 606 0018 05D1     		bne	.L28
+ 184:Utilities/GUI_INTERFACE/data_struct_tlv.c ****      ||(pReceivedString[3] != TLV_SOF)) return 0xFF;       /* Incorrect SOF*/
+ 607              		.loc 1 184 6 view .LVU194
+ 608 001a CA78     		ldrb	r2, [r1, #3]
+ 609 001c FD2A     		cmp	r2, #253
+ 610 001e 02D1     		bne	.L28
+ 185:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+ 186:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToProcessTLV->data = pReceivedString;
+ 611              		.loc 1 186 3 is_stmt 1 view .LVU195
+ 187:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToProcessTLV->cursor = 7; /* Cursor at start of value*/
+ 612              		.loc 1 187 24 is_stmt 0 view .LVU196
+ 613 0020 F838     		subs	r0, r0, #248
+ARM GAS  /tmp/ccUxpk8G.s 			page 16
+
+
+ 186:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToProcessTLV->cursor = 7; /* Cursor at start of value*/
+ 614              		.loc 1 186 22 view .LVU197
+ 615 0022 1960     		str	r1, [r3]
+ 616              		.loc 1 187 3 is_stmt 1 view .LVU198
+ 617              		.loc 1 187 24 is_stmt 0 view .LVU199
+ 618 0024 9880     		strh	r0, [r3, #4]
+ 188:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+ 189:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   return ToProcessTLV->cursor;
+ 619              		.loc 1 189 3 is_stmt 1 view .LVU200
+ 620              	.L28:
+ 190:Utilities/GUI_INTERFACE/data_struct_tlv.c **** }
+ 621              		.loc 1 190 1 is_stmt 0 view .LVU201
+ 622              		@ sp needed
+ 623 0026 7047     		bx	lr
+ 624              		.cfi_endproc
+ 625              	.LFE5:
+ 627              		.section	.text.TLV_get,"ax",%progbits
+ 628              		.align	1
+ 629              		.global	TLV_get
+ 630              		.syntax unified
+ 631              		.code	16
+ 632              		.thumb_func
+ 633              		.fpu softvfp
+ 635              	TLV_get:
+ 636              	.LVL38:
+ 637              	.LFB6:
+ 191:Utilities/GUI_INTERFACE/data_struct_tlv.c **** 
+ 192:Utilities/GUI_INTERFACE/data_struct_tlv.c **** /**
+ 193:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @brief    TLV_get gets data in TLV format from inside the value of a host TLV instruction.
+ 194:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @note     Refer to the USB-PD GUI INTERFACE SPECIFICATION DOCUMENT for more info about this pra
+ 195:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *           TLV_init_decode must be called with the same TLV_Received_Data structure before calli
+ 196:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *           Once this function has read its parameter, it places the cursor at the beginning of t
+ 197:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *           Refer to the returned value to see if there is one or not.
+ 198:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    ToProcessTLV    The TLV_Received_Data structure which is associated to the string we 
+ 199:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    Tag            A pointer to where the decoded Tag should be stocked.
+ 200:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    Length            A pointer to where the decoded size should be stocked.
+ 201:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    Value            A double pointer, which will contain a pointer directly to the data 
+ 202:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @return   0 if the reading was fine and there is another parameter after, 1 if the reading was 
+ 203:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   */
+ 204:Utilities/GUI_INTERFACE/data_struct_tlv.c **** uint8_t TLV_get(TLV_Received_Data *ToProcessTLV, uint8_t *Tag, uint16_t *Length, uint8_t **Value)
+ 205:Utilities/GUI_INTERFACE/data_struct_tlv.c **** {
+ 638              		.loc 1 205 1 is_stmt 1 view -0
+ 639              		.cfi_startproc
+ 640              		@ args = 0, pretend = 0, frame = 0
+ 641              		@ frame_needed = 0, uses_anonymous_args = 0
+ 206:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToProcessTLV->data == NULL) return 0xFF;                           /* Data points to NULL. Has
+ 642              		.loc 1 206 3 view .LVU203
+ 205:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToProcessTLV->data == NULL) return 0xFF;                           /* Data points to NULL. Has
+ 643              		.loc 1 205 1 is_stmt 0 view .LVU204
+ 644 0000 70B5     		push	{r4, r5, r6, lr}
+ 645              	.LCFI4:
+ 646              		.cfi_def_cfa_offset 16
+ 647              		.cfi_offset 4, -16
+ 648              		.cfi_offset 5, -12
+ 649              		.cfi_offset 6, -8
+ 650              		.cfi_offset 14, -4
+ 651              		.loc 1 206 18 view .LVU205
+ARM GAS  /tmp/ccUxpk8G.s 			page 17
+
+
+ 652 0002 0668     		ldr	r6, [r0]
+ 205:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToProcessTLV->data == NULL) return 0xFF;                           /* Data points to NULL. Has
+ 653              		.loc 1 205 1 view .LVU206
+ 654 0004 0400     		movs	r4, r0
+ 655              		.loc 1 206 41 view .LVU207
+ 656 0006 FF20     		movs	r0, #255
+ 657              	.LVL39:
+ 658              		.loc 1 206 5 view .LVU208
+ 659 0008 002E     		cmp	r6, #0
+ 660 000a 1BD0     		beq	.L35
+ 207:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToProcessTLV->cursor == 0)  return 0xFF;                           /* The cursor is not positi
+ 661              		.loc 1 207 3 is_stmt 1 view .LVU209
+ 662              		.loc 1 207 18 is_stmt 0 view .LVU210
+ 663 000c A588     		ldrh	r5, [r4, #4]
+ 664              		.loc 1 207 5 view .LVU211
+ 665 000e 002D     		cmp	r5, #0
+ 666 0010 18D0     		beq	.L35
+ 208:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   if(ToProcessTLV->data[ToProcessTLV->cursor] == TLV_EOF) return 0xFF;  /* EOF reached. There is no
+ 667              		.loc 1 208 3 is_stmt 1 view .LVU212
+ 668              		.loc 1 208 24 is_stmt 0 view .LVU213
+ 669 0012 755D     		ldrb	r5, [r6, r5]
+ 670              		.loc 1 208 5 view .LVU214
+ 671 0014 A52D     		cmp	r5, #165
+ 672 0016 15D0     		beq	.L35
+ 209:Utilities/GUI_INTERFACE/data_struct_tlv.c **** 
+ 210:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *Tag = ToProcessTLV->data[ToProcessTLV->cursor];                                                 
+ 673              		.loc 1 210 3 is_stmt 1 view .LVU215
+ 674              		.loc 1 210 8 is_stmt 0 view .LVU216
+ 675 0018 0D70     		strb	r5, [r1]
+ 211:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToProcessTLV->cursor++;
+ 676              		.loc 1 211 3 is_stmt 1 view .LVU217
+ 677              		.loc 1 211 23 is_stmt 0 view .LVU218
+ 678 001a A188     		ldrh	r1, [r4, #4]
+ 679              	.LVL40:
+ 212:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *Length = (ToProcessTLV->data[ToProcessTLV->cursor] << 8) + ToProcessTLV->data[ToProcessTLV->curs
+ 680              		.loc 1 212 26 view .LVU219
+ 681 001c 2068     		ldr	r0, [r4]
+ 211:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToProcessTLV->cursor++;
+ 682              		.loc 1 211 23 view .LVU220
+ 683 001e 0131     		adds	r1, r1, #1
+ 684 0020 89B2     		uxth	r1, r1
+ 685 0022 A180     		strh	r1, [r4, #4]
+ 686              		.loc 1 212 3 is_stmt 1 view .LVU221
+ 687              		.loc 1 212 32 is_stmt 0 view .LVU222
+ 688 0024 455C     		ldrb	r5, [r0, r1]
+ 689              		.loc 1 212 81 view .LVU223
+ 690 0026 4118     		adds	r1, r0, r1
+ 691 0028 4978     		ldrb	r1, [r1, #1]
+ 692              		.loc 1 212 55 view .LVU224
+ 693 002a 2D02     		lsls	r5, r5, #8
+ 694              		.loc 1 212 61 view .LVU225
+ 695 002c 4919     		adds	r1, r1, r5
+ 696              		.loc 1 212 11 view .LVU226
+ 697 002e 1180     		strh	r1, [r2]
+ 213:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToProcessTLV->cursor += 2;
+ 698              		.loc 1 213 3 is_stmt 1 view .LVU227
+ 699              		.loc 1 213 24 is_stmt 0 view .LVU228
+ARM GAS  /tmp/ccUxpk8G.s 			page 18
+
+
+ 700 0030 A188     		ldrh	r1, [r4, #4]
+ 701 0032 0231     		adds	r1, r1, #2
+ 702 0034 89B2     		uxth	r1, r1
+ 214:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *Value = &ToProcessTLV->data[ToProcessTLV->cursor];                                              
+ 703              		.loc 1 214 12 view .LVU229
+ 704 0036 4018     		adds	r0, r0, r1
+ 213:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToProcessTLV->cursor += 2;
+ 705              		.loc 1 213 24 view .LVU230
+ 706 0038 A180     		strh	r1, [r4, #4]
+ 707              		.loc 1 214 3 is_stmt 1 view .LVU231
+ 708              		.loc 1 214 10 is_stmt 0 view .LVU232
+ 709 003a 1860     		str	r0, [r3]
+ 215:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToProcessTLV->cursor += *Length;
+ 710              		.loc 1 215 3 is_stmt 1 view .LVU233
+ 216:Utilities/GUI_INTERFACE/data_struct_tlv.c **** 
+ 217:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   return 0;
+ 711              		.loc 1 217 10 is_stmt 0 view .LVU234
+ 712 003c 0020     		movs	r0, #0
+ 215:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToProcessTLV->cursor += *Length;
+ 713              		.loc 1 215 24 view .LVU235
+ 714 003e 1388     		ldrh	r3, [r2]
+ 715              	.LVL41:
+ 215:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToProcessTLV->cursor += *Length;
+ 716              		.loc 1 215 24 view .LVU236
+ 717 0040 C918     		adds	r1, r1, r3
+ 718 0042 A180     		strh	r1, [r4, #4]
+ 719              		.loc 1 217 3 is_stmt 1 view .LVU237
+ 720              	.L35:
+ 218:Utilities/GUI_INTERFACE/data_struct_tlv.c **** }
+ 721              		.loc 1 218 1 is_stmt 0 view .LVU238
+ 722              		@ sp needed
+ 723              	.LVL42:
+ 724              		.loc 1 218 1 view .LVU239
+ 725 0044 70BD     		pop	{r4, r5, r6, pc}
+ 726              		.cfi_endproc
+ 727              	.LFE6:
+ 729              		.section	.text.TLV_deinit_decode,"ax",%progbits
+ 730              		.align	1
+ 731              		.global	TLV_deinit_decode
+ 732              		.syntax unified
+ 733              		.code	16
+ 734              		.thumb_func
+ 735              		.fpu softvfp
+ 737              	TLV_deinit_decode:
+ 738              	.LVL43:
+ 739              	.LFB7:
+ 219:Utilities/GUI_INTERFACE/data_struct_tlv.c **** 
+ 220:Utilities/GUI_INTERFACE/data_struct_tlv.c **** /**
+ 221:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @brief    TLV_deinit_decode deinitialize a TLV_Received_Data structure.
+ 222:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @note     After this, TLV_get can no longer be used with this structure (unless if it is reinit
+ 223:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *           Once the cursor reach the EOF, there isn't anything to do except deinitializing the T
+ 224:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   *           This function do not handle any deallocation.
+ 225:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    ToProcessTLV    The TLV_Received_Data structure to deinitialize.
+ 226:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @return   None
+ 227:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   */
+ 228:Utilities/GUI_INTERFACE/data_struct_tlv.c **** void TLV_deinit_decode(TLV_Received_Data *ToProcessTLV)
+ 229:Utilities/GUI_INTERFACE/data_struct_tlv.c **** {
+ARM GAS  /tmp/ccUxpk8G.s 			page 19
+
+
+ 740              		.loc 1 229 1 is_stmt 1 view -0
+ 741              		.cfi_startproc
+ 742              		@ args = 0, pretend = 0, frame = 0
+ 743              		@ frame_needed = 0, uses_anonymous_args = 0
+ 744              		@ link register save eliminated.
+ 230:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToProcessTLV->data = NULL;
+ 745              		.loc 1 230 3 view .LVU241
+ 746              		.loc 1 230 22 is_stmt 0 view .LVU242
+ 747 0000 0023     		movs	r3, #0
+ 231:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToProcessTLV->cursor = 0;
+ 232:Utilities/GUI_INTERFACE/data_struct_tlv.c **** }
+ 748              		.loc 1 232 1 view .LVU243
+ 749              		@ sp needed
+ 230:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToProcessTLV->data = NULL;
+ 750              		.loc 1 230 22 view .LVU244
+ 751 0002 0360     		str	r3, [r0]
+ 231:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToProcessTLV->cursor = 0;
+ 752              		.loc 1 231 3 is_stmt 1 view .LVU245
+ 231:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   ToProcessTLV->cursor = 0;
+ 753              		.loc 1 231 24 is_stmt 0 view .LVU246
+ 754 0004 8380     		strh	r3, [r0, #4]
+ 755              		.loc 1 232 1 view .LVU247
+ 756 0006 7047     		bx	lr
+ 757              		.cfi_endproc
+ 758              	.LFE7:
+ 760              		.section	.text.TLV_get_string_length,"ax",%progbits
+ 761              		.align	1
+ 762              		.global	TLV_get_string_length
+ 763              		.syntax unified
+ 764              		.code	16
+ 765              		.thumb_func
+ 766              		.fpu softvfp
+ 768              	TLV_get_string_length:
+ 769              	.LVL44:
+ 770              	.LFB8:
+ 233:Utilities/GUI_INTERFACE/data_struct_tlv.c **** 
+ 234:Utilities/GUI_INTERFACE/data_struct_tlv.c **** /**
+ 235:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @brief    TLV_getStringLength returns the length of a 8 bit TLV string, in bytes.
+ 236:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @note     This function relies on the length marker in the string. Whether there is or not the 
+ 237:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @param    pString      A uint8_t pString, under TLV format, with or without SOF or EOF.
+ 238:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   * @return   The size of the pString in bytes; including tag, length, and value; excluding SOF and
+ 239:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   */
+ 240:Utilities/GUI_INTERFACE/data_struct_tlv.c **** uint16_t TLV_get_string_length(const uint8_t* pString)
+ 241:Utilities/GUI_INTERFACE/data_struct_tlv.c **** {
+ 771              		.loc 1 241 1 is_stmt 1 view -0
+ 772              		.cfi_startproc
+ 773              		@ args = 0, pretend = 0, frame = 0
+ 774              		@ frame_needed = 0, uses_anonymous_args = 0
+ 775              		@ link register save eliminated.
+ 242:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   uint16_t  length;      /* Variable to be return.*/
+ 776              		.loc 1 242 3 view .LVU249
+ 243:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   uint8_t   start = 0;    /* To indicate the start of the real pString, in case there is a EOF. */
+ 777              		.loc 1 243 3 view .LVU250
+ 244:Utilities/GUI_INTERFACE/data_struct_tlv.c **** 
+ 245:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   while(pString[start] == TLV_SOF)
+ 778              		.loc 1 245 3 view .LVU251
+ 243:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   uint8_t   start = 0;    /* To indicate the start of the real pString, in case there is a EOF. */
+ARM GAS  /tmp/ccUxpk8G.s 			page 20
+
+
+ 779              		.loc 1 243 13 is_stmt 0 view .LVU252
+ 780 0000 0023     		movs	r3, #0
+ 781              	.LVL45:
+ 782              	.L41:
+ 783              		.loc 1 245 8 is_stmt 1 view .LVU253
+ 784 0002 C25C     		ldrb	r2, [r0, r3]
+ 785 0004 FD2A     		cmp	r2, #253
+ 786 0006 07D0     		beq	.L42
+ 246:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   {
+ 247:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     start++;
+ 248:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   } /* start variable is now after the SOF if there is one.*/
+ 249:Utilities/GUI_INTERFACE/data_struct_tlv.c **** 
+ 250:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   length =   (uint16_t)pString[start+1] << 8
+ 787              		.loc 1 250 3 view .LVU254
+ 788              		.loc 1 250 31 is_stmt 0 view .LVU255
+ 789 0008 C318     		adds	r3, r0, r3
+ 790              	.LVL46:
+ 791              		.loc 1 250 14 view .LVU256
+ 792 000a 5A78     		ldrb	r2, [r3, #1]
+ 251:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     |(uint16_t)pString[start+2];
+ 793              		.loc 1 251 23 view .LVU257
+ 794 000c 9878     		ldrb	r0, [r3, #2]
+ 795              	.LVL47:
+ 250:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     |(uint16_t)pString[start+2];
+ 796              		.loc 1 250 41 view .LVU258
+ 797 000e 1202     		lsls	r2, r2, #8
+ 250:Utilities/GUI_INTERFACE/data_struct_tlv.c ****     |(uint16_t)pString[start+2];
+ 798              		.loc 1 250 10 view .LVU259
+ 799 0010 1043     		orrs	r0, r2
+ 800              	.LVL48:
+ 252:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   length += 3;
+ 801              		.loc 1 252 3 is_stmt 1 view .LVU260
+ 253:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   
+ 254:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   return length;
+ 802              		.loc 1 254 3 view .LVU261
+ 252:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   length += 3;
+ 803              		.loc 1 252 10 is_stmt 0 view .LVU262
+ 804 0012 0330     		adds	r0, r0, #3
+ 805              	.LVL49:
+ 806              		.loc 1 254 10 view .LVU263
+ 807 0014 80B2     		uxth	r0, r0
+ 808              	.LVL50:
+ 255:Utilities/GUI_INTERFACE/data_struct_tlv.c **** }
+ 809              		.loc 1 255 1 view .LVU264
+ 810              		@ sp needed
+ 811 0016 7047     		bx	lr
+ 812              	.LVL51:
+ 813              	.L42:
+ 247:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   } /* start variable is now after the SOF if there is one.*/
+ 814              		.loc 1 247 5 is_stmt 1 view .LVU265
+ 247:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   } /* start variable is now after the SOF if there is one.*/
+ 815              		.loc 1 247 10 is_stmt 0 view .LVU266
+ 816 0018 0133     		adds	r3, r3, #1
+ 817              	.LVL52:
+ 247:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   } /* start variable is now after the SOF if there is one.*/
+ 818              		.loc 1 247 10 view .LVU267
+ 819 001a DBB2     		uxtb	r3, r3
+ARM GAS  /tmp/ccUxpk8G.s 			page 21
+
+
+ 820              	.LVL53:
+ 247:Utilities/GUI_INTERFACE/data_struct_tlv.c ****   } /* start variable is now after the SOF if there is one.*/
+ 821              		.loc 1 247 10 view .LVU268
+ 822 001c F1E7     		b	.L41
+ 823              		.cfi_endproc
+ 824              	.LFE8:
+ 826              		.text
+ 827              	.Letext0:
+ 828              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 829              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 830              		.file 4 "/usr/include/newlib/sys/_types.h"
+ 831              		.file 5 "/usr/include/newlib/sys/reent.h"
+ 832              		.file 6 "/usr/include/newlib/sys/lock.h"
+ 833              		.file 7 "/usr/include/newlib/stdlib.h"
+ 834              		.file 8 "Utilities/GUI_INTERFACE/data_struct_tlv.h"
+ARM GAS  /tmp/ccUxpk8G.s 			page 22
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 data_struct_tlv.c
+     /tmp/ccUxpk8G.s:16     .text.TLV_init_encode:0000000000000000 $t
+     /tmp/ccUxpk8G.s:24     .text.TLV_init_encode:0000000000000000 TLV_init_encode
+     /tmp/ccUxpk8G.s:117    .text.TLV_add:0000000000000000 $t
+     /tmp/ccUxpk8G.s:124    .text.TLV_add:0000000000000000 TLV_add
+     /tmp/ccUxpk8G.s:323    .text.TLV_add:00000000000000a0 $d
+     /tmp/ccUxpk8G.s:328    .text.TLV_addValue:0000000000000000 $t
+     /tmp/ccUxpk8G.s:335    .text.TLV_addValue:0000000000000000 TLV_addValue
+     /tmp/ccUxpk8G.s:486    .text.TLV_addValue:0000000000000078 $d
+     /tmp/ccUxpk8G.s:491    .text.TLV_UpdateSizeTag:0000000000000000 $t
+     /tmp/ccUxpk8G.s:498    .text.TLV_UpdateSizeTag:0000000000000000 TLV_UpdateSizeTag
+     /tmp/ccUxpk8G.s:534    .text.TLV_deinit_encode:0000000000000000 $t
+     /tmp/ccUxpk8G.s:541    .text.TLV_deinit_encode:0000000000000000 TLV_deinit_encode
+     /tmp/ccUxpk8G.s:565    .text.TLV_deinit_encode:0000000000000008 $d
+     /tmp/ccUxpk8G.s:570    .text.TLV_init_decode:0000000000000000 $t
+     /tmp/ccUxpk8G.s:577    .text.TLV_init_decode:0000000000000000 TLV_init_decode
+     /tmp/ccUxpk8G.s:628    .text.TLV_get:0000000000000000 $t
+     /tmp/ccUxpk8G.s:635    .text.TLV_get:0000000000000000 TLV_get
+     /tmp/ccUxpk8G.s:730    .text.TLV_deinit_decode:0000000000000000 $t
+     /tmp/ccUxpk8G.s:737    .text.TLV_deinit_decode:0000000000000000 TLV_deinit_decode
+     /tmp/ccUxpk8G.s:761    .text.TLV_get_string_length:0000000000000000 $t
+     /tmp/ccUxpk8G.s:768    .text.TLV_get_string_length:0000000000000000 TLV_get_string_length
+
+NO UNDEFINED SYMBOLS

@@ -1,0 +1,1379 @@
+ARM GAS  /tmp/ccY6AkA5.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 4
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"bsp_gui.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.SaveSettingsInFlash,"ax",%progbits
+  16              		.align	1
+  17              		.arch armv6s-m
+  18              		.syntax unified
+  19              		.code	16
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	SaveSettingsInFlash:
+  24              	.LVL0:
+  25              	.LFB866:
+  26              		.file 1 "Utilities/GUI_INTERFACE/bsp_gui.c"
+   1:Utilities/GUI_INTERFACE/bsp_gui.c **** /**
+   2:Utilities/GUI_INTERFACE/bsp_gui.c ****   ******************************************************************************
+   3:Utilities/GUI_INTERFACE/bsp_gui.c ****   * @file    bsp_gui.c
+   4:Utilities/GUI_INTERFACE/bsp_gui.c ****   * @author  MCD Application Team
+   5:Utilities/GUI_INTERFACE/bsp_gui.c ****   * @brief   This file contains phy interface control functions.
+   6:Utilities/GUI_INTERFACE/bsp_gui.c ****   ******************************************************************************
+   7:Utilities/GUI_INTERFACE/bsp_gui.c ****   * @attention
+   8:Utilities/GUI_INTERFACE/bsp_gui.c ****   *
+   9:Utilities/GUI_INTERFACE/bsp_gui.c ****   * <h2><center>&copy; Copyright (c) 2018 STMicroelectronics.
+  10:Utilities/GUI_INTERFACE/bsp_gui.c ****   * All rights reserved.</center></h2>
+  11:Utilities/GUI_INTERFACE/bsp_gui.c ****   *
+  12:Utilities/GUI_INTERFACE/bsp_gui.c ****   * This software component is licensed by ST under BSD 3-Clause license,
+  13:Utilities/GUI_INTERFACE/bsp_gui.c ****   * the "License"; You may not use this file except in compliance with the
+  14:Utilities/GUI_INTERFACE/bsp_gui.c ****   * License. You may obtain a copy of the License at:
+  15:Utilities/GUI_INTERFACE/bsp_gui.c ****   *                        opensource.org/licenses/BSD-3-Clause
+  16:Utilities/GUI_INTERFACE/bsp_gui.c ****   *
+  17:Utilities/GUI_INTERFACE/bsp_gui.c ****   ******************************************************************************
+  18:Utilities/GUI_INTERFACE/bsp_gui.c ****   */
+  19:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  20:Utilities/GUI_INTERFACE/bsp_gui.c **** /* Includes ------------------------------------------------------------------*/
+  21:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(_GUI_INTERFACE)
+  22:Utilities/GUI_INTERFACE/bsp_gui.c **** #include "bsp_gui.h"
+  23:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  24:Utilities/GUI_INTERFACE/bsp_gui.c **** /* Private typedef -----------------------------------------------------------*/
+  25:Utilities/GUI_INTERFACE/bsp_gui.c **** /* Private Defines */
+  26:Utilities/GUI_INTERFACE/bsp_gui.c **** extern USBPD_SettingsTypeDef       DPM_Settings[USBPD_PORT_COUNT];
+  27:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(_VDM)
+  28:Utilities/GUI_INTERFACE/bsp_gui.c **** extern USBPD_VDM_SettingsTypeDef   DPM_VDM_Settings[USBPD_PORT_COUNT];
+  29:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* _VDM */
+  30:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  31:Utilities/GUI_INTERFACE/bsp_gui.c **** /* Private function prototypes -----------------------------------------------*/
+  32:Utilities/GUI_INTERFACE/bsp_gui.c **** static GUI_StatusTypeDef        LoadPDOFromFlash(uint32_t Address, uint32_t *pListOfPDO);
+ARM GAS  /tmp/ccY6AkA5.s 			page 2
+
+
+  33:Utilities/GUI_INTERFACE/bsp_gui.c **** static GUI_StatusTypeDef        LoadSettingsFromFlash(uint32_t Address, uint32_t *pSettings, uint32
+  34:Utilities/GUI_INTERFACE/bsp_gui.c **** static GUI_StatusTypeDef        SavePDOInFlash(uint32_t Address, uint32_t* pListOfPDO);
+  35:Utilities/GUI_INTERFACE/bsp_gui.c **** static GUI_StatusTypeDef        SaveSettingsInFlash(uint32_t Address, uint32_t *pSettings, uint32_t
+  36:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  37:Utilities/GUI_INTERFACE/bsp_gui.c **** GUI_StatusTypeDef BSP_GUI_LoadDataFromFlash(void)
+  38:Utilities/GUI_INTERFACE/bsp_gui.c **** {
+  39:Utilities/GUI_INTERFACE/bsp_gui.c ****   GUI_StatusTypeDef _status = GUI_ERROR;
+  40:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint32_t _addr = GUI_FLASH_ADDR_NB_PDO_SNK_P0;
+  41:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  42:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Update GUI_NbPDO? */
+  43:Utilities/GUI_INTERFACE/bsp_gui.c ****   if (0xFFFFFFFFu != *((uint32_t*)_addr))
+  44:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+  45:Utilities/GUI_INTERFACE/bsp_gui.c ****     uint32_t* _ptr = (uint32_t*)GUI_NbPDO;
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     USPBPD_WRITE32 (_ptr,*((uint32_t*)_addr));
+  47:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+  48:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+  49:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  50:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(_SRC) || defined(_DRP)
+  51:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Save PORT0_PDO_ListSRC */
+  52:Utilities/GUI_INTERFACE/bsp_gui.c ****   _status |= LoadPDOFromFlash(GUI_FLASH_ADDR_PDO_SRC_P0, PORT0_PDO_ListSRC);
+  53:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* _SRC || _DRP */
+  54:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  55:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(_SNK) || defined(_DRP)
+  56:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Save PORT0_PDO_ListSNK */
+  57:Utilities/GUI_INTERFACE/bsp_gui.c ****   _status |= LoadPDOFromFlash(GUI_FLASH_ADDR_PDO_SNK_P0, PORT0_PDO_ListSNK);
+  58:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* _SNK || _DRP */
+  59:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  60:Utilities/GUI_INTERFACE/bsp_gui.c **** #if USBPD_PORT_COUNT==2
+  61:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(_SRC) || defined(_DRP)
+  62:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Save PORT1_PDO_ListSRC */
+  63:Utilities/GUI_INTERFACE/bsp_gui.c ****   _status |= LoadPDOFromFlash(GUI_FLASH_ADDR_PDO_SRC_P1, PORT1_PDO_ListSRC);
+  64:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* _SRC || _DRP */
+  65:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  66:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(_SNK) || defined(_DRP)
+  67:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Save PORT1_PDO_ListSNK */
+  68:Utilities/GUI_INTERFACE/bsp_gui.c ****   _status |= LoadPDOFromFlash(GUI_FLASH_ADDR_PDO_SNK_P1, PORT1_PDO_ListSNK);
+  69:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* _SNK || _DRP */
+  70:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* USBPD_PORT_COUNT==2 */
+  71:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  72:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Save DPM_Settings of port 0 */
+  73:Utilities/GUI_INTERFACE/bsp_gui.c ****   _status |= LoadSettingsFromFlash(GUI_FLASH_ADDR_DPM_SETTINGS, (uint32_t*)DPM_Settings, sizeof(USB
+  74:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  75:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Save DPM_Settings of port 0 */
+  76:Utilities/GUI_INTERFACE/bsp_gui.c ****   _status |= LoadSettingsFromFlash(GUI_FLASH_ADDR_DPM_USER_SETTINGS, (uint32_t*)DPM_USER_Settings, 
+  77:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  78:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(_VDM)
+  79:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Save DPM_Settings of port 0 */
+  80:Utilities/GUI_INTERFACE/bsp_gui.c ****   _status |= LoadSettingsFromFlash(GUI_FLASH_ADDR_DPM_VDM_SETTINGS, (uint32_t*)DPM_VDM_Settings, si
+  81:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* _VDM */
+  82:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  83:Utilities/GUI_INTERFACE/bsp_gui.c ****   return _status;
+  84:Utilities/GUI_INTERFACE/bsp_gui.c **** }
+  85:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  86:Utilities/GUI_INTERFACE/bsp_gui.c **** GUI_StatusTypeDef BSP_GUI_SaveDataInFlash(void)
+  87:Utilities/GUI_INTERFACE/bsp_gui.c **** {
+  88:Utilities/GUI_INTERFACE/bsp_gui.c ****   GUI_StatusTypeDef status = GUI_ERROR;
+  89:Utilities/GUI_INTERFACE/bsp_gui.c ****   FLASH_EraseInitTypeDef erase_init;
+ARM GAS  /tmp/ccY6AkA5.s 			page 3
+
+
+  90:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint32_t page_error;
+  91:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  92:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Disable interrupts */
+  93:Utilities/GUI_INTERFACE/bsp_gui.c ****   __disable_irq();
+  94:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  95:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Init Flash registers for writing */
+  96:Utilities/GUI_INTERFACE/bsp_gui.c ****   HAL_FLASH_Unlock();
+  97:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+  98:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Erase the page associated to the GUI parameters */
+  99:Utilities/GUI_INTERFACE/bsp_gui.c ****   erase_init.TypeErase  = FLASH_TYPEERASE_PAGES;
+ 100:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(STM32F072xB)|| defined(STM32F051x8)
+ 101:Utilities/GUI_INTERFACE/bsp_gui.c ****   erase_init.PageAddress        = ADDR_FLASH_LAST_PAGE;
+ 102:Utilities/GUI_INTERFACE/bsp_gui.c **** #else
+ 103:Utilities/GUI_INTERFACE/bsp_gui.c ****   erase_init.Page       = INDEX_PAGE;
+ 104:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* STM32F072xB || STM32F051x8 */
+ 105:Utilities/GUI_INTERFACE/bsp_gui.c ****   erase_init.NbPages    = 1;
+ 106:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 107:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(STM32F072xB)  || defined(STM32F051x8)
+ 108:Utilities/GUI_INTERFACE/bsp_gui.c **** #else
+ 109:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* TEMPORARY */
+ 110:Utilities/GUI_INTERFACE/bsp_gui.c ****   if(FLASH->SR != 0x00)
+ 111:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 112:Utilities/GUI_INTERFACE/bsp_gui.c ****     FLASH->SR = FLASH_SR_OPTVERR;
+ 113:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 114:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif
+ 115:Utilities/GUI_INTERFACE/bsp_gui.c ****   status = HAL_OK == HAL_FLASHEx_Erase(&erase_init, &page_error) ? GUI_OK : GUI_ERASE_ERROR;
+ 116:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 117:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* If Erase is OK, program the new data */
+ 118:Utilities/GUI_INTERFACE/bsp_gui.c ****   if ((0xFFFFFFFF == page_error) && (GUI_OK == status))
+ 119:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 120:Utilities/GUI_INTERFACE/bsp_gui.c **** #ifdef GUI_FLASH_ADDR_NB_PDO_SNK_P0
+ 121:Utilities/GUI_INTERFACE/bsp_gui.c ****     /* Save the nb of sink and src PDO */
+ 122:Utilities/GUI_INTERFACE/bsp_gui.c ****     uint64_t value = 0;
+ 123:Utilities/GUI_INTERFACE/bsp_gui.c ****     value |= GUI_NbPDO[0];
+ 124:Utilities/GUI_INTERFACE/bsp_gui.c ****     value |= (GUI_NbPDO[1] << 8);
+ 125:Utilities/GUI_INTERFACE/bsp_gui.c ****     value |= (GUI_NbPDO[2] << 16);
+ 126:Utilities/GUI_INTERFACE/bsp_gui.c ****     value |= (GUI_NbPDO[3] << 24);
+ 127:Utilities/GUI_INTERFACE/bsp_gui.c ****    status = HAL_OK == HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, GUI_FLASH_ADDR_NB_PDO_SNK_P0,
+ 128:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif  /* GUI_FLASH_ADDR_NB_PDO_SNK_P0 */
+ 129:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 130:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(_SRC) || defined(_DRP)
+ 131:Utilities/GUI_INTERFACE/bsp_gui.c ****     /* Save PORT0_PDO_ListSRC */
+ 132:Utilities/GUI_INTERFACE/bsp_gui.c ****     if (GUI_OK == status)
+ 133:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 134:Utilities/GUI_INTERFACE/bsp_gui.c ****       status = SavePDOInFlash(GUI_FLASH_ADDR_PDO_SRC_P0, PORT0_PDO_ListSRC);
+ 135:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 136:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* _SRC || _DRP */
+ 137:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 138:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(_SNK) || defined(_DRP)
+ 139:Utilities/GUI_INTERFACE/bsp_gui.c ****     /* Save PORT0_PDO_ListSNK */
+ 140:Utilities/GUI_INTERFACE/bsp_gui.c ****     if (GUI_OK == status)
+ 141:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 142:Utilities/GUI_INTERFACE/bsp_gui.c ****       status = SavePDOInFlash(GUI_FLASH_ADDR_PDO_SNK_P0, PORT0_PDO_ListSNK);
+ 143:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 144:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* _SNK || _DRP */
+ 145:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 146:Utilities/GUI_INTERFACE/bsp_gui.c **** #if USBPD_PORT_COUNT==2
+ARM GAS  /tmp/ccY6AkA5.s 			page 4
+
+
+ 147:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(_SRC) || defined(_DRP)
+ 148:Utilities/GUI_INTERFACE/bsp_gui.c ****         /* Save PORT1_PDO_ListSRC */
+ 149:Utilities/GUI_INTERFACE/bsp_gui.c ****         if (GUI_OK == status)
+ 150:Utilities/GUI_INTERFACE/bsp_gui.c ****         {
+ 151:Utilities/GUI_INTERFACE/bsp_gui.c ****           status = SavePDOInFlash(GUI_FLASH_ADDR_PDO_SRC_P1, PORT1_PDO_ListSRC);
+ 152:Utilities/GUI_INTERFACE/bsp_gui.c ****         }
+ 153:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* _SRC || _DRP */
+ 154:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 155:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(_SNK) || defined(_DRP)
+ 156:Utilities/GUI_INTERFACE/bsp_gui.c ****         /* Save PORT1_PDO_ListSNK */
+ 157:Utilities/GUI_INTERFACE/bsp_gui.c ****         if (GUI_OK == status)
+ 158:Utilities/GUI_INTERFACE/bsp_gui.c ****         {
+ 159:Utilities/GUI_INTERFACE/bsp_gui.c ****           status = SavePDOInFlash(GUI_FLASH_ADDR_PDO_SNK_P1, PORT1_PDO_ListSNK);
+ 160:Utilities/GUI_INTERFACE/bsp_gui.c ****         }
+ 161:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* _SNK || _DRP */
+ 162:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* USBPD_PORT_COUNT==2 */
+ 163:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 164:Utilities/GUI_INTERFACE/bsp_gui.c ****     /* Save DPM_Settings of port 0 */
+ 165:Utilities/GUI_INTERFACE/bsp_gui.c ****     if (GUI_OK == status)
+ 166:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 167:Utilities/GUI_INTERFACE/bsp_gui.c ****       status = SaveSettingsInFlash(GUI_FLASH_ADDR_DPM_SETTINGS, (uint32_t*)DPM_Settings, sizeof(USB
+ 168:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 169:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 170:Utilities/GUI_INTERFACE/bsp_gui.c ****     /* Save DPM_Settings of port 0 */
+ 171:Utilities/GUI_INTERFACE/bsp_gui.c ****     if (GUI_OK == status)
+ 172:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 173:Utilities/GUI_INTERFACE/bsp_gui.c ****       status = SaveSettingsInFlash(GUI_FLASH_ADDR_DPM_USER_SETTINGS, (uint32_t*)DPM_USER_Settings, 
+ 174:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 175:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 176:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(_VDM)
+ 177:Utilities/GUI_INTERFACE/bsp_gui.c ****     /* Save DPM_Settings of port 0 */
+ 178:Utilities/GUI_INTERFACE/bsp_gui.c ****     if (GUI_OK == status)
+ 179:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 180:Utilities/GUI_INTERFACE/bsp_gui.c ****       status = SaveSettingsInFlash(GUI_FLASH_ADDR_DPM_VDM_SETTINGS, (uint32_t*)DPM_VDM_Settings, si
+ 181:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 182:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* _VDM */
+ 183:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 184:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 185:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Lock the flash afer end of operations */
+ 186:Utilities/GUI_INTERFACE/bsp_gui.c ****   HAL_FLASH_Lock();
+ 187:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 188:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Disable interrupts */
+ 189:Utilities/GUI_INTERFACE/bsp_gui.c ****   __enable_irq();
+ 190:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 191:Utilities/GUI_INTERFACE/bsp_gui.c ****   return status;
+ 192:Utilities/GUI_INTERFACE/bsp_gui.c **** }
+ 193:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 194:Utilities/GUI_INTERFACE/bsp_gui.c **** static GUI_StatusTypeDef SavePDOInFlash(uint32_t Address, uint32_t *pListOfPDO)
+ 195:Utilities/GUI_INTERFACE/bsp_gui.c **** {
+ 196:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint64_t data_in_64;
+ 197:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint32_t index, index_flash;
+ 198:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint32_t value[2];
+ 199:Utilities/GUI_INTERFACE/bsp_gui.c ****   GUI_StatusTypeDef status = GUI_OK;
+ 200:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 201:Utilities/GUI_INTERFACE/bsp_gui.c ****   for (index = 0, index_flash = 0; ((index < USBPD_MAX_NB_PDO) && (GUI_OK == status)); index++, ind
+ 202:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 203:Utilities/GUI_INTERFACE/bsp_gui.c ****     value[0] = pListOfPDO[index];
+ARM GAS  /tmp/ccY6AkA5.s 			page 5
+
+
+ 204:Utilities/GUI_INTERFACE/bsp_gui.c ****     index++;
+ 205:Utilities/GUI_INTERFACE/bsp_gui.c ****     if (index < USBPD_MAX_NB_PDO)
+ 206:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 207:Utilities/GUI_INTERFACE/bsp_gui.c ****       value[1] = pListOfPDO[index];
+ 208:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 209:Utilities/GUI_INTERFACE/bsp_gui.c ****     else
+ 210:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 211:Utilities/GUI_INTERFACE/bsp_gui.c ****       value[1] = (0xFFFFFFFF);
+ 212:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 213:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 214:Utilities/GUI_INTERFACE/bsp_gui.c ****     data_in_64 = value[0] | (uint64_t)value[1] << 32;
+ 215:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 216:Utilities/GUI_INTERFACE/bsp_gui.c ****     /* Save in the FLASH */
+ 217:Utilities/GUI_INTERFACE/bsp_gui.c ****     status = HAL_OK == HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, (Address + (8 * index_flash)
+ 218:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 219:Utilities/GUI_INTERFACE/bsp_gui.c ****   return status;
+ 220:Utilities/GUI_INTERFACE/bsp_gui.c **** }
+ 221:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 222:Utilities/GUI_INTERFACE/bsp_gui.c **** static GUI_StatusTypeDef SaveSettingsInFlash(uint32_t Address, uint32_t *pSettings, uint32_t Size)
+ 223:Utilities/GUI_INTERFACE/bsp_gui.c **** {
+  27              		.loc 1 223 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 8
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+ 224:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint64_t data_in_64;
+  31              		.loc 1 224 3 view .LVU1
+ 225:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint32_t index, index_flash;
+  32              		.loc 1 225 3 view .LVU2
+ 226:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint32_t value[2];
+  33              		.loc 1 226 3 view .LVU3
+ 227:Utilities/GUI_INTERFACE/bsp_gui.c ****   GUI_StatusTypeDef status = GUI_OK;
+  34              		.loc 1 227 3 view .LVU4
+ 228:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 229:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint32_t nb_double = ((Size * USBPD_PORT_COUNT) / 4);
+  35              		.loc 1 229 3 view .LVU5
+ 223:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint64_t data_in_64;
+  36              		.loc 1 223 1 is_stmt 0 view .LVU6
+  37 0000 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
+  38              	.LCFI0:
+  39              		.cfi_def_cfa_offset 32
+  40              		.cfi_offset 0, -32
+  41              		.cfi_offset 1, -28
+  42              		.cfi_offset 2, -24
+  43              		.cfi_offset 4, -20
+  44              		.cfi_offset 5, -16
+  45              		.cfi_offset 6, -12
+  46              		.cfi_offset 7, -8
+  47              		.cfi_offset 14, -4
+ 223:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint64_t data_in_64;
+  48              		.loc 1 223 1 view .LVU7
+  49 0002 0F00     		movs	r7, r1
+  50              		.loc 1 229 12 view .LVU8
+  51 0004 0C00     		movs	r4, r1
+ 230:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint8_t remaining = ((Size * USBPD_PORT_COUNT) % 4);
+ 231:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 232:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Save Settings in the FLASH */
+ 233:Utilities/GUI_INTERFACE/bsp_gui.c ****   for (index = 0, index_flash = 0; ((index < nb_double) && (GUI_OK == status)); index++, index_flas
+ARM GAS  /tmp/ccY6AkA5.s 			page 6
+
+
+  52              		.loc 1 233 14 view .LVU9
+  53 0006 0025     		movs	r5, #0
+ 223:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint64_t data_in_64;
+  54              		.loc 1 223 1 view .LVU10
+  55 0008 0190     		str	r0, [sp, #4]
+ 229:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint8_t remaining = ((Size * USBPD_PORT_COUNT) % 4);
+  56              		.loc 1 229 12 view .LVU11
+  57 000a 9608     		lsrs	r6, r2, #2
+  58              	.LVL1:
+ 230:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint8_t remaining = ((Size * USBPD_PORT_COUNT) % 4);
+  59              		.loc 1 230 3 is_stmt 1 view .LVU12
+  60              		.loc 1 233 3 view .LVU13
+  61              		.loc 1 233 36 view .LVU14
+  62              	.L5:
+ 234:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 235:Utilities/GUI_INTERFACE/bsp_gui.c ****     value[0] = pSettings[index];
+  63              		.loc 1 235 5 view .LVU15
+ 236:Utilities/GUI_INTERFACE/bsp_gui.c ****     index++;
+ 237:Utilities/GUI_INTERFACE/bsp_gui.c ****     if (index < nb_double)
+ 238:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 239:Utilities/GUI_INTERFACE/bsp_gui.c ****       value[1] = pSettings[index];
+ 240:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 241:Utilities/GUI_INTERFACE/bsp_gui.c ****     else
+ 242:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 243:Utilities/GUI_INTERFACE/bsp_gui.c ****       if (0 == remaining)
+ 244:Utilities/GUI_INTERFACE/bsp_gui.c ****         value[1] = (0xFFFFFFFF);
+  64              		.loc 1 244 18 is_stmt 0 view .LVU16
+  65 000c 0123     		movs	r3, #1
+ 237:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+  66              		.loc 1 237 8 view .LVU17
+  67 000e 691C     		adds	r1, r5, #1
+ 235:Utilities/GUI_INTERFACE/bsp_gui.c ****     index++;
+  68              		.loc 1 235 25 view .LVU18
+  69 0010 2268     		ldr	r2, [r4]
+  70              	.LVL2:
+ 236:Utilities/GUI_INTERFACE/bsp_gui.c ****     index++;
+  71              		.loc 1 236 5 is_stmt 1 view .LVU19
+ 237:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+  72              		.loc 1 237 5 view .LVU20
+  73              		.loc 1 244 18 is_stmt 0 view .LVU21
+  74 0012 5B42     		rsbs	r3, r3, #0
+ 237:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+  75              		.loc 1 237 8 view .LVU22
+  76 0014 8E42     		cmp	r6, r1
+  77 0016 00D9     		bls	.L2
+ 239:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+  78              		.loc 1 239 7 is_stmt 1 view .LVU23
+ 239:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+  79              		.loc 1 239 27 is_stmt 0 view .LVU24
+  80 0018 6368     		ldr	r3, [r4, #4]
+  81              	.LVL3:
+  82              	.L2:
+ 245:Utilities/GUI_INTERFACE/bsp_gui.c ****       else
+ 246:Utilities/GUI_INTERFACE/bsp_gui.c ****         while(1);
+ 247:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 248:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 249:Utilities/GUI_INTERFACE/bsp_gui.c ****     data_in_64 = value[0] | (uint64_t)value[1] << 32;
+ARM GAS  /tmp/ccY6AkA5.s 			page 7
+
+
+  83              		.loc 1 249 5 is_stmt 1 view .LVU25
+ 250:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 251:Utilities/GUI_INTERFACE/bsp_gui.c ****     /* Save in the FLASH */
+ 252:Utilities/GUI_INTERFACE/bsp_gui.c ****     status = HAL_OK == HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, (Address + (8 * index_flash)
+  84              		.loc 1 252 5 view .LVU26
+  85              		.loc 1 252 24 is_stmt 0 view .LVU27
+  86 001a 0199     		ldr	r1, [sp, #4]
+  87              	.LVL4:
+  88              		.loc 1 252 24 view .LVU28
+  89 001c 0120     		movs	r0, #1
+  90 001e C91B     		subs	r1, r1, r7
+  91 0020 0919     		adds	r1, r1, r4
+  92 0022 FFF7FEFF 		bl	HAL_FLASH_Program
+  93              	.LVL5:
+  94              		.loc 1 252 124 view .LVU29
+  95 0026 0028     		cmp	r0, #0
+  96 0028 00D0     		beq	.L3
+  97 002a 0220     		movs	r0, #2
+  98              	.L3:
+  99              	.LVL6:
+ 233:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 100              		.loc 1 233 81 is_stmt 1 discriminator 4 view .LVU30
+ 233:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 101              		.loc 1 233 86 is_stmt 0 discriminator 4 view .LVU31
+ 102 002c 0235     		adds	r5, r5, #2
+ 103              	.LVL7:
+ 233:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 104              		.loc 1 233 36 is_stmt 1 discriminator 4 view .LVU32
+ 233:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 105              		.loc 1 233 3 is_stmt 0 discriminator 4 view .LVU33
+ 106 002e AE42     		cmp	r6, r5
+ 107 0030 02D9     		bls	.L4
+ 233:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 108              		.loc 1 233 3 discriminator 4 view .LVU34
+ 109 0032 0834     		adds	r4, r4, #8
+ 233:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 110              		.loc 1 233 57 discriminator 3 view .LVU35
+ 111 0034 0028     		cmp	r0, #0
+ 112 0036 E9D0     		beq	.L5
+ 113              	.L4:
+ 114              	.LVL8:
+ 253:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 254:Utilities/GUI_INTERFACE/bsp_gui.c ****   return status;
+ 115              		.loc 1 254 3 is_stmt 1 view .LVU36
+ 255:Utilities/GUI_INTERFACE/bsp_gui.c **** }
+ 116              		.loc 1 255 1 is_stmt 0 view .LVU37
+ 117              		@ sp needed
+ 118              	.LVL9:
+ 119              	.LVL10:
+ 120              		.loc 1 255 1 view .LVU38
+ 121 0038 FEBD     		pop	{r1, r2, r3, r4, r5, r6, r7, pc}
+ 122              		.cfi_endproc
+ 123              	.LFE866:
+ 125              		.section	.text.BSP_GUI_LoadDataFromFlash,"ax",%progbits
+ 126              		.align	1
+ 127              		.global	BSP_GUI_LoadDataFromFlash
+ 128              		.syntax unified
+ARM GAS  /tmp/ccY6AkA5.s 			page 8
+
+
+ 129              		.code	16
+ 130              		.thumb_func
+ 131              		.fpu softvfp
+ 133              	BSP_GUI_LoadDataFromFlash:
+ 134              	.LFB863:
+  38:Utilities/GUI_INTERFACE/bsp_gui.c ****   GUI_StatusTypeDef _status = GUI_ERROR;
+ 135              		.loc 1 38 1 is_stmt 1 view -0
+ 136              		.cfi_startproc
+ 137              		@ args = 0, pretend = 0, frame = 0
+ 138              		@ frame_needed = 0, uses_anonymous_args = 0
+  39:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint32_t _addr = GUI_FLASH_ADDR_NB_PDO_SNK_P0;
+ 139              		.loc 1 39 3 view .LVU40
+ 140              	.LVL11:
+  40:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 141              		.loc 1 40 3 view .LVU41
+  43:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 142              		.loc 1 43 3 view .LVU42
+  43:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 143              		.loc 1 43 22 is_stmt 0 view .LVU43
+ 144 0000 214A     		ldr	r2, .L21
+  39:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint32_t _addr = GUI_FLASH_ADDR_NB_PDO_SNK_P0;
+ 145              		.loc 1 39 21 view .LVU44
+ 146 0002 0320     		movs	r0, #3
+  43:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 147              		.loc 1 43 22 view .LVU45
+ 148 0004 1168     		ldr	r1, [r2]
+  38:Utilities/GUI_INTERFACE/bsp_gui.c ****   GUI_StatusTypeDef _status = GUI_ERROR;
+ 149              		.loc 1 38 1 view .LVU46
+ 150 0006 70B5     		push	{r4, r5, r6, lr}
+ 151              	.LCFI1:
+ 152              		.cfi_def_cfa_offset 16
+ 153              		.cfi_offset 4, -16
+ 154              		.cfi_offset 5, -12
+ 155              		.cfi_offset 6, -8
+ 156              		.cfi_offset 14, -4
+  43:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 157              		.loc 1 43 6 view .LVU47
+ 158 0008 4B1C     		adds	r3, r1, #1
+ 159 000a 0BD0     		beq	.L13
+ 160              	.LVL12:
+ 161              	.LBB17:
+ 162              	.LBB18:
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 163              		.loc 1 46 5 is_stmt 1 view .LVU48
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 164              		.loc 1 46 5 view .LVU49
+ 165              	.LBE18:
+  47:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 166              		.loc 1 47 13 is_stmt 0 view .LVU50
+ 167 000c 0020     		movs	r0, #0
+ 168              	.LBB19:
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 169              		.loc 1 46 5 view .LVU51
+ 170 000e 1F4B     		ldr	r3, .L21+4
+ 171 0010 1970     		strb	r1, [r3]
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 172              		.loc 1 46 5 is_stmt 1 view .LVU52
+ARM GAS  /tmp/ccY6AkA5.s 			page 9
+
+
+ 173              	.LVL13:
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 174              		.loc 1 46 5 view .LVU53
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 175              		.loc 1 46 5 view .LVU54
+ 176 0012 1168     		ldr	r1, [r2]
+ 177 0014 090A     		lsrs	r1, r1, #8
+ 178 0016 5970     		strb	r1, [r3, #1]
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 179              		.loc 1 46 5 view .LVU55
+ 180              	.LVL14:
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 181              		.loc 1 46 5 view .LVU56
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 182              		.loc 1 46 5 view .LVU57
+ 183 0018 1168     		ldr	r1, [r2]
+ 184 001a 090C     		lsrs	r1, r1, #16
+ 185 001c 9970     		strb	r1, [r3, #2]
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 186              		.loc 1 46 5 view .LVU58
+ 187              	.LVL15:
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 188              		.loc 1 46 5 view .LVU59
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 189              		.loc 1 46 5 view .LVU60
+ 190 001e 1268     		ldr	r2, [r2]
+ 191 0020 120E     		lsrs	r2, r2, #24
+ 192 0022 DA70     		strb	r2, [r3, #3]
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 193              		.loc 1 46 5 view .LVU61
+ 194              	.LVL16:
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 195              		.loc 1 46 5 view .LVU62
+ 196              	.L13:
+  46:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 197              		.loc 1 46 5 is_stmt 0 view .LVU63
+ 198              	.LBE19:
+ 199              	.LBE17:
+  57:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* _SNK || _DRP */
+ 200              		.loc 1 57 3 is_stmt 1 view .LVU64
+ 201              	.LBB20:
+ 202              	.LBI20:
+ 256:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 257:Utilities/GUI_INTERFACE/bsp_gui.c **** static GUI_StatusTypeDef LoadPDOFromFlash(uint32_t Address, uint32_t *pListOfPDO)
+ 203              		.loc 1 257 26 view .LVU65
+ 204              	.LBB21:
+ 258:Utilities/GUI_INTERFACE/bsp_gui.c **** {
+ 259:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint32_t _addr = Address;
+ 205              		.loc 1 259 3 view .LVU66
+ 260:Utilities/GUI_INTERFACE/bsp_gui.c ****   GUI_StatusTypeDef _status = GUI_ERROR;
+ 206              		.loc 1 260 3 view .LVU67
+ 261:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 262:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Check if FLASH is not empty to retrieve the data. Nethertheless keep data in the RAM */
+ 263:Utilities/GUI_INTERFACE/bsp_gui.c ****   if (0xFFFFFFFFu != *((uint32_t*)_addr))
+ 207              		.loc 1 263 3 view .LVU68
+ 208              		.loc 1 263 22 is_stmt 0 view .LVU69
+ 209 0024 1A4B     		ldr	r3, .L21+8
+ARM GAS  /tmp/ccY6AkA5.s 			page 10
+
+
+ 260:Utilities/GUI_INTERFACE/bsp_gui.c ****   GUI_StatusTypeDef _status = GUI_ERROR;
+ 210              		.loc 1 260 21 view .LVU70
+ 211 0026 0324     		movs	r4, #3
+ 212              		.loc 1 263 22 view .LVU71
+ 213 0028 1A68     		ldr	r2, [r3]
+ 214              		.loc 1 263 6 view .LVU72
+ 215 002a 531C     		adds	r3, r2, #1
+ 216 002c 14D0     		beq	.L14
+ 217              	.LVL17:
+ 218              	.LBB22:
+ 264:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 265:Utilities/GUI_INTERFACE/bsp_gui.c ****     uint32_t _index;
+ 266:Utilities/GUI_INTERFACE/bsp_gui.c ****     for (_index = 0; _index < USBPD_MAX_NB_PDO; _index++)
+ 219              		.loc 1 266 22 is_stmt 1 view .LVU73
+ 267:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 268:Utilities/GUI_INTERFACE/bsp_gui.c ****       pListOfPDO[_index] = *((uint32_t*)_addr);
+ 220              		.loc 1 268 7 view .LVU74
+ 269:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 270:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 271:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 221              		.loc 1 271 13 is_stmt 0 view .LVU75
+ 222 002e 0024     		movs	r4, #0
+ 268:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 223              		.loc 1 268 26 view .LVU76
+ 224 0030 184B     		ldr	r3, .L21+12
+ 225 0032 1A60     		str	r2, [r3]
+ 269:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 226              		.loc 1 269 7 is_stmt 1 view .LVU77
+ 227              	.LVL18:
+ 266:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 228              		.loc 1 266 49 view .LVU78
+ 266:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 229              		.loc 1 266 22 view .LVU79
+ 268:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 230              		.loc 1 268 7 view .LVU80
+ 269:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 231              		.loc 1 269 7 view .LVU81
+ 266:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 232              		.loc 1 266 49 view .LVU82
+ 266:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 233              		.loc 1 266 22 view .LVU83
+ 268:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 234              		.loc 1 268 7 view .LVU84
+ 269:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 235              		.loc 1 269 7 view .LVU85
+ 266:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 236              		.loc 1 266 49 view .LVU86
+ 266:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 237              		.loc 1 266 22 view .LVU87
+ 268:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 238              		.loc 1 268 7 view .LVU88
+ 269:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 239              		.loc 1 269 7 view .LVU89
+ 266:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 240              		.loc 1 266 49 view .LVU90
+ 266:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 241              		.loc 1 266 22 view .LVU91
+ARM GAS  /tmp/ccY6AkA5.s 			page 11
+
+
+ 268:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 242              		.loc 1 268 7 view .LVU92
+ 269:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 243              		.loc 1 269 7 view .LVU93
+ 266:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 244              		.loc 1 266 49 view .LVU94
+ 266:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 245              		.loc 1 266 22 view .LVU95
+ 268:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 246              		.loc 1 268 7 view .LVU96
+ 269:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 247              		.loc 1 269 7 view .LVU97
+ 266:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 248              		.loc 1 266 49 view .LVU98
+ 266:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 249              		.loc 1 266 22 view .LVU99
+ 268:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 250              		.loc 1 268 7 view .LVU100
+ 269:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 251              		.loc 1 269 7 view .LVU101
+ 266:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 252              		.loc 1 266 49 view .LVU102
+ 266:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 253              		.loc 1 266 22 view .LVU103
+ 268:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 254              		.loc 1 268 28 is_stmt 0 view .LVU104
+ 255 0034 184A     		ldr	r2, .L21+16
+ 256 0036 1268     		ldr	r2, [r2]
+ 257 0038 5A60     		str	r2, [r3, #4]
+ 258 003a 184A     		ldr	r2, .L21+20
+ 259 003c 1268     		ldr	r2, [r2]
+ 260 003e 9A60     		str	r2, [r3, #8]
+ 261 0040 174A     		ldr	r2, .L21+24
+ 262 0042 1268     		ldr	r2, [r2]
+ 263 0044 DA60     		str	r2, [r3, #12]
+ 264 0046 174A     		ldr	r2, .L21+28
+ 265 0048 1268     		ldr	r2, [r2]
+ 266 004a 1A61     		str	r2, [r3, #16]
+ 267 004c 164A     		ldr	r2, .L21+32
+ 268 004e 1268     		ldr	r2, [r2]
+ 269 0050 5A61     		str	r2, [r3, #20]
+ 270 0052 164A     		ldr	r2, .L21+36
+ 271 0054 1268     		ldr	r2, [r2]
+ 272 0056 9A61     		str	r2, [r3, #24]
+ 273              	.LVL19:
+ 274              	.L14:
+ 268:Utilities/GUI_INTERFACE/bsp_gui.c ****       _addr = _addr + 4u;
+ 275              		.loc 1 268 28 view .LVU105
+ 276              	.LBE22:
+ 272:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 273:Utilities/GUI_INTERFACE/bsp_gui.c ****   return _status;
+ 277              		.loc 1 273 3 is_stmt 1 view .LVU106
+ 278              		.loc 1 273 3 is_stmt 0 view .LVU107
+ 279              	.LBE21:
+ 280              	.LBE20:
+ 281              	.LBB23:
+ 282              	.LBB24:
+ARM GAS  /tmp/ccY6AkA5.s 			page 12
+
+
+ 274:Utilities/GUI_INTERFACE/bsp_gui.c **** }
+ 275:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 276:Utilities/GUI_INTERFACE/bsp_gui.c **** static GUI_StatusTypeDef LoadSettingsFromFlash(uint32_t Address, uint32_t *pSettings, uint32_t Size
+ 277:Utilities/GUI_INTERFACE/bsp_gui.c **** {
+ 278:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint32_t _addr = Address;
+ 279:Utilities/GUI_INTERFACE/bsp_gui.c ****   GUI_StatusTypeDef _status = GUI_ERROR;
+ 280:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 281:Utilities/GUI_INTERFACE/bsp_gui.c ****   /* Check if FLASH is not empty to retrieve the data. Nethertheless keep data in the RAM */
+ 282:Utilities/GUI_INTERFACE/bsp_gui.c ****   if (0xFFFFFFFFu != *((uint32_t*)_addr))
+ 283              		.loc 1 282 22 view .LVU108
+ 284 0058 154B     		ldr	r3, .L21+40
+ 285              	.LBE24:
+ 286              	.LBE23:
+  57:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* _SNK || _DRP */
+ 287              		.loc 1 57 11 view .LVU109
+ 288 005a 2043     		orrs	r0, r4
+ 289              	.LVL20:
+  73:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 290              		.loc 1 73 3 is_stmt 1 view .LVU110
+ 291              	.LBB26:
+ 292              	.LBI23:
+ 276:Utilities/GUI_INTERFACE/bsp_gui.c **** {
+ 293              		.loc 1 276 26 view .LVU111
+ 294              	.LBB25:
+ 278:Utilities/GUI_INTERFACE/bsp_gui.c ****   GUI_StatusTypeDef _status = GUI_ERROR;
+ 295              		.loc 1 278 3 view .LVU112
+ 279:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 296              		.loc 1 279 3 view .LVU113
+ 297              		.loc 1 282 3 view .LVU114
+ 298              		.loc 1 282 6 is_stmt 0 view .LVU115
+ 299 005c 1A68     		ldr	r2, [r3]
+ 279:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 300              		.loc 1 279 21 view .LVU116
+ 301 005e 0324     		movs	r4, #3
+ 302              		.loc 1 282 6 view .LVU117
+ 303 0060 0132     		adds	r2, r2, #1
+ 304 0062 03D0     		beq	.L15
+ 283:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 284:Utilities/GUI_INTERFACE/bsp_gui.c ****     memcpy(pSettings, ((uint32_t*)_addr), Size);
+ 305              		.loc 1 284 5 is_stmt 1 view .LVU118
+ 306 0064 134A     		ldr	r2, .L21+44
+ 307 0066 32CB     		ldmia	r3!, {r1, r4, r5}
+ 308 0068 32C2     		stmia	r2!, {r1, r4, r5}
+ 285:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 309              		.loc 1 285 5 view .LVU119
+ 310              	.LVL21:
+ 311              		.loc 1 285 13 is_stmt 0 view .LVU120
+ 312 006a 0024     		movs	r4, #0
+ 313              	.LVL22:
+ 314              	.L15:
+ 286:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 287:Utilities/GUI_INTERFACE/bsp_gui.c ****   return _status;
+ 315              		.loc 1 287 3 is_stmt 1 view .LVU121
+ 316              		.loc 1 287 3 is_stmt 0 view .LVU122
+ 317              	.LBE25:
+ 318              	.LBE26:
+ 319              	.LBB27:
+ARM GAS  /tmp/ccY6AkA5.s 			page 13
+
+
+ 320              	.LBB28:
+ 282:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 321              		.loc 1 282 22 view .LVU123
+ 322 006c 1249     		ldr	r1, .L21+48
+ 323              	.LBE28:
+ 324              	.LBE27:
+  73:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 325              		.loc 1 73 11 view .LVU124
+ 326 006e 0443     		orrs	r4, r0
+ 327              	.LVL23:
+  76:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 328              		.loc 1 76 3 is_stmt 1 view .LVU125
+ 329              	.LBB30:
+ 330              	.LBI27:
+ 276:Utilities/GUI_INTERFACE/bsp_gui.c **** {
+ 331              		.loc 1 276 26 view .LVU126
+ 332              	.LBB29:
+ 278:Utilities/GUI_INTERFACE/bsp_gui.c ****   GUI_StatusTypeDef _status = GUI_ERROR;
+ 333              		.loc 1 278 3 view .LVU127
+ 279:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 334              		.loc 1 279 3 view .LVU128
+ 282:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 335              		.loc 1 282 3 view .LVU129
+ 282:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 336              		.loc 1 282 6 is_stmt 0 view .LVU130
+ 337 0070 0B68     		ldr	r3, [r1]
+ 279:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 338              		.loc 1 279 21 view .LVU131
+ 339 0072 0320     		movs	r0, #3
+ 282:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 340              		.loc 1 282 6 view .LVU132
+ 341 0074 0133     		adds	r3, r3, #1
+ 342 0076 04D0     		beq	.L16
+ 284:Utilities/GUI_INTERFACE/bsp_gui.c ****     _status = GUI_OK;
+ 343              		.loc 1 284 5 is_stmt 1 view .LVU133
+ 344 0078 7022     		movs	r2, #112
+ 345 007a 1048     		ldr	r0, .L21+52
+ 346 007c FFF7FEFF 		bl	memcpy
+ 347              	.LVL24:
+ 285:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 348              		.loc 1 285 5 view .LVU134
+ 285:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 349              		.loc 1 285 13 is_stmt 0 view .LVU135
+ 350 0080 0020     		movs	r0, #0
+ 351              	.LVL25:
+ 352              	.L16:
+ 353              		.loc 1 287 3 is_stmt 1 view .LVU136
+ 354              		.loc 1 287 3 is_stmt 0 view .LVU137
+ 355              	.LBE29:
+ 356              	.LBE30:
+  83:Utilities/GUI_INTERFACE/bsp_gui.c **** }
+ 357              		.loc 1 83 3 is_stmt 1 view .LVU138
+  83:Utilities/GUI_INTERFACE/bsp_gui.c **** }
+ 358              		.loc 1 83 10 is_stmt 0 view .LVU139
+ 359 0082 2043     		orrs	r0, r4
+ 360              	.LVL26:
+  84:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ARM GAS  /tmp/ccY6AkA5.s 			page 14
+
+
+ 361              		.loc 1 84 1 view .LVU140
+ 362              		@ sp needed
+  84:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 363              		.loc 1 84 1 view .LVU141
+ 364 0084 70BD     		pop	{r4, r5, r6, pc}
+ 365              	.L22:
+ 366 0086 C046     		.align	2
+ 367              	.L21:
+ 368 0088 00F80108 		.word	134346752
+ 369 008c 00000000 		.word	GUI_NbPDO
+ 370 0090 28F80108 		.word	134346792
+ 371 0094 00000000 		.word	PORT0_PDO_ListSNK
+ 372 0098 2CF80108 		.word	134346796
+ 373 009c 30F80108 		.word	134346800
+ 374 00a0 34F80108 		.word	134346804
+ 375 00a4 38F80108 		.word	134346808
+ 376 00a8 3CF80108 		.word	134346812
+ 377 00ac 40F80108 		.word	134346816
+ 378 00b0 88F80108 		.word	134346888
+ 379 00b4 00000000 		.word	DPM_Settings
+ 380 00b8 A0F80108 		.word	134346912
+ 381 00bc 00000000 		.word	DPM_USER_Settings
+ 382              		.cfi_endproc
+ 383              	.LFE863:
+ 385              		.section	.text.BSP_GUI_SaveDataInFlash,"ax",%progbits
+ 386              		.align	1
+ 387              		.global	BSP_GUI_SaveDataInFlash
+ 388              		.syntax unified
+ 389              		.code	16
+ 390              		.thumb_func
+ 391              		.fpu softvfp
+ 393              	BSP_GUI_SaveDataInFlash:
+ 394              	.LFB864:
+  87:Utilities/GUI_INTERFACE/bsp_gui.c ****   GUI_StatusTypeDef status = GUI_ERROR;
+ 395              		.loc 1 87 1 is_stmt 1 view -0
+ 396              		.cfi_startproc
+ 397              		@ args = 0, pretend = 0, frame = 24
+ 398              		@ frame_needed = 0, uses_anonymous_args = 0
+  88:Utilities/GUI_INTERFACE/bsp_gui.c ****   FLASH_EraseInitTypeDef erase_init;
+ 399              		.loc 1 88 3 view .LVU143
+ 400              	.LVL27:
+  89:Utilities/GUI_INTERFACE/bsp_gui.c ****   uint32_t page_error;
+ 401              		.loc 1 89 3 view .LVU144
+  90:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 402              		.loc 1 90 3 view .LVU145
+  93:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 403              		.loc 1 93 3 view .LVU146
+ 404              	.LBB38:
+ 405              	.LBI38:
+ 406              		.file 2 "Drivers/CMSIS/Include/cmsis_gcc.h"
+   1:Drivers/CMSIS/Include/cmsis_gcc.h **** /**************************************************************************//**
+   2:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @version  V5.0.4
+   5:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @date     09. April 2018
+   6:Drivers/CMSIS/Include/cmsis_gcc.h ****  ******************************************************************************/
+   7:Drivers/CMSIS/Include/cmsis_gcc.h **** /*
+ARM GAS  /tmp/ccY6AkA5.s 			page 15
+
+
+   8:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Copyright (c) 2009-2018 Arm Limited. All rights reserved.
+   9:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  10:Drivers/CMSIS/Include/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  12:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:Drivers/CMSIS/Include/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:Drivers/CMSIS/Include/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  16:Drivers/CMSIS/Include/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  18:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:Drivers/CMSIS/Include/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:Drivers/CMSIS/Include/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:Drivers/CMSIS/Include/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:Drivers/CMSIS/Include/cmsis_gcc.h ****  * limitations under the License.
+  23:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+  24:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  25:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  28:Drivers/CMSIS/Include/cmsis_gcc.h **** /* ignore some GCC warnings */
+  29:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic push
+  30:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+  31:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  32:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+  33:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  34:Drivers/CMSIS/Include/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  35:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __has_builtin
+  36:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  37:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  38:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  39:Drivers/CMSIS/Include/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  40:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ASM
+  41:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ASM                                  __asm
+  42:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  43:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __INLINE
+  44:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __INLINE                               inline
+  45:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  46:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  47:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+  48:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  49:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_FORCEINLINE                 
+  50:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+  51:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif                                           
+  52:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __NO_RETURN
+  53:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
+  54:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  55:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __USED
+  56:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  57:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  58:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __WEAK
+  59:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  60:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  61:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED
+  62:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  63:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  64:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+ARM GAS  /tmp/ccY6AkA5.s 			page 16
+
+
+  65:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+  66:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  67:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  68:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  69:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  70:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32        /* deprecated */
+  71:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  72:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  73:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  74:Drivers/CMSIS/Include/cmsis_gcc.h ****   struct __attribute__((packed)) T_UINT32 { uint32_t v; };
+  75:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  76:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
+  77:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  78:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  79:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  80:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  81:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  82:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  83:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  84:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  85:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  86:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+  87:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  88:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  89:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  90:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  91:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  92:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  93:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  94:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  95:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  96:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  97:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  98:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  99:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 100:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+ 101:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 102:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+ 103:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ 104:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ 105:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ 106:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 107:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 108:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 109:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 110:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 111:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 112:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 113:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 114:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 115:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 116:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 117:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 118:Drivers/CMSIS/Include/cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+ 119:Drivers/CMSIS/Include/cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 120:Drivers/CMSIS/Include/cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ 121:Drivers/CMSIS/Include/cmsis_gcc.h ****   @{
+ARM GAS  /tmp/ccY6AkA5.s 			page 17
+
+
+ 122:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 123:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 124:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 125:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+ 126:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 127:Drivers/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 128:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 129:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_irq(void)
+ 130:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 131:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+ 132:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 133:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 134:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 135:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 136:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
+ 137:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
+ 138:Drivers/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 139:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 140:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_irq(void)
+ 407              		.loc 2 140 27 view .LVU147
+ 408              	.LBB39:
+ 141:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 142:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
+ 409              		.loc 2 142 3 view .LVU148
+ 410              	.LBE39:
+ 411              	.LBE38:
+  87:Utilities/GUI_INTERFACE/bsp_gui.c ****   GUI_StatusTypeDef status = GUI_ERROR;
+ 412              		.loc 1 87 1 is_stmt 0 view .LVU149
+ 413 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 414              	.LCFI2:
+ 415              		.cfi_def_cfa_offset 20
+ 416              		.cfi_offset 4, -20
+ 417              		.cfi_offset 5, -16
+ 418              		.cfi_offset 6, -12
+ 419              		.cfi_offset 7, -8
+ 420              		.cfi_offset 14, -4
+ 421 0002 87B0     		sub	sp, sp, #28
+ 422              	.LCFI3:
+ 423              		.cfi_def_cfa_offset 48
+ 424              	.LBB41:
+ 425              	.LBB40:
+ 426              		.loc 2 142 3 view .LVU150
+ 427              		.syntax divided
+ 428              	@ 142 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 429 0004 72B6     		cpsid i
+ 430              	@ 0 "" 2
+ 431              		.thumb
+ 432              		.syntax unified
+ 433              	.LBE40:
+ 434              	.LBE41:
+  96:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 435              		.loc 1 96 3 is_stmt 1 view .LVU151
+ 436 0006 FFF7FEFF 		bl	HAL_FLASH_Unlock
+ 437              	.LVL28:
+  99:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(STM32F072xB)|| defined(STM32F051x8)
+ 438              		.loc 1 99 3 view .LVU152
+  99:Utilities/GUI_INTERFACE/bsp_gui.c **** #if defined(STM32F072xB)|| defined(STM32F051x8)
+ARM GAS  /tmp/ccY6AkA5.s 			page 18
+
+
+ 439              		.loc 1 99 25 is_stmt 0 view .LVU153
+ 440 000a 0223     		movs	r3, #2
+ 441 000c 0393     		str	r3, [sp, #12]
+ 103:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* STM32F072xB || STM32F051x8 */
+ 442              		.loc 1 103 3 is_stmt 1 view .LVU154
+ 103:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif /* STM32F072xB || STM32F051x8 */
+ 443              		.loc 1 103 25 is_stmt 0 view .LVU155
+ 444 000e 3D33     		adds	r3, r3, #61
+ 445 0010 0493     		str	r3, [sp, #16]
+ 105:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 446              		.loc 1 105 3 is_stmt 1 view .LVU156
+ 105:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 447              		.loc 1 105 25 is_stmt 0 view .LVU157
+ 448 0012 3E3B     		subs	r3, r3, #62
+ 449 0014 0593     		str	r3, [sp, #20]
+ 110:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 450              		.loc 1 110 3 is_stmt 1 view .LVU158
+ 110:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 451              		.loc 1 110 11 is_stmt 0 view .LVU159
+ 452 0016 2A4B     		ldr	r3, .L40
+ 453 0018 1A69     		ldr	r2, [r3, #16]
+ 110:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 454              		.loc 1 110 5 view .LVU160
+ 455 001a 002A     		cmp	r2, #0
+ 456 001c 02D0     		beq	.L24
+ 112:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 457              		.loc 1 112 5 is_stmt 1 view .LVU161
+ 112:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 458              		.loc 1 112 15 is_stmt 0 view .LVU162
+ 459 001e 8022     		movs	r2, #128
+ 460 0020 1202     		lsls	r2, r2, #8
+ 461 0022 1A61     		str	r2, [r3, #16]
+ 462              	.L24:
+ 115:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 463              		.loc 1 115 3 is_stmt 1 view .LVU163
+ 115:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 464              		.loc 1 115 22 is_stmt 0 view .LVU164
+ 465 0024 02A9     		add	r1, sp, #8
+ 466 0026 03A8     		add	r0, sp, #12
+ 467 0028 FFF7FEFF 		bl	HAL_FLASHEx_Erase
+ 468              	.LVL29:
+ 115:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 469              		.loc 1 115 75 view .LVU165
+ 470 002c 0400     		movs	r4, r0
+ 471 002e 631E     		subs	r3, r4, #1
+ 472 0030 9C41     		sbcs	r4, r4, r3
+ 118:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 473              		.loc 1 118 19 view .LVU166
+ 474 0032 029F     		ldr	r7, [sp, #8]
+ 115:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 475              		.loc 1 115 10 view .LVU167
+ 476 0034 E4B2     		uxtb	r4, r4
+ 477              	.LVL30:
+ 118:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 478              		.loc 1 118 3 is_stmt 1 view .LVU168
+ 118:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 479              		.loc 1 118 6 is_stmt 0 view .LVU169
+ARM GAS  /tmp/ccY6AkA5.s 			page 19
+
+
+ 480 0036 7B1C     		adds	r3, r7, #1
+ 481 0038 2BD1     		bne	.L25
+ 118:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 482              		.loc 1 118 34 discriminator 1 view .LVU170
+ 483 003a 0028     		cmp	r0, #0
+ 484 003c 29D1     		bne	.L25
+ 485              	.LBB42:
+ 122:Utilities/GUI_INTERFACE/bsp_gui.c ****     value |= GUI_NbPDO[0];
+ 486              		.loc 1 122 5 is_stmt 1 view .LVU171
+ 487              	.LVL31:
+ 123:Utilities/GUI_INTERFACE/bsp_gui.c ****     value |= (GUI_NbPDO[1] << 8);
+ 488              		.loc 1 123 5 view .LVU172
+ 124:Utilities/GUI_INTERFACE/bsp_gui.c ****     value |= (GUI_NbPDO[2] << 16);
+ 489              		.loc 1 124 5 view .LVU173
+ 125:Utilities/GUI_INTERFACE/bsp_gui.c ****     value |= (GUI_NbPDO[3] << 24);
+ 490              		.loc 1 125 5 view .LVU174
+ 126:Utilities/GUI_INTERFACE/bsp_gui.c ****    status = HAL_OK == HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, GUI_FLASH_ADDR_NB_PDO_SNK_P0,
+ 491              		.loc 1 126 5 view .LVU175
+ 127:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif  /* GUI_FLASH_ADDR_NB_PDO_SNK_P0 */
+ 492              		.loc 1 127 4 view .LVU176
+ 124:Utilities/GUI_INTERFACE/bsp_gui.c ****     value |= (GUI_NbPDO[2] << 16);
+ 493              		.loc 1 124 24 is_stmt 0 view .LVU177
+ 494 003e 2149     		ldr	r1, .L40+4
+ 495              	.LVL32:
+ 127:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif  /* GUI_FLASH_ADDR_NB_PDO_SNK_P0 */
+ 496              		.loc 1 127 23 view .LVU178
+ 497 0040 0130     		adds	r0, r0, #1
+ 124:Utilities/GUI_INTERFACE/bsp_gui.c ****     value |= (GUI_NbPDO[2] << 16);
+ 498              		.loc 1 124 24 view .LVU179
+ 499 0042 4A78     		ldrb	r2, [r1, #1]
+ 125:Utilities/GUI_INTERFACE/bsp_gui.c ****     value |= (GUI_NbPDO[3] << 24);
+ 500              		.loc 1 125 24 view .LVU180
+ 501 0044 8B78     		ldrb	r3, [r1, #2]
+ 124:Utilities/GUI_INTERFACE/bsp_gui.c ****     value |= (GUI_NbPDO[2] << 16);
+ 502              		.loc 1 124 28 view .LVU181
+ 503 0046 1202     		lsls	r2, r2, #8
+ 125:Utilities/GUI_INTERFACE/bsp_gui.c ****     value |= (GUI_NbPDO[3] << 24);
+ 504              		.loc 1 125 28 view .LVU182
+ 505 0048 1B04     		lsls	r3, r3, #16
+ 126:Utilities/GUI_INTERFACE/bsp_gui.c ****    status = HAL_OK == HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, GUI_FLASH_ADDR_NB_PDO_SNK_P0,
+ 506              		.loc 1 126 11 view .LVU183
+ 507 004a 1A43     		orrs	r2, r3
+ 126:Utilities/GUI_INTERFACE/bsp_gui.c ****    status = HAL_OK == HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, GUI_FLASH_ADDR_NB_PDO_SNK_P0,
+ 508              		.loc 1 126 24 view .LVU184
+ 509 004c CB78     		ldrb	r3, [r1, #3]
+ 123:Utilities/GUI_INTERFACE/bsp_gui.c ****     value |= (GUI_NbPDO[1] << 8);
+ 510              		.loc 1 123 23 view .LVU185
+ 511 004e 0978     		ldrb	r1, [r1]
+ 512              	.LVL33:
+ 126:Utilities/GUI_INTERFACE/bsp_gui.c ****    status = HAL_OK == HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, GUI_FLASH_ADDR_NB_PDO_SNK_P0,
+ 513              		.loc 1 126 28 view .LVU186
+ 514 0050 1B06     		lsls	r3, r3, #24
+ 126:Utilities/GUI_INTERFACE/bsp_gui.c ****    status = HAL_OK == HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, GUI_FLASH_ADDR_NB_PDO_SNK_P0,
+ 515              		.loc 1 126 11 view .LVU187
+ 516 0052 1943     		orrs	r1, r3
+ 517 0054 0A43     		orrs	r2, r1
+ 518 0056 DB17     		asrs	r3, r3, #31
+ARM GAS  /tmp/ccY6AkA5.s 			page 20
+
+
+ 127:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif  /* GUI_FLASH_ADDR_NB_PDO_SNK_P0 */
+ 519              		.loc 1 127 23 view .LVU188
+ 520 0058 1B49     		ldr	r1, .L40+8
+ 521 005a FFF7FEFF 		bl	HAL_FLASH_Program
+ 522              	.LVL34:
+ 127:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif  /* GUI_FLASH_ADDR_NB_PDO_SNK_P0 */
+ 523              		.loc 1 127 116 view .LVU189
+ 524 005e 0224     		movs	r4, #2
+ 525              	.LVL35:
+ 127:Utilities/GUI_INTERFACE/bsp_gui.c **** #endif  /* GUI_FLASH_ADDR_NB_PDO_SNK_P0 */
+ 526              		.loc 1 127 116 view .LVU190
+ 527 0060 0028     		cmp	r0, #0
+ 528 0062 16D1     		bne	.L25
+ 529 0064 0125     		movs	r5, #1
+ 530 0066 194E     		ldr	r6, .L40+12
+ 531              	.LBB43:
+ 532              	.LBB44:
+ 217:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 533              		.loc 1 217 125 view .LVU191
+ 534 0068 0194     		str	r4, [sp, #4]
+ 535              	.L29:
+ 536              	.LVL36:
+ 203:Utilities/GUI_INTERFACE/bsp_gui.c ****     index++;
+ 537              		.loc 1 203 5 is_stmt 1 view .LVU192
+ 211:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 538              		.loc 1 211 16 is_stmt 0 view .LVU193
+ 539 006a 3B00     		movs	r3, r7
+ 203:Utilities/GUI_INTERFACE/bsp_gui.c ****     index++;
+ 540              		.loc 1 203 26 view .LVU194
+ 541 006c 3268     		ldr	r2, [r6]
+ 542              	.LVL37:
+ 204:Utilities/GUI_INTERFACE/bsp_gui.c ****     if (index < USBPD_MAX_NB_PDO)
+ 543              		.loc 1 204 5 is_stmt 1 view .LVU195
+ 205:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 544              		.loc 1 205 5 view .LVU196
+ 205:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 545              		.loc 1 205 8 is_stmt 0 view .LVU197
+ 546 006e 072D     		cmp	r5, #7
+ 547 0070 00D0     		beq	.L26
+ 207:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 548              		.loc 1 207 7 is_stmt 1 view .LVU198
+ 207:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 549              		.loc 1 207 28 is_stmt 0 view .LVU199
+ 550 0072 7368     		ldr	r3, [r6, #4]
+ 551              	.LVL38:
+ 552              	.L26:
+ 214:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 553              		.loc 1 214 5 is_stmt 1 view .LVU200
+ 217:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 554              		.loc 1 217 5 view .LVU201
+ 217:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 555              		.loc 1 217 24 is_stmt 0 view .LVU202
+ 556 0074 1648     		ldr	r0, .L40+16
+ 557 0076 A900     		lsls	r1, r5, #2
+ 558 0078 0918     		adds	r1, r1, r0
+ 559 007a 0120     		movs	r0, #1
+ 560 007c FFF7FEFF 		bl	HAL_FLASH_Program
+ARM GAS  /tmp/ccY6AkA5.s 			page 21
+
+
+ 561              	.LVL39:
+ 217:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 562              		.loc 1 217 24 view .LVU203
+ 563 0080 041E     		subs	r4, r0, #0
+ 217:Utilities/GUI_INTERFACE/bsp_gui.c ****   }
+ 564              		.loc 1 217 125 view .LVU204
+ 565 0082 00D0     		beq	.L27
+ 566 0084 019C     		ldr	r4, [sp, #4]
+ 567              	.L27:
+ 568              	.LVL40:
+ 201:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 569              		.loc 1 201 88 is_stmt 1 view .LVU205
+ 201:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 570              		.loc 1 201 36 view .LVU206
+ 201:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 571              		.loc 1 201 3 is_stmt 0 view .LVU207
+ 572 0086 072D     		cmp	r5, #7
+ 573 0088 09D0     		beq	.L28
+ 201:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 574              		.loc 1 201 3 view .LVU208
+ 575 008a 0836     		adds	r6, r6, #8
+ 576              	.LVL41:
+ 201:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 577              		.loc 1 201 3 view .LVU209
+ 578 008c 0235     		adds	r5, r5, #2
+ 579              	.LVL42:
+ 201:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 580              		.loc 1 201 64 view .LVU210
+ 581 008e 002C     		cmp	r4, #0
+ 582 0090 EBD0     		beq	.L29
+ 583              	.LVL43:
+ 584              	.L25:
+ 201:Utilities/GUI_INTERFACE/bsp_gui.c ****   {
+ 585              		.loc 1 201 64 view .LVU211
+ 586              	.LBE44:
+ 587              	.LBE43:
+ 588              	.LBE42:
+ 186:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 589              		.loc 1 186 3 is_stmt 1 view .LVU212
+ 590 0092 FFF7FEFF 		bl	HAL_FLASH_Lock
+ 591              	.LVL44:
+ 189:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 592              		.loc 1 189 3 view .LVU213
+ 593              	.LBB45:
+ 594              	.LBI45:
+ 129:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 595              		.loc 2 129 27 view .LVU214
+ 596              	.LBB46:
+ 131:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 597              		.loc 2 131 3 view .LVU215
+ 598              		.syntax divided
+ 599              	@ 131 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 600 0096 62B6     		cpsie i
+ 601              	@ 0 "" 2
+ 602              		.thumb
+ 603              		.syntax unified
+ 604              	.LBE46:
+ARM GAS  /tmp/ccY6AkA5.s 			page 22
+
+
+ 605              	.LBE45:
+ 191:Utilities/GUI_INTERFACE/bsp_gui.c **** }
+ 606              		.loc 1 191 3 view .LVU216
+ 192:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 607              		.loc 1 192 1 is_stmt 0 view .LVU217
+ 608 0098 2000     		movs	r0, r4
+ 609 009a 07B0     		add	sp, sp, #28
+ 610              		@ sp needed
+ 611              	.LVL45:
+ 192:Utilities/GUI_INTERFACE/bsp_gui.c **** 
+ 612              		.loc 1 192 1 view .LVU218
+ 613 009c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 614              	.LVL46:
+ 615              	.L28:
+ 616              	.LBB47:
+ 165:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 617              		.loc 1 165 5 is_stmt 1 view .LVU219
+ 165:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 618              		.loc 1 165 8 is_stmt 0 view .LVU220
+ 619 009e 002C     		cmp	r4, #0
+ 620 00a0 F7D1     		bne	.L25
+ 621              	.LVL47:
+ 167:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 622              		.loc 1 167 7 is_stmt 1 view .LVU221
+ 167:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 623              		.loc 1 167 16 is_stmt 0 view .LVU222
+ 624 00a2 0C22     		movs	r2, #12
+ 625 00a4 0B49     		ldr	r1, .L40+20
+ 626 00a6 0C48     		ldr	r0, .L40+24
+ 627 00a8 FFF7FEFF 		bl	SaveSettingsInFlash
+ 628              	.LVL48:
+ 629 00ac 041E     		subs	r4, r0, #0
+ 630              	.LVL49:
+ 171:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 631              		.loc 1 171 5 is_stmt 1 view .LVU223
+ 171:Utilities/GUI_INTERFACE/bsp_gui.c ****     {
+ 632              		.loc 1 171 8 is_stmt 0 view .LVU224
+ 633 00ae F0D1     		bne	.L25
+ 173:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 634              		.loc 1 173 7 is_stmt 1 view .LVU225
+ 173:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 635              		.loc 1 173 16 is_stmt 0 view .LVU226
+ 636 00b0 7022     		movs	r2, #112
+ 637 00b2 0A49     		ldr	r1, .L40+28
+ 638 00b4 0A48     		ldr	r0, .L40+32
+ 639              	.LVL50:
+ 173:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 640              		.loc 1 173 16 view .LVU227
+ 641 00b6 FFF7FEFF 		bl	SaveSettingsInFlash
+ 642              	.LVL51:
+ 643 00ba 0400     		movs	r4, r0
+ 644              	.LVL52:
+ 173:Utilities/GUI_INTERFACE/bsp_gui.c ****     }
+ 645              		.loc 1 173 16 view .LVU228
+ 646 00bc E9E7     		b	.L25
+ 647              	.L41:
+ 648 00be C046     		.align	2
+ARM GAS  /tmp/ccY6AkA5.s 			page 23
+
+
+ 649              	.L40:
+ 650 00c0 00200240 		.word	1073881088
+ 651 00c4 00000000 		.word	GUI_NbPDO
+ 652 00c8 00F80108 		.word	134346752
+ 653 00cc 00000000 		.word	PORT0_PDO_ListSNK
+ 654 00d0 24F80108 		.word	134346788
+ 655 00d4 00000000 		.word	DPM_Settings
+ 656 00d8 88F80108 		.word	134346888
+ 657 00dc 00000000 		.word	DPM_USER_Settings
+ 658 00e0 A0F80108 		.word	134346912
+ 659              	.LBE47:
+ 660              		.cfi_endproc
+ 661              	.LFE864:
+ 663              		.text
+ 664              	.Letext0:
+ 665              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 666              		.file 4 "Drivers/CMSIS/Device/ST/STM32G0xx/Include/system_stm32g0xx.h"
+ 667              		.file 5 "Drivers/CMSIS/Device/ST/STM32G0xx/Include/stm32g071xx.h"
+ 668              		.file 6 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_def.h"
+ 669              		.file 7 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_flash.h"
+ 670              		.file 8 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal.h"
+ 671              		.file 9 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_def.h"
+ 672              		.file 10 "Inc/usbpd_pdo_defs.h"
+ 673              		.file 11 "Utilities/GUI_INTERFACE/gui_api.h"
+ 674              		.file 12 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 675              		.file 13 "/usr/include/newlib/sys/_types.h"
+ 676              		.file 14 "/usr/include/newlib/sys/reent.h"
+ 677              		.file 15 "/usr/include/newlib/sys/lock.h"
+ 678              		.file 16 "Utilities/GUI_INTERFACE/bsp_gui.h"
+ 679              		.file 17 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_dma.h"
+ 680              		.file 18 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_flash_ex.h"
+ 681              		.file 19 "<built-in>"
+ARM GAS  /tmp/ccY6AkA5.s 			page 24
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 bsp_gui.c
+     /tmp/ccY6AkA5.s:16     .text.SaveSettingsInFlash:0000000000000000 $t
+     /tmp/ccY6AkA5.s:23     .text.SaveSettingsInFlash:0000000000000000 SaveSettingsInFlash
+     /tmp/ccY6AkA5.s:126    .text.BSP_GUI_LoadDataFromFlash:0000000000000000 $t
+     /tmp/ccY6AkA5.s:133    .text.BSP_GUI_LoadDataFromFlash:0000000000000000 BSP_GUI_LoadDataFromFlash
+     /tmp/ccY6AkA5.s:368    .text.BSP_GUI_LoadDataFromFlash:0000000000000088 $d
+     /tmp/ccY6AkA5.s:386    .text.BSP_GUI_SaveDataInFlash:0000000000000000 $t
+     /tmp/ccY6AkA5.s:393    .text.BSP_GUI_SaveDataInFlash:0000000000000000 BSP_GUI_SaveDataInFlash
+     /tmp/ccY6AkA5.s:650    .text.BSP_GUI_SaveDataInFlash:00000000000000c0 $d
+
+UNDEFINED SYMBOLS
+HAL_FLASH_Program
+memcpy
+GUI_NbPDO
+PORT0_PDO_ListSNK
+DPM_Settings
+DPM_USER_Settings
+HAL_FLASH_Unlock
+HAL_FLASHEx_Erase
+HAL_FLASH_Lock

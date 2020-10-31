@@ -1,0 +1,987 @@
+ARM GAS  /tmp/ccLeONLm.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 4
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"usbpd_vdm_user.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.USBPD_VDM_DiscoverIdentity,"ax",%progbits
+  16              		.align	1
+  17              		.arch armv6s-m
+  18              		.syntax unified
+  19              		.code	16
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	USBPD_VDM_DiscoverIdentity:
+  24              	.LVL0:
+  25              	.LFB863:
+  26              		.file 1 "Src/usbpd_vdm_user.c"
+   1:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN Header */
+   2:Src/usbpd_vdm_user.c **** /**
+   3:Src/usbpd_vdm_user.c ****   ******************************************************************************
+   4:Src/usbpd_vdm_user.c ****   * @file    usbpd_vdm_user.c
+   5:Src/usbpd_vdm_user.c ****   * @author  MCD Application Team
+   6:Src/usbpd_vdm_user.c ****   * @brief   USBPD provider demo file
+   7:Src/usbpd_vdm_user.c ****   ******************************************************************************
+   8:Src/usbpd_vdm_user.c ****   * @attention
+   9:Src/usbpd_vdm_user.c ****   *
+  10:Src/usbpd_vdm_user.c ****   * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+  11:Src/usbpd_vdm_user.c ****   * All rights reserved.</center></h2>
+  12:Src/usbpd_vdm_user.c ****   *
+  13:Src/usbpd_vdm_user.c ****   * This software component is licensed by ST under Ultimate Liberty license
+  14:Src/usbpd_vdm_user.c ****   * SLA0044, the "License"; You may not use this file except in compliance with
+  15:Src/usbpd_vdm_user.c ****   * the License. You may obtain a copy of the License at:
+  16:Src/usbpd_vdm_user.c ****   *                             www.st.com/SLA0044
+  17:Src/usbpd_vdm_user.c ****   *
+  18:Src/usbpd_vdm_user.c ****   ******************************************************************************
+  19:Src/usbpd_vdm_user.c ****   */
+  20:Src/usbpd_vdm_user.c **** /* USER CODE END Header */
+  21:Src/usbpd_vdm_user.c **** 
+  22:Src/usbpd_vdm_user.c **** /* Includes ------------------------------------------------------------------*/
+  23:Src/usbpd_vdm_user.c **** #include "usbpd_core.h"
+  24:Src/usbpd_vdm_user.c **** #include "usbpd_dpm_conf.h"
+  25:Src/usbpd_vdm_user.c **** #include "usbpd_vdm_user.h"
+  26:Src/usbpd_vdm_user.c **** #include "usbpd_dpm_user.h"
+  27:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN Includes */
+  28:Src/usbpd_vdm_user.c **** /* USER CODE END Includes */
+  29:Src/usbpd_vdm_user.c **** 
+  30:Src/usbpd_vdm_user.c **** /** @addtogroup STM32_USBPD_APPLICATION
+  31:Src/usbpd_vdm_user.c ****   * @{
+  32:Src/usbpd_vdm_user.c ****   */
+ARM GAS  /tmp/ccLeONLm.s 			page 2
+
+
+  33:Src/usbpd_vdm_user.c **** 
+  34:Src/usbpd_vdm_user.c **** /** @addtogroup STM32_USBPD_APPLICATION_VDM_USER
+  35:Src/usbpd_vdm_user.c ****   * @{
+  36:Src/usbpd_vdm_user.c ****   */
+  37:Src/usbpd_vdm_user.c **** 
+  38:Src/usbpd_vdm_user.c **** /* Private define ------------------------------------------------------------*/
+  39:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN Private_define */
+  40:Src/usbpd_vdm_user.c **** 
+  41:Src/usbpd_vdm_user.c **** /* USER CODE END Private_define */
+  42:Src/usbpd_vdm_user.c **** 
+  43:Src/usbpd_vdm_user.c **** /* Private typedef -----------------------------------------------------------*/
+  44:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN Private_typedef */
+  45:Src/usbpd_vdm_user.c **** 
+  46:Src/usbpd_vdm_user.c **** /* USER CODE END Private_typedef */
+  47:Src/usbpd_vdm_user.c **** 
+  48:Src/usbpd_vdm_user.c **** /* Private macro -------------------------------------------------------------*/
+  49:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN Private_macro */
+  50:Src/usbpd_vdm_user.c **** 
+  51:Src/usbpd_vdm_user.c **** /* USER CODE END Private_macro */
+  52:Src/usbpd_vdm_user.c **** 
+  53:Src/usbpd_vdm_user.c **** /* Private function prototypes -----------------------------------------------*/
+  54:Src/usbpd_vdm_user.c **** static USBPD_StatusTypeDef USBPD_VDM_DiscoverIdentity(uint8_t PortNum, USBPD_DiscoveryIdentity_Type
+  55:Src/usbpd_vdm_user.c **** static USBPD_StatusTypeDef USBPD_VDM_DiscoverSVIDs(uint8_t PortNum, uint16_t **p_SVID_Info, uint8_t
+  56:Src/usbpd_vdm_user.c **** static USBPD_StatusTypeDef USBPD_VDM_DiscoverModes(uint8_t PortNum, uint16_t SVID, uint32_t **p_Mod
+  57:Src/usbpd_vdm_user.c **** static USBPD_StatusTypeDef USBPD_VDM_ModeEnter(uint8_t PortNum, uint16_t SVID, uint32_t ModeIndex);
+  58:Src/usbpd_vdm_user.c **** static USBPD_StatusTypeDef USBPD_VDM_ModeExit(uint8_t PortNum, uint16_t SVID, uint32_t ModeIndex);
+  59:Src/usbpd_vdm_user.c **** static void USBPD_VDM_SendAttention(uint8_t PortNum, uint8_t *NbData, uint32_t *VDO);
+  60:Src/usbpd_vdm_user.c **** static void USBPD_VDM_ReceiveAttention(uint8_t PortNum, uint8_t NbData, uint32_t VDO);
+  61:Src/usbpd_vdm_user.c **** static USBPD_StatusTypeDef USBPD_VDM_ReceiveSpecific(uint8_t PortNum, USBPD_VDM_Command_Typedef VDM
+  62:Src/usbpd_vdm_user.c **** static void USBPD_VDM_InformIdentity(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, USBPD_VDM_Comm
+  63:Src/usbpd_vdm_user.c **** static void USBPD_VDM_InformSVID(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, USBPD_VDM_CommandT
+  64:Src/usbpd_vdm_user.c **** static void USBPD_VDM_InformMode(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, USBPD_VDM_CommandT
+  65:Src/usbpd_vdm_user.c **** static void USBPD_VDM_InformModeEnter(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, USBPD_VDM_Com
+  66:Src/usbpd_vdm_user.c **** static void USBPD_VDM_InformModeExit(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, USBPD_VDM_Comm
+  67:Src/usbpd_vdm_user.c **** static void USBPD_VDM_InformSpecific(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, USBPD_VDM_Comm
+  68:Src/usbpd_vdm_user.c **** static void USBPD_VDM_SendSpecific(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, USBPD_VDM_Comman
+  69:Src/usbpd_vdm_user.c **** static void USBPD_VDM_SendUVDM(uint8_t PortNum, USBPD_UVDMHeader_TypeDef *pUVDM_Header, uint8_t *pN
+  70:Src/usbpd_vdm_user.c **** static USBPD_StatusTypeDef USBPD_VDM_ReceiveUVDM(uint8_t PortNum, USBPD_UVDMHeader_TypeDef UVDM_Hea
+  71:Src/usbpd_vdm_user.c **** 
+  72:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN Private_prototypes */
+  73:Src/usbpd_vdm_user.c **** 
+  74:Src/usbpd_vdm_user.c **** /* USER CODE END Private_prototypes */
+  75:Src/usbpd_vdm_user.c **** 
+  76:Src/usbpd_vdm_user.c **** /* Private variables ---------------------------------------------------------*/
+  77:Src/usbpd_vdm_user.c **** 
+  78:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN Private_variables */
+  79:Src/usbpd_vdm_user.c **** const USBPD_VDM_Callbacks vdmCallbacks =
+  80:Src/usbpd_vdm_user.c **** {
+  81:Src/usbpd_vdm_user.c ****   USBPD_VDM_DiscoverIdentity,
+  82:Src/usbpd_vdm_user.c ****   USBPD_VDM_DiscoverSVIDs,
+  83:Src/usbpd_vdm_user.c ****   USBPD_VDM_DiscoverModes,
+  84:Src/usbpd_vdm_user.c ****   USBPD_VDM_ModeEnter,
+  85:Src/usbpd_vdm_user.c ****   USBPD_VDM_ModeExit,
+  86:Src/usbpd_vdm_user.c ****   USBPD_VDM_InformIdentity,
+  87:Src/usbpd_vdm_user.c ****   USBPD_VDM_InformSVID,
+  88:Src/usbpd_vdm_user.c ****   USBPD_VDM_InformMode,
+  89:Src/usbpd_vdm_user.c ****   USBPD_VDM_InformModeEnter,
+ARM GAS  /tmp/ccLeONLm.s 			page 3
+
+
+  90:Src/usbpd_vdm_user.c ****   USBPD_VDM_InformModeExit,
+  91:Src/usbpd_vdm_user.c ****   USBPD_VDM_SendAttention,
+  92:Src/usbpd_vdm_user.c ****   USBPD_VDM_ReceiveAttention,
+  93:Src/usbpd_vdm_user.c ****   USBPD_VDM_SendSpecific,
+  94:Src/usbpd_vdm_user.c ****   USBPD_VDM_ReceiveSpecific,
+  95:Src/usbpd_vdm_user.c ****   USBPD_VDM_InformSpecific,
+  96:Src/usbpd_vdm_user.c ****   USBPD_VDM_SendUVDM,
+  97:Src/usbpd_vdm_user.c ****   USBPD_VDM_ReceiveUVDM,
+  98:Src/usbpd_vdm_user.c **** };
+  99:Src/usbpd_vdm_user.c **** /* USER CODE END Private_variables */
+ 100:Src/usbpd_vdm_user.c **** 
+ 101:Src/usbpd_vdm_user.c **** /* Private functions ---------------------------------------------------------*/
+ 102:Src/usbpd_vdm_user.c **** /**
+ 103:Src/usbpd_vdm_user.c ****   * @brief  VDM Discovery identity callback
+ 104:Src/usbpd_vdm_user.c ****   * @note   Function is called to get Discovery identity information linked to the device and answe
+ 105:Src/usbpd_vdm_user.c ****   *         to SVDM Discovery identity init message sent by port partner
+ 106:Src/usbpd_vdm_user.c ****   * @param  PortNum current port number
+ 107:Src/usbpd_vdm_user.c ****   * @param  pIdentity Pointer on @ref USBPD_DiscoveryIdentity_TypeDef structure
+ 108:Src/usbpd_vdm_user.c ****   * @retval USBPD status: @ref USBPD_ACK or @ref USBPD_BUSY
+ 109:Src/usbpd_vdm_user.c ****   */
+ 110:Src/usbpd_vdm_user.c **** static USBPD_StatusTypeDef USBPD_VDM_DiscoverIdentity(uint8_t PortNum, USBPD_DiscoveryIdentity_Type
+ 111:Src/usbpd_vdm_user.c **** {
+  27              		.loc 1 111 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+ 112:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_DiscoverIdentity */
+ 113:Src/usbpd_vdm_user.c ****   return USBPD_NAK;
+  32              		.loc 1 113 3 view .LVU1
+ 114:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_DiscoverIdentity */
+ 115:Src/usbpd_vdm_user.c **** }
+  33              		.loc 1 115 1 is_stmt 0 view .LVU2
+  34 0000 0E20     		movs	r0, #14
+  35              	.LVL1:
+  36              		.loc 1 115 1 view .LVU3
+  37              		@ sp needed
+  38 0002 7047     		bx	lr
+  39              		.cfi_endproc
+  40              	.LFE863:
+  42              		.section	.text.USBPD_VDM_DiscoverSVIDs,"ax",%progbits
+  43              		.align	1
+  44              		.syntax unified
+  45              		.code	16
+  46              		.thumb_func
+  47              		.fpu softvfp
+  49              	USBPD_VDM_DiscoverSVIDs:
+  50              	.LVL2:
+  51              	.LFB864:
+ 116:Src/usbpd_vdm_user.c **** 
+ 117:Src/usbpd_vdm_user.c **** /**
+ 118:Src/usbpd_vdm_user.c ****   * @brief  VDM Discover SVID callback
+ 119:Src/usbpd_vdm_user.c ****   * @note   Function is called to retrieve SVID supported by device and answer
+ 120:Src/usbpd_vdm_user.c ****   *         to SVDM Discovery SVID init message sent by port partner
+ 121:Src/usbpd_vdm_user.c ****   * @param  PortNum        current port number
+ 122:Src/usbpd_vdm_user.c ****   * @param  p_SVID_Info Pointer on @ref USBPD_SVIDInfo_TypeDef structure
+ 123:Src/usbpd_vdm_user.c ****   * @param  pNbSVID     Pointer on number of SVID
+ARM GAS  /tmp/ccLeONLm.s 			page 4
+
+
+ 124:Src/usbpd_vdm_user.c ****   * @retval USBPD status  @ref USBPD_BUSY or @ref USBPD_ACK or @ref USBPD_NAK
+ 125:Src/usbpd_vdm_user.c ****   */
+ 126:Src/usbpd_vdm_user.c **** static USBPD_StatusTypeDef USBPD_VDM_DiscoverSVIDs(uint8_t PortNum, uint16_t **p_SVID_Info, uint8_t
+ 127:Src/usbpd_vdm_user.c **** {
+  52              		.loc 1 127 1 is_stmt 1 view -0
+  53              		.cfi_startproc
+  54              		@ args = 0, pretend = 0, frame = 0
+  55              		@ frame_needed = 0, uses_anonymous_args = 0
+  56              		@ link register save eliminated.
+ 128:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_DiscoverSVIDs */
+ 129:Src/usbpd_vdm_user.c ****   return USBPD_NAK;
+  57              		.loc 1 129 3 view .LVU5
+ 130:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_DiscoverSVIDs */
+ 131:Src/usbpd_vdm_user.c **** }
+  58              		.loc 1 131 1 is_stmt 0 view .LVU6
+  59 0000 0E20     		movs	r0, #14
+  60              	.LVL3:
+  61              		.loc 1 131 1 view .LVU7
+  62              		@ sp needed
+  63 0002 7047     		bx	lr
+  64              		.cfi_endproc
+  65              	.LFE864:
+  67              		.section	.text.USBPD_VDM_DiscoverModes,"ax",%progbits
+  68              		.align	1
+  69              		.syntax unified
+  70              		.code	16
+  71              		.thumb_func
+  72              		.fpu softvfp
+  74              	USBPD_VDM_DiscoverModes:
+  75              	.LVL4:
+  76              	.LFB865:
+ 132:Src/usbpd_vdm_user.c **** 
+ 133:Src/usbpd_vdm_user.c **** /**
+ 134:Src/usbpd_vdm_user.c ****   * @brief  VDM Discover Mode callback (report all the modes supported by SVID)
+ 135:Src/usbpd_vdm_user.c ****   * @note   Function is called to report all the modes supported by selected SVID and answer
+ 136:Src/usbpd_vdm_user.c ****   *         to SVDM Discovery Mode init message sent by port partner
+ 137:Src/usbpd_vdm_user.c ****   * @param  PortNum current port number
+ 138:Src/usbpd_vdm_user.c ****   * @param  SVID         SVID value
+ 139:Src/usbpd_vdm_user.c ****   * @param  p_ModeTab    Pointer on the mode value
+ 140:Src/usbpd_vdm_user.c ****   * @param  NumberOfMode Number of mode available
+ 141:Src/usbpd_vdm_user.c ****   * @retval USBPD status
+ 142:Src/usbpd_vdm_user.c ****   */
+ 143:Src/usbpd_vdm_user.c **** static USBPD_StatusTypeDef USBPD_VDM_DiscoverModes(uint8_t PortNum, uint16_t SVID, uint32_t **p_Mod
+ 144:Src/usbpd_vdm_user.c **** {
+  77              		.loc 1 144 1 is_stmt 1 view -0
+  78              		.cfi_startproc
+  79              		@ args = 0, pretend = 0, frame = 0
+  80              		@ frame_needed = 0, uses_anonymous_args = 0
+  81              		@ link register save eliminated.
+ 145:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_DiscoverModes */
+ 146:Src/usbpd_vdm_user.c ****   return USBPD_NAK;
+  82              		.loc 1 146 3 view .LVU9
+ 147:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_DiscoverModes */
+ 148:Src/usbpd_vdm_user.c **** }
+  83              		.loc 1 148 1 is_stmt 0 view .LVU10
+  84 0000 0E20     		movs	r0, #14
+  85              	.LVL5:
+ARM GAS  /tmp/ccLeONLm.s 			page 5
+
+
+  86              		.loc 1 148 1 view .LVU11
+  87              		@ sp needed
+  88 0002 7047     		bx	lr
+  89              		.cfi_endproc
+  90              	.LFE865:
+  92              		.section	.text.USBPD_VDM_ModeEnter,"ax",%progbits
+  93              		.align	1
+  94              		.syntax unified
+  95              		.code	16
+  96              		.thumb_func
+  97              		.fpu softvfp
+  99              	USBPD_VDM_ModeEnter:
+ 100              	.LVL6:
+ 101              	.LFB866:
+ 149:Src/usbpd_vdm_user.c **** 
+ 150:Src/usbpd_vdm_user.c **** /**
+ 151:Src/usbpd_vdm_user.c ****   * @brief  VDM Mode enter callback
+ 152:Src/usbpd_vdm_user.c ****   * @note   Function is called to check if device can enter in the mode received for the selected S
+ 153:Src/usbpd_vdm_user.c ****   *         SVDM enter mode init message sent by port partner
+ 154:Src/usbpd_vdm_user.c ****   * @param  PortNum current port number
+ 155:Src/usbpd_vdm_user.c ****   * @param  SVID      SVID value
+ 156:Src/usbpd_vdm_user.c ****   * @param  ModeIndex Index of the mode to be entered
+ 157:Src/usbpd_vdm_user.c ****   * @retval USBPD status @ref USBPD_ACK/@ref USBPD_NAK
+ 158:Src/usbpd_vdm_user.c ****   */
+ 159:Src/usbpd_vdm_user.c **** static USBPD_StatusTypeDef USBPD_VDM_ModeEnter(uint8_t PortNum, uint16_t SVID, uint32_t ModeIndex)
+ 160:Src/usbpd_vdm_user.c **** {
+ 102              		.loc 1 160 1 is_stmt 1 view -0
+ 103              		.cfi_startproc
+ 104              		@ args = 0, pretend = 0, frame = 0
+ 105              		@ frame_needed = 0, uses_anonymous_args = 0
+ 106              		@ link register save eliminated.
+ 161:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_ModeEnter */
+ 162:Src/usbpd_vdm_user.c ****   return USBPD_NAK;
+ 107              		.loc 1 162 3 view .LVU13
+ 163:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_ModeEnter */
+ 164:Src/usbpd_vdm_user.c **** }
+ 108              		.loc 1 164 1 is_stmt 0 view .LVU14
+ 109 0000 0E20     		movs	r0, #14
+ 110              	.LVL7:
+ 111              		.loc 1 164 1 view .LVU15
+ 112              		@ sp needed
+ 113 0002 7047     		bx	lr
+ 114              		.cfi_endproc
+ 115              	.LFE866:
+ 117              		.section	.text.USBPD_VDM_SendAttention,"ax",%progbits
+ 118              		.align	1
+ 119              		.syntax unified
+ 120              		.code	16
+ 121              		.thumb_func
+ 122              		.fpu softvfp
+ 124              	USBPD_VDM_SendAttention:
+ 125              	.LVL8:
+ 126              	.LFB868:
+ 165:Src/usbpd_vdm_user.c **** 
+ 166:Src/usbpd_vdm_user.c **** /**
+ 167:Src/usbpd_vdm_user.c ****   * @brief  VDM Mode exit callback
+ 168:Src/usbpd_vdm_user.c ****   * @note   Function is called to check if device can exit from the mode received for the selected 
+ARM GAS  /tmp/ccLeONLm.s 			page 6
+
+
+ 169:Src/usbpd_vdm_user.c ****   *         SVDM exit mode init message sent by port partner
+ 170:Src/usbpd_vdm_user.c ****   * @param  PortNum current port number
+ 171:Src/usbpd_vdm_user.c ****   * @param  SVID      SVID value
+ 172:Src/usbpd_vdm_user.c ****   * @param  ModeIndex Index of the mode to be exited
+ 173:Src/usbpd_vdm_user.c ****   * @retval USBPD status @ref USBPD_ACK/@ref USBPD_NAK
+ 174:Src/usbpd_vdm_user.c ****   */
+ 175:Src/usbpd_vdm_user.c **** static USBPD_StatusTypeDef USBPD_VDM_ModeExit(uint8_t PortNum, uint16_t SVID, uint32_t ModeIndex)
+ 176:Src/usbpd_vdm_user.c **** {
+ 177:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_ModeExit */
+ 178:Src/usbpd_vdm_user.c ****   return USBPD_NAK;
+ 179:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_ModeExit */
+ 180:Src/usbpd_vdm_user.c **** }
+ 181:Src/usbpd_vdm_user.c **** 
+ 182:Src/usbpd_vdm_user.c **** /**
+ 183:Src/usbpd_vdm_user.c ****   * @brief  Send VDM Attention message callback
+ 184:Src/usbpd_vdm_user.c ****   * @note   Function is called when device wants to send a SVDM attention message to port partner
+ 185:Src/usbpd_vdm_user.c ****   *         (for instance DP status can be filled through this function)
+ 186:Src/usbpd_vdm_user.c ****   * @param  PortNum    current port number
+ 187:Src/usbpd_vdm_user.c ****   * @param  pNbData    Pointer of number of VDO to send
+ 188:Src/usbpd_vdm_user.c ****   * @param  pVDO       Pointer of VDO to send
+ 189:Src/usbpd_vdm_user.c ****   * @retval None
+ 190:Src/usbpd_vdm_user.c ****   */
+ 191:Src/usbpd_vdm_user.c **** static void USBPD_VDM_SendAttention(uint8_t PortNum, uint8_t *pNbData, uint32_t *pVDO)
+ 192:Src/usbpd_vdm_user.c **** {
+ 127              		.loc 1 192 1 is_stmt 1 view -0
+ 128              		.cfi_startproc
+ 129              		@ args = 0, pretend = 0, frame = 0
+ 130              		@ frame_needed = 0, uses_anonymous_args = 0
+ 131              		@ link register save eliminated.
+ 193:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_SendAttention */
+ 194:Src/usbpd_vdm_user.c **** 
+ 195:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_SendAttention */
+ 196:Src/usbpd_vdm_user.c **** }
+ 132              		.loc 1 196 1 view .LVU17
+ 133              		@ sp needed
+ 134 0000 7047     		bx	lr
+ 135              		.cfi_endproc
+ 136              	.LFE868:
+ 138              		.section	.text.USBPD_VDM_ReceiveAttention,"ax",%progbits
+ 139              		.align	1
+ 140              		.syntax unified
+ 141              		.code	16
+ 142              		.thumb_func
+ 143              		.fpu softvfp
+ 145              	USBPD_VDM_ReceiveAttention:
+ 146              	.LVL9:
+ 147              	.LFB869:
+ 197:Src/usbpd_vdm_user.c **** 
+ 198:Src/usbpd_vdm_user.c **** /**
+ 199:Src/usbpd_vdm_user.c ****   * @brief  Receive VDM Attention callback
+ 200:Src/usbpd_vdm_user.c ****   * @note   Function is called when a SVDM attention init message has been received from port partn
+ 201:Src/usbpd_vdm_user.c ****   *         (for instance, save DP status data through this function)
+ 202:Src/usbpd_vdm_user.c ****   * @param  PortNum   current port number
+ 203:Src/usbpd_vdm_user.c ****   * @param  NbData    Number of received VDO
+ 204:Src/usbpd_vdm_user.c ****   * @param  VDO       Received VDO
+ 205:Src/usbpd_vdm_user.c ****   * @retval None
+ 206:Src/usbpd_vdm_user.c ****   */
+ARM GAS  /tmp/ccLeONLm.s 			page 7
+
+
+ 207:Src/usbpd_vdm_user.c **** static void USBPD_VDM_ReceiveAttention(uint8_t PortNum, uint8_t NbData, uint32_t VDO)
+ 208:Src/usbpd_vdm_user.c **** {
+ 148              		.loc 1 208 1 view -0
+ 149              		.cfi_startproc
+ 150              		@ args = 0, pretend = 0, frame = 0
+ 151              		@ frame_needed = 0, uses_anonymous_args = 0
+ 152              		@ link register save eliminated.
+ 209:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_ReceiveAttention */
+ 210:Src/usbpd_vdm_user.c **** 
+ 211:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_ReceiveAttention */
+ 212:Src/usbpd_vdm_user.c **** }
+ 153              		.loc 1 212 1 view .LVU19
+ 154              		@ sp needed
+ 155 0000 7047     		bx	lr
+ 156              		.cfi_endproc
+ 157              	.LFE869:
+ 159              		.section	.text.USBPD_VDM_ReceiveSpecific,"ax",%progbits
+ 160              		.align	1
+ 161              		.syntax unified
+ 162              		.code	16
+ 163              		.thumb_func
+ 164              		.fpu softvfp
+ 166              	USBPD_VDM_ReceiveSpecific:
+ 167              	.LVL10:
+ 168              	.LFB870:
+ 213:Src/usbpd_vdm_user.c **** 
+ 214:Src/usbpd_vdm_user.c **** /**
+ 215:Src/usbpd_vdm_user.c ****   * @brief  VDM Receive Specific message callback
+ 216:Src/usbpd_vdm_user.c ****   * @note   Function is called to answer to a SVDM specific init message received by port partner.
+ 217:Src/usbpd_vdm_user.c ****   *         (for instance, retrieve DP status or DP configure data through this function)
+ 218:Src/usbpd_vdm_user.c ****   * @param  PortNum     Current port number
+ 219:Src/usbpd_vdm_user.c ****   * @param  VDMCommand  VDM command based on @ref USBPD_VDM_Command_Typedef
+ 220:Src/usbpd_vdm_user.c ****   * @param  pNbData     Pointer of number of received VDO and used for the answer
+ 221:Src/usbpd_vdm_user.c ****   * @param  pVDO        Pointer of received VDO and use for the answer
+ 222:Src/usbpd_vdm_user.c ****   * @retval USBPD Status
+ 223:Src/usbpd_vdm_user.c ****   */
+ 224:Src/usbpd_vdm_user.c **** static USBPD_StatusTypeDef USBPD_VDM_ReceiveSpecific(uint8_t PortNum, USBPD_VDM_Command_Typedef VDM
+ 225:Src/usbpd_vdm_user.c **** {
+ 169              		.loc 1 225 1 view -0
+ 170              		.cfi_startproc
+ 171              		@ args = 0, pretend = 0, frame = 0
+ 172              		@ frame_needed = 0, uses_anonymous_args = 0
+ 173              		@ link register save eliminated.
+ 226:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_ReceiveSpecific */
+ 227:Src/usbpd_vdm_user.c ****   return USBPD_NAK;
+ 174              		.loc 1 227 3 view .LVU21
+ 228:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_ReceiveSpecific */
+ 229:Src/usbpd_vdm_user.c **** }
+ 175              		.loc 1 229 1 is_stmt 0 view .LVU22
+ 176 0000 0E20     		movs	r0, #14
+ 177              	.LVL11:
+ 178              		.loc 1 229 1 view .LVU23
+ 179              		@ sp needed
+ 180 0002 7047     		bx	lr
+ 181              		.cfi_endproc
+ 182              	.LFE870:
+ 184              		.section	.text.USBPD_VDM_InformIdentity,"ax",%progbits
+ARM GAS  /tmp/ccLeONLm.s 			page 8
+
+
+ 185              		.align	1
+ 186              		.syntax unified
+ 187              		.code	16
+ 188              		.thumb_func
+ 189              		.fpu softvfp
+ 191              	USBPD_VDM_InformIdentity:
+ 192              	.LVL12:
+ 193              	.LFB871:
+ 230:Src/usbpd_vdm_user.c **** 
+ 231:Src/usbpd_vdm_user.c **** /**
+ 232:Src/usbpd_vdm_user.c ****   * @brief  Inform identity callback
+ 233:Src/usbpd_vdm_user.c ****   * @note   Function is called to save Identity information received in Discovery identity from por
+ 234:Src/usbpd_vdm_user.c ****             (answer to SVDM discovery identity sent by device)
+ 235:Src/usbpd_vdm_user.c ****   * @param  PortNum       current port number
+ 236:Src/usbpd_vdm_user.c ****   * @param  SOPType       SOP type
+ 237:Src/usbpd_vdm_user.c ****   * @param  CommandStatus Command status based on @ref USBPD_VDM_CommandType_Typedef
+ 238:Src/usbpd_vdm_user.c ****   * @param  pIdentity     Pointer on the discovery identity information based on @ref USBPD_Discove
+ 239:Src/usbpd_vdm_user.c ****   * @retval None
+ 240:Src/usbpd_vdm_user.c **** */
+ 241:Src/usbpd_vdm_user.c **** static void USBPD_VDM_InformIdentity(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, USBPD_VDM_Comm
+ 242:Src/usbpd_vdm_user.c **** {
+ 194              		.loc 1 242 1 is_stmt 1 view -0
+ 195              		.cfi_startproc
+ 196              		@ args = 0, pretend = 0, frame = 0
+ 197              		@ frame_needed = 0, uses_anonymous_args = 0
+ 198              		@ link register save eliminated.
+ 243:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_InformIdentity */
+ 244:Src/usbpd_vdm_user.c ****   switch(CommandStatus)
+ 199              		.loc 1 244 3 view .LVU25
+ 245:Src/usbpd_vdm_user.c ****   {
+ 246:Src/usbpd_vdm_user.c ****   case SVDM_RESPONDER_ACK :
+ 247:Src/usbpd_vdm_user.c ****     break;
+ 248:Src/usbpd_vdm_user.c ****   case SVDM_RESPONDER_NAK :
+ 249:Src/usbpd_vdm_user.c ****     break;
+ 250:Src/usbpd_vdm_user.c ****   case SVDM_RESPONDER_BUSY :
+ 251:Src/usbpd_vdm_user.c ****     break;
+ 252:Src/usbpd_vdm_user.c ****   default :
+ 253:Src/usbpd_vdm_user.c ****     break;
+ 254:Src/usbpd_vdm_user.c ****   }
+ 255:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_InformIdentity */
+ 256:Src/usbpd_vdm_user.c **** }
+ 200              		.loc 1 256 1 is_stmt 0 view .LVU26
+ 201              		@ sp needed
+ 202 0000 7047     		bx	lr
+ 203              		.cfi_endproc
+ 204              	.LFE871:
+ 206              		.section	.text.USBPD_VDM_InformModeEnter,"ax",%progbits
+ 207              		.align	1
+ 208              		.syntax unified
+ 209              		.code	16
+ 210              		.thumb_func
+ 211              		.fpu softvfp
+ 213              	USBPD_VDM_InformModeEnter:
+ 214              	.LVL13:
+ 215              	.LFB874:
+ 257:Src/usbpd_vdm_user.c **** 
+ 258:Src/usbpd_vdm_user.c **** /**
+ARM GAS  /tmp/ccLeONLm.s 			page 9
+
+
+ 259:Src/usbpd_vdm_user.c ****   * @brief  Inform SVID callback
+ 260:Src/usbpd_vdm_user.c ****   * @note   Function is called to save list of SVID received in Discovery SVID from port partner
+ 261:Src/usbpd_vdm_user.c ****             (answer to SVDM discovery SVID sent by device)
+ 262:Src/usbpd_vdm_user.c ****   * @param  PortNum       current port number
+ 263:Src/usbpd_vdm_user.c ****   * @param  SOPType       SOP type
+ 264:Src/usbpd_vdm_user.c ****   * @param  CommandStatus Command status based on @ref USBPD_VDM_CommandType_Typedef
+ 265:Src/usbpd_vdm_user.c ****   * @param  pListSVID     Pointer of list of SVID based on @ref USBPD_SVIDInfo_TypeDef
+ 266:Src/usbpd_vdm_user.c ****   * @retval None
+ 267:Src/usbpd_vdm_user.c ****   */
+ 268:Src/usbpd_vdm_user.c **** static void USBPD_VDM_InformSVID(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, USBPD_VDM_CommandT
+ 269:Src/usbpd_vdm_user.c **** {
+ 270:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_InformSVID */
+ 271:Src/usbpd_vdm_user.c ****   switch(CommandStatus)
+ 272:Src/usbpd_vdm_user.c ****   {
+ 273:Src/usbpd_vdm_user.c ****   case SVDM_RESPONDER_ACK :
+ 274:Src/usbpd_vdm_user.c ****     break;
+ 275:Src/usbpd_vdm_user.c ****   case SVDM_RESPONDER_NAK :
+ 276:Src/usbpd_vdm_user.c ****     break;
+ 277:Src/usbpd_vdm_user.c ****   case SVDM_RESPONDER_BUSY :
+ 278:Src/usbpd_vdm_user.c ****     break;
+ 279:Src/usbpd_vdm_user.c ****   default :
+ 280:Src/usbpd_vdm_user.c ****       break;
+ 281:Src/usbpd_vdm_user.c ****   }
+ 282:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_InformSVID */
+ 283:Src/usbpd_vdm_user.c **** }
+ 284:Src/usbpd_vdm_user.c **** 
+ 285:Src/usbpd_vdm_user.c **** /**
+ 286:Src/usbpd_vdm_user.c ****   * @brief  Inform Mode callback ( received in Discovery Modes ACK)
+ 287:Src/usbpd_vdm_user.c ****   * @note   Function is called to save list of modes linked to SVID received in Discovery mode from
+ 288:Src/usbpd_vdm_user.c ****             (answer to SVDM discovery mode sent by device)
+ 289:Src/usbpd_vdm_user.c ****   * @param  PortNum         current port number
+ 290:Src/usbpd_vdm_user.c ****   * @param  SOPType         SOP type
+ 291:Src/usbpd_vdm_user.c ****   * @param  CommandStatus   Command status based on @ref USBPD_VDM_CommandType_Typedef
+ 292:Src/usbpd_vdm_user.c ****   * @param  pModesInfo      Pointer of Modes info based on @ref USBPD_ModeInfo_TypeDef
+ 293:Src/usbpd_vdm_user.c ****   * @retval None
+ 294:Src/usbpd_vdm_user.c ****   */
+ 295:Src/usbpd_vdm_user.c **** static void USBPD_VDM_InformMode(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, USBPD_VDM_CommandT
+ 296:Src/usbpd_vdm_user.c **** {
+ 297:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_InformMode */
+ 298:Src/usbpd_vdm_user.c ****   switch(CommandStatus)
+ 299:Src/usbpd_vdm_user.c ****   {
+ 300:Src/usbpd_vdm_user.c ****   case SVDM_RESPONDER_ACK :
+ 301:Src/usbpd_vdm_user.c ****     break;
+ 302:Src/usbpd_vdm_user.c ****   case SVDM_RESPONDER_NAK :
+ 303:Src/usbpd_vdm_user.c ****     break;
+ 304:Src/usbpd_vdm_user.c ****   case SVDM_RESPONDER_BUSY :
+ 305:Src/usbpd_vdm_user.c ****     break;
+ 306:Src/usbpd_vdm_user.c ****   default :
+ 307:Src/usbpd_vdm_user.c ****     break;
+ 308:Src/usbpd_vdm_user.c ****   }
+ 309:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_InformMode */
+ 310:Src/usbpd_vdm_user.c **** }
+ 311:Src/usbpd_vdm_user.c **** 
+ 312:Src/usbpd_vdm_user.c **** /**
+ 313:Src/usbpd_vdm_user.c ****   * @brief  Inform Mode enter callback
+ 314:Src/usbpd_vdm_user.c ****   * @note   Function is called to inform if port partner accepted or not to enter in the mode
+ 315:Src/usbpd_vdm_user.c ****   *         specified in the SVDM enter mode sent by the device
+ARM GAS  /tmp/ccLeONLm.s 			page 10
+
+
+ 316:Src/usbpd_vdm_user.c ****   * @param  PortNum   current port number
+ 317:Src/usbpd_vdm_user.c ****   * @param  SOPType       SOP type
+ 318:Src/usbpd_vdm_user.c ****   * @param  CommandStatus Command status based on @ref USBPD_VDM_CommandType_Typedef
+ 319:Src/usbpd_vdm_user.c ****   * @param  SVID      SVID ID
+ 320:Src/usbpd_vdm_user.c ****   * @param  ModeIndex Index of the mode to be entered
+ 321:Src/usbpd_vdm_user.c ****   * @retval None
+ 322:Src/usbpd_vdm_user.c ****   */
+ 323:Src/usbpd_vdm_user.c **** static void USBPD_VDM_InformModeEnter(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, USBPD_VDM_Com
+ 324:Src/usbpd_vdm_user.c **** {
+ 216              		.loc 1 324 1 is_stmt 1 view -0
+ 217              		.cfi_startproc
+ 218              		@ args = 4, pretend = 0, frame = 0
+ 219              		@ frame_needed = 0, uses_anonymous_args = 0
+ 220              		@ link register save eliminated.
+ 325:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_InformModeEnter */
+ 326:Src/usbpd_vdm_user.c ****   switch(CommandStatus)
+ 221              		.loc 1 326 3 view .LVU28
+ 327:Src/usbpd_vdm_user.c ****   {
+ 328:Src/usbpd_vdm_user.c ****   case SVDM_RESPONDER_ACK :
+ 329:Src/usbpd_vdm_user.c ****     break;
+ 330:Src/usbpd_vdm_user.c ****   case SVDM_RESPONDER_NAK :
+ 331:Src/usbpd_vdm_user.c ****     break;
+ 332:Src/usbpd_vdm_user.c ****   case SVDM_RESPONDER_BUSY :
+ 333:Src/usbpd_vdm_user.c ****     /* retry in 50ms */
+ 334:Src/usbpd_vdm_user.c ****     break;
+ 335:Src/usbpd_vdm_user.c ****   default :
+ 336:Src/usbpd_vdm_user.c ****     break;
+ 337:Src/usbpd_vdm_user.c ****   }
+ 338:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_InformModeEnter */
+ 339:Src/usbpd_vdm_user.c **** }
+ 222              		.loc 1 339 1 is_stmt 0 view .LVU29
+ 223              		@ sp needed
+ 224 0000 7047     		bx	lr
+ 225              		.cfi_endproc
+ 226              	.LFE874:
+ 228              		.section	.text.USBPD_VDM_InformSpecific,"ax",%progbits
+ 229              		.align	1
+ 230              		.syntax unified
+ 231              		.code	16
+ 232              		.thumb_func
+ 233              		.fpu softvfp
+ 235              	USBPD_VDM_InformSpecific:
+ 236              	.LVL14:
+ 237              	.LFB877:
+ 340:Src/usbpd_vdm_user.c **** 
+ 341:Src/usbpd_vdm_user.c **** /**
+ 342:Src/usbpd_vdm_user.c ****   * @brief  Inform Exit enter callback
+ 343:Src/usbpd_vdm_user.c ****   * @param  PortNum   current port number
+ 344:Src/usbpd_vdm_user.c ****   * @param  SVID      SVID ID
+ 345:Src/usbpd_vdm_user.c ****   * @param  ModeIndex Index of the mode to be entered
+ 346:Src/usbpd_vdm_user.c ****   * @retval None
+ 347:Src/usbpd_vdm_user.c ****   */
+ 348:Src/usbpd_vdm_user.c **** static void USBPD_VDM_InformModeExit(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, USBPD_VDM_Comm
+ 349:Src/usbpd_vdm_user.c **** {
+ 350:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_InformModeExit */
+ 351:Src/usbpd_vdm_user.c ****   switch(CommandStatus)
+ 352:Src/usbpd_vdm_user.c ****   {
+ARM GAS  /tmp/ccLeONLm.s 			page 11
+
+
+ 353:Src/usbpd_vdm_user.c ****   case SVDM_RESPONDER_ACK :
+ 354:Src/usbpd_vdm_user.c ****     break;
+ 355:Src/usbpd_vdm_user.c ****   case SVDM_RESPONDER_NAK :
+ 356:Src/usbpd_vdm_user.c ****     break;
+ 357:Src/usbpd_vdm_user.c ****   case SVDM_RESPONDER_BUSY :
+ 358:Src/usbpd_vdm_user.c ****     /* retry in 50ms */
+ 359:Src/usbpd_vdm_user.c ****     break;
+ 360:Src/usbpd_vdm_user.c ****   default :
+ 361:Src/usbpd_vdm_user.c ****     break;
+ 362:Src/usbpd_vdm_user.c ****   }
+ 363:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_InformModeExit */
+ 364:Src/usbpd_vdm_user.c **** }
+ 365:Src/usbpd_vdm_user.c **** 
+ 366:Src/usbpd_vdm_user.c **** /**
+ 367:Src/usbpd_vdm_user.c ****   * @brief  VDM Send Specific message callback
+ 368:Src/usbpd_vdm_user.c ****   * @note   Function is called when device wants to send a SVDM specific init message to port partn
+ 369:Src/usbpd_vdm_user.c ****   *         (for instance DP status or DP configure can be filled through this function)
+ 370:Src/usbpd_vdm_user.c ****   * @param  PortNum    current port number
+ 371:Src/usbpd_vdm_user.c ****   * @param  SOPType    SOP type
+ 372:Src/usbpd_vdm_user.c ****   * @param  VDMCommand VDM command based on @ref USBPD_VDM_Command_Typedef
+ 373:Src/usbpd_vdm_user.c ****   * @param  pNbData    Pointer of number of VDO to send
+ 374:Src/usbpd_vdm_user.c ****   * @param  pVDO       Pointer of VDO to send
+ 375:Src/usbpd_vdm_user.c ****   * @retval None
+ 376:Src/usbpd_vdm_user.c ****   */
+ 377:Src/usbpd_vdm_user.c **** static void USBPD_VDM_SendSpecific(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, USBPD_VDM_Comman
+ 378:Src/usbpd_vdm_user.c **** {
+ 379:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_SendSpecific */
+ 380:Src/usbpd_vdm_user.c **** 
+ 381:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_SendSpecific */
+ 382:Src/usbpd_vdm_user.c **** }
+ 383:Src/usbpd_vdm_user.c **** 
+ 384:Src/usbpd_vdm_user.c **** /**
+ 385:Src/usbpd_vdm_user.c ****   * @brief  VDM Specific message callback to inform user of reception of VDM specific message
+ 386:Src/usbpd_vdm_user.c ****   * @note   Function is called when answer from SVDM specific init message has been received by the
+ 387:Src/usbpd_vdm_user.c ****   *         (for instance, save DP status and DP configure data through this function)
+ 388:Src/usbpd_vdm_user.c ****   * @param  PortNum    current port number
+ 389:Src/usbpd_vdm_user.c ****   * @param  SOPType    SOP type
+ 390:Src/usbpd_vdm_user.c ****   * @param  VDMCommand VDM command based on @ref USBPD_VDM_Command_Typedef
+ 391:Src/usbpd_vdm_user.c ****   * @param  pNbData    Pointer of number of received VDO
+ 392:Src/usbpd_vdm_user.c ****   * @param  pVDO       Pointer of received VDO
+ 393:Src/usbpd_vdm_user.c ****   * @retval None
+ 394:Src/usbpd_vdm_user.c ****   */
+ 395:Src/usbpd_vdm_user.c **** static void USBPD_VDM_InformSpecific(uint8_t PortNum, USBPD_SOPType_TypeDef SOPType, USBPD_VDM_Comm
+ 396:Src/usbpd_vdm_user.c **** {
+ 238              		.loc 1 396 1 is_stmt 1 view -0
+ 239              		.cfi_startproc
+ 240              		@ args = 4, pretend = 0, frame = 0
+ 241              		@ frame_needed = 0, uses_anonymous_args = 0
+ 242              		@ link register save eliminated.
+ 397:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_InformSpecific */
+ 398:Src/usbpd_vdm_user.c **** 
+ 399:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_InformSpecific */
+ 400:Src/usbpd_vdm_user.c **** }
+ 243              		.loc 1 400 1 view .LVU31
+ 244              		@ sp needed
+ 245 0000 7047     		bx	lr
+ 246              		.cfi_endproc
+ARM GAS  /tmp/ccLeONLm.s 			page 12
+
+
+ 247              	.LFE877:
+ 249              		.section	.text.USBPD_VDM_SendUVDM,"ax",%progbits
+ 250              		.align	1
+ 251              		.syntax unified
+ 252              		.code	16
+ 253              		.thumb_func
+ 254              		.fpu softvfp
+ 256              	USBPD_VDM_SendUVDM:
+ 257              	.LVL15:
+ 258              	.LFB878:
+ 401:Src/usbpd_vdm_user.c **** 
+ 402:Src/usbpd_vdm_user.c **** /**
+ 403:Src/usbpd_vdm_user.c ****   * @brief  VDM Send Unstructured message callback
+ 404:Src/usbpd_vdm_user.c ****   * @param  PortNum    current port number
+ 405:Src/usbpd_vdm_user.c ****   * @param  pUVDM_Header  Pointer on UVDM header based on @ref USBPD_UVDMHeader_TypeDef
+ 406:Src/usbpd_vdm_user.c ****   * @param  pNbData       Pointer of number of VDO to send
+ 407:Src/usbpd_vdm_user.c ****   * @param  pVDO          Pointer of VDO to send
+ 408:Src/usbpd_vdm_user.c ****   * @retval None
+ 409:Src/usbpd_vdm_user.c ****   */
+ 410:Src/usbpd_vdm_user.c **** static void USBPD_VDM_SendUVDM(uint8_t PortNum, USBPD_UVDMHeader_TypeDef *pUVDM_Header, uint8_t *pN
+ 411:Src/usbpd_vdm_user.c **** {
+ 259              		.loc 1 411 1 view -0
+ 260              		.cfi_startproc
+ 261              		@ args = 0, pretend = 0, frame = 0
+ 262              		@ frame_needed = 0, uses_anonymous_args = 0
+ 263              		@ link register save eliminated.
+ 412:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_SendUVDM */
+ 413:Src/usbpd_vdm_user.c **** 
+ 414:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_SendUVDM */
+ 415:Src/usbpd_vdm_user.c **** }
+ 264              		.loc 1 415 1 view .LVU33
+ 265              		@ sp needed
+ 266 0000 7047     		bx	lr
+ 267              		.cfi_endproc
+ 268              	.LFE878:
+ 270              		.section	.text.USBPD_VDM_ReceiveUVDM,"ax",%progbits
+ 271              		.align	1
+ 272              		.syntax unified
+ 273              		.code	16
+ 274              		.thumb_func
+ 275              		.fpu softvfp
+ 277              	USBPD_VDM_ReceiveUVDM:
+ 278              	.LVL16:
+ 279              	.LFB879:
+ 416:Src/usbpd_vdm_user.c **** 
+ 417:Src/usbpd_vdm_user.c **** /**
+ 418:Src/usbpd_vdm_user.c ****   * @brief  Unstructured VDM  message callback to inform user of reception of UVDM message
+ 419:Src/usbpd_vdm_user.c ****   * @param  PortNum    current port number
+ 420:Src/usbpd_vdm_user.c ****   * @param  UVDM_Header UVDM header based on @ref USBPD_UVDMHeader_TypeDef
+ 421:Src/usbpd_vdm_user.c ****   * @param  pNbData    Pointer of number of received VDO
+ 422:Src/usbpd_vdm_user.c ****   * @param  pVDO       Pointer of received VDO
+ 423:Src/usbpd_vdm_user.c ****   * @retval USBPD Status
+ 424:Src/usbpd_vdm_user.c ****   */
+ 425:Src/usbpd_vdm_user.c **** static USBPD_StatusTypeDef USBPD_VDM_ReceiveUVDM(uint8_t PortNum, USBPD_UVDMHeader_TypeDef UVDM_Hea
+ 426:Src/usbpd_vdm_user.c **** {
+ 280              		.loc 1 426 1 view -0
+ 281              		.cfi_startproc
+ARM GAS  /tmp/ccLeONLm.s 			page 13
+
+
+ 282              		@ args = 0, pretend = 0, frame = 0
+ 283              		@ frame_needed = 0, uses_anonymous_args = 0
+ 284              		@ link register save eliminated.
+ 427:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_ReceiveUVDM */
+ 428:Src/usbpd_vdm_user.c ****   return USBPD_ERROR;
+ 285              		.loc 1 428 3 view .LVU35
+ 429:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_ReceiveUVDM */
+ 430:Src/usbpd_vdm_user.c **** }
+ 286              		.loc 1 430 1 is_stmt 0 view .LVU36
+ 287 0000 0220     		movs	r0, #2
+ 288              	.LVL17:
+ 289              		.loc 1 430 1 view .LVU37
+ 290              		@ sp needed
+ 291 0002 7047     		bx	lr
+ 292              		.cfi_endproc
+ 293              	.LFE879:
+ 295              		.section	.text.USBPD_VDM_SendSpecific,"ax",%progbits
+ 296              		.align	1
+ 297              		.syntax unified
+ 298              		.code	16
+ 299              		.thumb_func
+ 300              		.fpu softvfp
+ 302              	USBPD_VDM_SendSpecific:
+ 303              	.LFB891:
+ 304              		.cfi_startproc
+ 305              		@ args = 4, pretend = 0, frame = 0
+ 306              		@ frame_needed = 0, uses_anonymous_args = 0
+ 307              		@ link register save eliminated.
+ 308              		@ sp needed
+ 309 0000 7047     		bx	lr
+ 310              		.cfi_endproc
+ 311              	.LFE891:
+ 313              		.section	.text.USBPD_VDM_InformModeExit,"ax",%progbits
+ 314              		.align	1
+ 315              		.syntax unified
+ 316              		.code	16
+ 317              		.thumb_func
+ 318              		.fpu softvfp
+ 320              	USBPD_VDM_InformModeExit:
+ 321              	.LFB889:
+ 322              		.cfi_startproc
+ 323              		@ args = 4, pretend = 0, frame = 0
+ 324              		@ frame_needed = 0, uses_anonymous_args = 0
+ 325              		@ link register save eliminated.
+ 326              		@ sp needed
+ 327 0000 7047     		bx	lr
+ 328              		.cfi_endproc
+ 329              	.LFE889:
+ 331              		.section	.text.USBPD_VDM_InformSVID,"ax",%progbits
+ 332              		.align	1
+ 333              		.syntax unified
+ 334              		.code	16
+ 335              		.thumb_func
+ 336              		.fpu softvfp
+ 338              	USBPD_VDM_InformSVID:
+ 339              	.LFB885:
+ 340              		.cfi_startproc
+ARM GAS  /tmp/ccLeONLm.s 			page 14
+
+
+ 341              		@ args = 0, pretend = 0, frame = 0
+ 342              		@ frame_needed = 0, uses_anonymous_args = 0
+ 343              		@ link register save eliminated.
+ 344              		@ sp needed
+ 345 0000 7047     		bx	lr
+ 346              		.cfi_endproc
+ 347              	.LFE885:
+ 349              		.section	.text.USBPD_VDM_ModeExit,"ax",%progbits
+ 350              		.align	1
+ 351              		.syntax unified
+ 352              		.code	16
+ 353              		.thumb_func
+ 354              		.fpu softvfp
+ 356              	USBPD_VDM_ModeExit:
+ 357              	.LFB883:
+ 358              		.cfi_startproc
+ 359              		@ args = 0, pretend = 0, frame = 0
+ 360              		@ frame_needed = 0, uses_anonymous_args = 0
+ 361              		@ link register save eliminated.
+ 362 0000 0E20     		movs	r0, #14
+ 363              		@ sp needed
+ 364 0002 7047     		bx	lr
+ 365              		.cfi_endproc
+ 366              	.LFE883:
+ 368              		.section	.text.USBPD_VDM_InformMode,"ax",%progbits
+ 369              		.align	1
+ 370              		.syntax unified
+ 371              		.code	16
+ 372              		.thumb_func
+ 373              		.fpu softvfp
+ 375              	USBPD_VDM_InformMode:
+ 376              	.LFB887:
+ 377              		.cfi_startproc
+ 378              		@ args = 0, pretend = 0, frame = 0
+ 379              		@ frame_needed = 0, uses_anonymous_args = 0
+ 380              		@ link register save eliminated.
+ 381              		@ sp needed
+ 382 0000 7047     		bx	lr
+ 383              		.cfi_endproc
+ 384              	.LFE887:
+ 386              		.section	.text.USBPD_VDM_UserInit,"ax",%progbits
+ 387              		.align	1
+ 388              		.global	USBPD_VDM_UserInit
+ 389              		.syntax unified
+ 390              		.code	16
+ 391              		.thumb_func
+ 392              		.fpu softvfp
+ 394              	USBPD_VDM_UserInit:
+ 395              	.LVL18:
+ 396              	.LFB880:
+ 431:Src/usbpd_vdm_user.c **** 
+ 432:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN Private_functions */
+ 433:Src/usbpd_vdm_user.c **** 
+ 434:Src/usbpd_vdm_user.c **** /* USER CODE END Private_functions */
+ 435:Src/usbpd_vdm_user.c **** 
+ 436:Src/usbpd_vdm_user.c **** /* Exported functions ---------------------------------------------------------*/
+ 437:Src/usbpd_vdm_user.c **** /**
+ARM GAS  /tmp/ccLeONLm.s 			page 15
+
+
+ 438:Src/usbpd_vdm_user.c ****   * @brief  VDM Initialization function
+ 439:Src/usbpd_vdm_user.c ****   * @param  PortNum     Index of current used port
+ 440:Src/usbpd_vdm_user.c ****   * @retval status
+ 441:Src/usbpd_vdm_user.c ****   */
+ 442:Src/usbpd_vdm_user.c **** USBPD_StatusTypeDef USBPD_VDM_UserInit(uint8_t PortNum)
+ 443:Src/usbpd_vdm_user.c **** {
+ 397              		.loc 1 443 1 is_stmt 1 view -0
+ 398              		.cfi_startproc
+ 399              		@ args = 0, pretend = 0, frame = 0
+ 400              		@ frame_needed = 0, uses_anonymous_args = 0
+ 401              		@ link register save eliminated.
+ 444:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_UserInit */
+ 445:Src/usbpd_vdm_user.c ****     return USBPD_OK;
+ 402              		.loc 1 445 5 view .LVU39
+ 446:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_UserInit */
+ 447:Src/usbpd_vdm_user.c **** }
+ 403              		.loc 1 447 1 is_stmt 0 view .LVU40
+ 404 0000 0020     		movs	r0, #0
+ 405              	.LVL19:
+ 406              		.loc 1 447 1 view .LVU41
+ 407              		@ sp needed
+ 408 0002 7047     		bx	lr
+ 409              		.cfi_endproc
+ 410              	.LFE880:
+ 412              		.section	.text.USBPD_VDM_UserReset,"ax",%progbits
+ 413              		.align	1
+ 414              		.global	USBPD_VDM_UserReset
+ 415              		.syntax unified
+ 416              		.code	16
+ 417              		.thumb_func
+ 418              		.fpu softvfp
+ 420              	USBPD_VDM_UserReset:
+ 421              	.LVL20:
+ 422              	.LFB881:
+ 448:Src/usbpd_vdm_user.c **** 
+ 449:Src/usbpd_vdm_user.c **** /**
+ 450:Src/usbpd_vdm_user.c ****   * @brief  VDM Reset function
+ 451:Src/usbpd_vdm_user.c ****   * @param  PortNum     Index of current used port
+ 452:Src/usbpd_vdm_user.c ****   * @retval status
+ 453:Src/usbpd_vdm_user.c ****   */
+ 454:Src/usbpd_vdm_user.c **** void USBPD_VDM_UserReset(uint8_t PortNum)
+ 455:Src/usbpd_vdm_user.c **** {
+ 423              		.loc 1 455 1 is_stmt 1 view -0
+ 424              		.cfi_startproc
+ 425              		@ args = 0, pretend = 0, frame = 0
+ 426              		@ frame_needed = 0, uses_anonymous_args = 0
+ 427              		@ link register save eliminated.
+ 456:Src/usbpd_vdm_user.c **** /* USER CODE BEGIN USBPD_VDM_UserReset */
+ 457:Src/usbpd_vdm_user.c **** 
+ 458:Src/usbpd_vdm_user.c **** /* USER CODE END USBPD_VDM_UserReset */
+ 459:Src/usbpd_vdm_user.c **** }
+ 428              		.loc 1 459 1 view .LVU43
+ 429              		@ sp needed
+ 430 0000 7047     		bx	lr
+ 431              		.cfi_endproc
+ 432              	.LFE881:
+ 434              		.global	vdmCallbacks
+ARM GAS  /tmp/ccLeONLm.s 			page 16
+
+
+ 435              		.section	.rodata.vdmCallbacks,"a"
+ 436              		.align	2
+ 439              	vdmCallbacks:
+ 440 0000 00000000 		.word	USBPD_VDM_DiscoverIdentity
+ 441 0004 00000000 		.word	USBPD_VDM_DiscoverSVIDs
+ 442 0008 00000000 		.word	USBPD_VDM_DiscoverModes
+ 443 000c 00000000 		.word	USBPD_VDM_ModeEnter
+ 444 0010 00000000 		.word	USBPD_VDM_ModeExit
+ 445 0014 00000000 		.word	USBPD_VDM_InformIdentity
+ 446 0018 00000000 		.word	USBPD_VDM_InformSVID
+ 447 001c 00000000 		.word	USBPD_VDM_InformMode
+ 448 0020 00000000 		.word	USBPD_VDM_InformModeEnter
+ 449 0024 00000000 		.word	USBPD_VDM_InformModeExit
+ 450 0028 00000000 		.word	USBPD_VDM_SendAttention
+ 451 002c 00000000 		.word	USBPD_VDM_ReceiveAttention
+ 452 0030 00000000 		.word	USBPD_VDM_SendSpecific
+ 453 0034 00000000 		.word	USBPD_VDM_ReceiveSpecific
+ 454 0038 00000000 		.word	USBPD_VDM_InformSpecific
+ 455 003c 00000000 		.word	USBPD_VDM_SendUVDM
+ 456 0040 00000000 		.word	USBPD_VDM_ReceiveUVDM
+ 457              		.text
+ 458              	.Letext0:
+ 459              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 460              		.file 3 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_def.h"
+ 461              		.file 4 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_core.h"
+ 462              		.file 5 "Drivers/CMSIS/Device/ST/STM32G0xx/Include/system_stm32g0xx.h"
+ 463              		.file 6 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_def.h"
+ 464              		.file 7 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_flash.h"
+ 465              		.file 8 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal.h"
+ 466              		.file 9 "Inc/usbpd_pdo_defs.h"
+ 467              		.file 10 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 468              		.file 11 "/usr/include/newlib/sys/_types.h"
+ 469              		.file 12 "/usr/include/newlib/sys/reent.h"
+ 470              		.file 13 "/usr/include/newlib/sys/lock.h"
+ 471              		.file 14 "Utilities/GUI_INTERFACE/gui_api.h"
+ 472              		.file 15 "Inc/usbpd_dpm_conf.h"
+ 473              		.file 16 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_dma.h"
+ARM GAS  /tmp/ccLeONLm.s 			page 17
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usbpd_vdm_user.c
+     /tmp/ccLeONLm.s:16     .text.USBPD_VDM_DiscoverIdentity:0000000000000000 $t
+     /tmp/ccLeONLm.s:23     .text.USBPD_VDM_DiscoverIdentity:0000000000000000 USBPD_VDM_DiscoverIdentity
+     /tmp/ccLeONLm.s:43     .text.USBPD_VDM_DiscoverSVIDs:0000000000000000 $t
+     /tmp/ccLeONLm.s:49     .text.USBPD_VDM_DiscoverSVIDs:0000000000000000 USBPD_VDM_DiscoverSVIDs
+     /tmp/ccLeONLm.s:68     .text.USBPD_VDM_DiscoverModes:0000000000000000 $t
+     /tmp/ccLeONLm.s:74     .text.USBPD_VDM_DiscoverModes:0000000000000000 USBPD_VDM_DiscoverModes
+     /tmp/ccLeONLm.s:93     .text.USBPD_VDM_ModeEnter:0000000000000000 $t
+     /tmp/ccLeONLm.s:99     .text.USBPD_VDM_ModeEnter:0000000000000000 USBPD_VDM_ModeEnter
+     /tmp/ccLeONLm.s:118    .text.USBPD_VDM_SendAttention:0000000000000000 $t
+     /tmp/ccLeONLm.s:124    .text.USBPD_VDM_SendAttention:0000000000000000 USBPD_VDM_SendAttention
+     /tmp/ccLeONLm.s:139    .text.USBPD_VDM_ReceiveAttention:0000000000000000 $t
+     /tmp/ccLeONLm.s:145    .text.USBPD_VDM_ReceiveAttention:0000000000000000 USBPD_VDM_ReceiveAttention
+     /tmp/ccLeONLm.s:160    .text.USBPD_VDM_ReceiveSpecific:0000000000000000 $t
+     /tmp/ccLeONLm.s:166    .text.USBPD_VDM_ReceiveSpecific:0000000000000000 USBPD_VDM_ReceiveSpecific
+     /tmp/ccLeONLm.s:185    .text.USBPD_VDM_InformIdentity:0000000000000000 $t
+     /tmp/ccLeONLm.s:191    .text.USBPD_VDM_InformIdentity:0000000000000000 USBPD_VDM_InformIdentity
+     /tmp/ccLeONLm.s:207    .text.USBPD_VDM_InformModeEnter:0000000000000000 $t
+     /tmp/ccLeONLm.s:213    .text.USBPD_VDM_InformModeEnter:0000000000000000 USBPD_VDM_InformModeEnter
+     /tmp/ccLeONLm.s:229    .text.USBPD_VDM_InformSpecific:0000000000000000 $t
+     /tmp/ccLeONLm.s:235    .text.USBPD_VDM_InformSpecific:0000000000000000 USBPD_VDM_InformSpecific
+     /tmp/ccLeONLm.s:250    .text.USBPD_VDM_SendUVDM:0000000000000000 $t
+     /tmp/ccLeONLm.s:256    .text.USBPD_VDM_SendUVDM:0000000000000000 USBPD_VDM_SendUVDM
+     /tmp/ccLeONLm.s:271    .text.USBPD_VDM_ReceiveUVDM:0000000000000000 $t
+     /tmp/ccLeONLm.s:277    .text.USBPD_VDM_ReceiveUVDM:0000000000000000 USBPD_VDM_ReceiveUVDM
+     /tmp/ccLeONLm.s:296    .text.USBPD_VDM_SendSpecific:0000000000000000 $t
+     /tmp/ccLeONLm.s:302    .text.USBPD_VDM_SendSpecific:0000000000000000 USBPD_VDM_SendSpecific
+     /tmp/ccLeONLm.s:314    .text.USBPD_VDM_InformModeExit:0000000000000000 $t
+     /tmp/ccLeONLm.s:320    .text.USBPD_VDM_InformModeExit:0000000000000000 USBPD_VDM_InformModeExit
+     /tmp/ccLeONLm.s:332    .text.USBPD_VDM_InformSVID:0000000000000000 $t
+     /tmp/ccLeONLm.s:338    .text.USBPD_VDM_InformSVID:0000000000000000 USBPD_VDM_InformSVID
+     /tmp/ccLeONLm.s:350    .text.USBPD_VDM_ModeExit:0000000000000000 $t
+     /tmp/ccLeONLm.s:356    .text.USBPD_VDM_ModeExit:0000000000000000 USBPD_VDM_ModeExit
+     /tmp/ccLeONLm.s:369    .text.USBPD_VDM_InformMode:0000000000000000 $t
+     /tmp/ccLeONLm.s:375    .text.USBPD_VDM_InformMode:0000000000000000 USBPD_VDM_InformMode
+     /tmp/ccLeONLm.s:387    .text.USBPD_VDM_UserInit:0000000000000000 $t
+     /tmp/ccLeONLm.s:394    .text.USBPD_VDM_UserInit:0000000000000000 USBPD_VDM_UserInit
+     /tmp/ccLeONLm.s:413    .text.USBPD_VDM_UserReset:0000000000000000 $t
+     /tmp/ccLeONLm.s:420    .text.USBPD_VDM_UserReset:0000000000000000 USBPD_VDM_UserReset
+     /tmp/ccLeONLm.s:439    .rodata.vdmCallbacks:0000000000000000 vdmCallbacks
+     /tmp/ccLeONLm.s:436    .rodata.vdmCallbacks:0000000000000000 $d
+
+NO UNDEFINED SYMBOLS

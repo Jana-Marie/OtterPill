@@ -1,0 +1,813 @@
+ARM GAS  /tmp/ccZcsW6V.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 4
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"usbpd_pwr_if.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.USBPD_PWR_IF_Init,"ax",%progbits
+  16              		.align	1
+  17              		.global	USBPD_PWR_IF_Init
+  18              		.arch armv6s-m
+  19              		.syntax unified
+  20              		.code	16
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	USBPD_PWR_IF_Init:
+  25              	.LFB1069:
+  26              		.file 1 "Src/usbpd_pwr_if.c"
+   1:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN Header */
+   2:Src/usbpd_pwr_if.c **** /**
+   3:Src/usbpd_pwr_if.c ****   ******************************************************************************
+   4:Src/usbpd_pwr_if.c ****   * @file    usbpd_pwr_if.c
+   5:Src/usbpd_pwr_if.c ****   * @author  MCD Application Team
+   6:Src/usbpd_pwr_if.c ****   * @brief   This file contains power interface control functions.
+   7:Src/usbpd_pwr_if.c ****   ******************************************************************************
+   8:Src/usbpd_pwr_if.c ****   * @attention
+   9:Src/usbpd_pwr_if.c ****   *
+  10:Src/usbpd_pwr_if.c ****   * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+  11:Src/usbpd_pwr_if.c ****   * All rights reserved.</center></h2>
+  12:Src/usbpd_pwr_if.c ****   *
+  13:Src/usbpd_pwr_if.c ****   * This software component is licensed by ST under Ultimate Liberty license
+  14:Src/usbpd_pwr_if.c ****   * SLA0044, the "License"; You may not use this file except in compliance with
+  15:Src/usbpd_pwr_if.c ****   * the License. You may obtain a copy of the License at:
+  16:Src/usbpd_pwr_if.c ****   *                             www.st.com/SLA0044
+  17:Src/usbpd_pwr_if.c ****   *
+  18:Src/usbpd_pwr_if.c ****   ******************************************************************************
+  19:Src/usbpd_pwr_if.c ****   */
+  20:Src/usbpd_pwr_if.c **** /* USER CODE END Header */
+  21:Src/usbpd_pwr_if.c **** 
+  22:Src/usbpd_pwr_if.c **** #define __USBPD_PWR_IF_C
+  23:Src/usbpd_pwr_if.c **** 
+  24:Src/usbpd_pwr_if.c **** /* Includes ------------------------------------------------------------------*/
+  25:Src/usbpd_pwr_if.c **** #include "usbpd_pwr_if.h"
+  26:Src/usbpd_pwr_if.c **** #include "usbpd_hw_if.h"
+  27:Src/usbpd_pwr_if.c **** #include "usbpd_pwr_if.h"
+  28:Src/usbpd_pwr_if.c **** #include "usbpd_dpm_core.h"
+  29:Src/usbpd_pwr_if.c **** #include "usbpd_dpm_conf.h"
+  30:Src/usbpd_pwr_if.c **** #include "usbpd_pdo_defs.h"
+  31:Src/usbpd_pwr_if.c **** #include "usbpd_core.h"
+  32:Src/usbpd_pwr_if.c **** #if defined(_TRACE)
+ARM GAS  /tmp/ccZcsW6V.s 			page 2
+
+
+  33:Src/usbpd_pwr_if.c **** #include "usbpd_trace.h"
+  34:Src/usbpd_pwr_if.c **** #endif /* _TRACE */
+  35:Src/usbpd_pwr_if.c **** #include "string.h"
+  36:Src/usbpd_pwr_if.c **** #include "gui_api.h"
+  37:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN Include */
+  38:Src/usbpd_pwr_if.c **** #include "main.h"
+  39:Src/usbpd_pwr_if.c **** /* USER CODE END Include */
+  40:Src/usbpd_pwr_if.c **** 
+  41:Src/usbpd_pwr_if.c **** /** @addtogroup STM32_USBPD_APPLICATION
+  42:Src/usbpd_pwr_if.c ****   * @{
+  43:Src/usbpd_pwr_if.c ****   */
+  44:Src/usbpd_pwr_if.c **** 
+  45:Src/usbpd_pwr_if.c **** /** @addtogroup STM32_USBPD_APPLICATION_POWER_IF
+  46:Src/usbpd_pwr_if.c ****   * @{
+  47:Src/usbpd_pwr_if.c ****   */
+  48:Src/usbpd_pwr_if.c **** 
+  49:Src/usbpd_pwr_if.c **** /* Private typedef -----------------------------------------------------------*/
+  50:Src/usbpd_pwr_if.c **** /** @addtogroup STM32_USBPD_APPLICATION_POWER_IF_Private_TypeDef
+  51:Src/usbpd_pwr_if.c ****   * @{
+  52:Src/usbpd_pwr_if.c ****   */
+  53:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN Private_Typedef */
+  54:Src/usbpd_pwr_if.c **** 
+  55:Src/usbpd_pwr_if.c **** /* USER CODE END Private_Typedef */
+  56:Src/usbpd_pwr_if.c **** /**
+  57:Src/usbpd_pwr_if.c ****   * @}
+  58:Src/usbpd_pwr_if.c ****   */
+  59:Src/usbpd_pwr_if.c **** 
+  60:Src/usbpd_pwr_if.c **** /* Private define ------------------------------------------------------------*/
+  61:Src/usbpd_pwr_if.c **** /** @addtogroup STM32_USBPD_APPLICATION_POWER_IF_Private_Defines
+  62:Src/usbpd_pwr_if.c ****   * @{
+  63:Src/usbpd_pwr_if.c ****   */
+  64:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN Private_Define */
+  65:Src/usbpd_pwr_if.c **** 
+  66:Src/usbpd_pwr_if.c **** /* USER CODE END Private_Define */
+  67:Src/usbpd_pwr_if.c **** /**
+  68:Src/usbpd_pwr_if.c ****   * @}
+  69:Src/usbpd_pwr_if.c ****   */
+  70:Src/usbpd_pwr_if.c **** 
+  71:Src/usbpd_pwr_if.c **** /* Private macros ------------------------------------------------------------*/
+  72:Src/usbpd_pwr_if.c **** /** @addtogroup STM32_USBPD_APPLICATION_POWER_IF_Private_Macros
+  73:Src/usbpd_pwr_if.c ****   * @{
+  74:Src/usbpd_pwr_if.c ****   */
+  75:Src/usbpd_pwr_if.c **** #if defined(_TRACE)
+  76:Src/usbpd_pwr_if.c **** #define PWR_IF_DEBUG_TRACE(_PORT_, __MESSAGE__)  USBPD_TRACE_Add(USBPD_TRACE_DEBUG,    (_PORT_), 0u
+  77:Src/usbpd_pwr_if.c **** #else
+  78:Src/usbpd_pwr_if.c **** #define PWR_IF_DEBUG_TRACE(_PORT_, __MESSAGE__)
+  79:Src/usbpd_pwr_if.c **** #endif /* _TRACE */
+  80:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN Private_Macro */
+  81:Src/usbpd_pwr_if.c **** 
+  82:Src/usbpd_pwr_if.c **** /* USER CODE END Private_Macro */
+  83:Src/usbpd_pwr_if.c **** /**
+  84:Src/usbpd_pwr_if.c ****   * @}
+  85:Src/usbpd_pwr_if.c ****   */
+  86:Src/usbpd_pwr_if.c **** 
+  87:Src/usbpd_pwr_if.c **** /* Private variables ---------------------------------------------------------*/
+  88:Src/usbpd_pwr_if.c **** /** @addtogroup STM32_USBPD_APPLICATION_POWER_IF_Private_Variables
+  89:Src/usbpd_pwr_if.c ****   * @{
+ARM GAS  /tmp/ccZcsW6V.s 			page 3
+
+
+  90:Src/usbpd_pwr_if.c ****   */
+  91:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN Private_Variables */
+  92:Src/usbpd_pwr_if.c **** 
+  93:Src/usbpd_pwr_if.c **** /* USER CODE END Private_Variables */
+  94:Src/usbpd_pwr_if.c **** /**
+  95:Src/usbpd_pwr_if.c ****   * @}
+  96:Src/usbpd_pwr_if.c ****   */
+  97:Src/usbpd_pwr_if.c **** 
+  98:Src/usbpd_pwr_if.c **** /* Private function prototypes -----------------------------------------------*/
+  99:Src/usbpd_pwr_if.c **** /** @addtogroup STM32_USBPD_APPLICATION_POWER_IF_Private_Functions
+ 100:Src/usbpd_pwr_if.c ****   * @{
+ 101:Src/usbpd_pwr_if.c ****   */
+ 102:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_USER_PRIVATE_FUNCTIONS_Prototypes */
+ 103:Src/usbpd_pwr_if.c **** 
+ 104:Src/usbpd_pwr_if.c **** /* USER CODE END USBPD_USER_PRIVATE_FUNCTIONS_Prototypes */
+ 105:Src/usbpd_pwr_if.c **** /**
+ 106:Src/usbpd_pwr_if.c ****   * @}
+ 107:Src/usbpd_pwr_if.c ****   */
+ 108:Src/usbpd_pwr_if.c **** 
+ 109:Src/usbpd_pwr_if.c **** /** @addtogroup STM32_USBPD_APPLICATION_POWER_IF_Exported_Functions
+ 110:Src/usbpd_pwr_if.c ****   * @{
+ 111:Src/usbpd_pwr_if.c ****   */
+ 112:Src/usbpd_pwr_if.c **** 
+ 113:Src/usbpd_pwr_if.c **** /**
+ 114:Src/usbpd_pwr_if.c ****   * @brief  Initialize structures and variables related to power board profiles
+ 115:Src/usbpd_pwr_if.c ****   *         used by Sink and Source, for all available ports.
+ 116:Src/usbpd_pwr_if.c ****   * @retval USBPD status
+ 117:Src/usbpd_pwr_if.c ****   */
+ 118:Src/usbpd_pwr_if.c **** USBPD_StatusTypeDef USBPD_PWR_IF_Init(void)
+ 119:Src/usbpd_pwr_if.c **** {
+  27              		.loc 1 119 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+ 120:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_PWR_IF_Init */
+ 121:Src/usbpd_pwr_if.c ****   return USBPD_ERROR;
+  32              		.loc 1 121 3 view .LVU1
+ 122:Src/usbpd_pwr_if.c **** /* USER CODE END USBPD_PWR_IF_Init */
+ 123:Src/usbpd_pwr_if.c **** }
+  33              		.loc 1 123 1 is_stmt 0 view .LVU2
+  34 0000 0220     		movs	r0, #2
+  35              		@ sp needed
+  36 0002 7047     		bx	lr
+  37              		.cfi_endproc
+  38              	.LFE1069:
+  40              		.section	.rodata.USBPD_PWR_IF_SetProfile.str1.1,"aMS",%progbits,1
+  41              	.LC0:
+  42 0000 48454C50 		.ascii	"HELP: update USBPD_PWR_IF_SetProfile\000"
+  42      3A207570 
+  42      64617465 
+  42      20555342 
+  42      50445F50 
+  43              		.section	.text.USBPD_PWR_IF_SetProfile,"ax",%progbits
+  44              		.align	1
+  45              		.global	USBPD_PWR_IF_SetProfile
+  46              		.syntax unified
+ARM GAS  /tmp/ccZcsW6V.s 			page 4
+
+
+  47              		.code	16
+  48              		.thumb_func
+  49              		.fpu softvfp
+  51              	USBPD_PWR_IF_SetProfile:
+  52              	.LVL0:
+  53              	.LFB1070:
+ 124:Src/usbpd_pwr_if.c **** 
+ 125:Src/usbpd_pwr_if.c **** /**
+ 126:Src/usbpd_pwr_if.c ****   * @brief  Sets the required power profile, now it works only with Fixed ones
+ 127:Src/usbpd_pwr_if.c ****   * @param  PortNum Port number
+ 128:Src/usbpd_pwr_if.c ****   * @retval USBPD status
+ 129:Src/usbpd_pwr_if.c **** */
+ 130:Src/usbpd_pwr_if.c **** USBPD_StatusTypeDef USBPD_PWR_IF_SetProfile(uint8_t PortNum)
+ 131:Src/usbpd_pwr_if.c **** {
+  54              		.loc 1 131 1 is_stmt 1 view -0
+  55              		.cfi_startproc
+  56              		@ args = 0, pretend = 0, frame = 0
+  57              		@ frame_needed = 0, uses_anonymous_args = 0
+ 132:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_PWR_IF_SetProfile */
+ 133:Src/usbpd_pwr_if.c ****   USBPD_StatusTypeDef      _status = USBPD_ERROR;
+  58              		.loc 1 133 3 view .LVU4
+ 134:Src/usbpd_pwr_if.c ****   PWR_IF_DEBUG_TRACE(PortNum, "HELP: update USBPD_PWR_IF_SetProfile");
+  59              		.loc 1 134 3 view .LVU5
+  60 0000 2423     		movs	r3, #36
+ 131:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_PWR_IF_SetProfile */
+  61              		.loc 1 131 1 is_stmt 0 view .LVU6
+  62 0002 07B5     		push	{r0, r1, r2, lr}
+  63              	.LCFI0:
+  64              		.cfi_def_cfa_offset 16
+  65              		.cfi_offset 0, -16
+  66              		.cfi_offset 1, -12
+  67              		.cfi_offset 2, -8
+  68              		.cfi_offset 14, -4
+ 131:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_PWR_IF_SetProfile */
+  69              		.loc 1 131 1 view .LVU7
+  70 0004 0100     		movs	r1, r0
+  71              		.loc 1 134 3 view .LVU8
+  72 0006 0093     		str	r3, [sp]
+  73 0008 0620     		movs	r0, #6
+  74              	.LVL1:
+  75              		.loc 1 134 3 view .LVU9
+  76 000a 0022     		movs	r2, #0
+  77 000c 024B     		ldr	r3, .L3
+  78 000e FFF7FEFF 		bl	USBPD_TRACE_Add
+  79              	.LVL2:
+ 135:Src/usbpd_pwr_if.c **** /*   if (BSP_ERROR_NONE == BSP_USBPD_PWR_VBUSSetVoltage_Fixed(PortNum, 5000, 3000, 3000))
+ 136:Src/usbpd_pwr_if.c ****   {
+ 137:Src/usbpd_pwr_if.c ****      _status = USBPD_OK;
+ 138:Src/usbpd_pwr_if.c ****   }
+ 139:Src/usbpd_pwr_if.c ****  */
+ 140:Src/usbpd_pwr_if.c ****   return _status;
+  80              		.loc 1 140 3 is_stmt 1 view .LVU10
+ 141:Src/usbpd_pwr_if.c **** /* USER CODE END USBPD_PWR_IF_SetProfile */
+ 142:Src/usbpd_pwr_if.c **** }
+  81              		.loc 1 142 1 is_stmt 0 view .LVU11
+  82              		@ sp needed
+  83 0012 0220     		movs	r0, #2
+ARM GAS  /tmp/ccZcsW6V.s 			page 5
+
+
+  84 0014 0EBD     		pop	{r1, r2, r3, pc}
+  85              	.L4:
+  86 0016 C046     		.align	2
+  87              	.L3:
+  88 0018 00000000 		.word	.LC0
+  89              		.cfi_endproc
+  90              	.LFE1070:
+  92              		.section	.text.USBPD_PWR_IF_SupplyReady,"ax",%progbits
+  93              		.align	1
+  94              		.global	USBPD_PWR_IF_SupplyReady
+  95              		.syntax unified
+  96              		.code	16
+  97              		.thumb_func
+  98              		.fpu softvfp
+ 100              	USBPD_PWR_IF_SupplyReady:
+ 101              	.LVL3:
+ 102              	.LFB1071:
+ 143:Src/usbpd_pwr_if.c **** 
+ 144:Src/usbpd_pwr_if.c **** /**
+ 145:Src/usbpd_pwr_if.c ****   * @brief  Checks if the power on a specified port is ready
+ 146:Src/usbpd_pwr_if.c ****   * @param  PortNum Port number
+ 147:Src/usbpd_pwr_if.c ****   * @param  Vsafe   Vsafe status based on @ref USBPD_VSAFE_StatusTypeDef
+ 148:Src/usbpd_pwr_if.c ****   * @retval USBPD status
+ 149:Src/usbpd_pwr_if.c ****   */
+ 150:Src/usbpd_pwr_if.c **** USBPD_StatusTypeDef USBPD_PWR_IF_SupplyReady(uint8_t PortNum, USBPD_VSAFE_StatusTypeDef Vsafe)
+ 151:Src/usbpd_pwr_if.c **** {
+ 103              		.loc 1 151 1 is_stmt 1 view -0
+ 104              		.cfi_startproc
+ 105              		@ args = 0, pretend = 0, frame = 0
+ 106              		@ frame_needed = 0, uses_anonymous_args = 0
+ 107              		@ link register save eliminated.
+ 152:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_PWR_IF_SupplyReady */
+ 153:Src/usbpd_pwr_if.c ****   return USBPD_ERROR;
+ 108              		.loc 1 153 3 view .LVU13
+ 154:Src/usbpd_pwr_if.c **** /* USER CODE END USBPD_PWR_IF_SupplyReady */
+ 155:Src/usbpd_pwr_if.c **** }
+ 109              		.loc 1 155 1 is_stmt 0 view .LVU14
+ 110 0000 0220     		movs	r0, #2
+ 111              	.LVL4:
+ 112              		.loc 1 155 1 view .LVU15
+ 113              		@ sp needed
+ 114 0002 7047     		bx	lr
+ 115              		.cfi_endproc
+ 116              	.LFE1071:
+ 118              		.section	.text.USBPD_PWR_IF_VBUSEnable,"ax",%progbits
+ 119              		.align	1
+ 120              		.global	USBPD_PWR_IF_VBUSEnable
+ 121              		.syntax unified
+ 122              		.code	16
+ 123              		.thumb_func
+ 124              		.fpu softvfp
+ 126              	USBPD_PWR_IF_VBUSEnable:
+ 127              	.LVL5:
+ 128              	.LFB1072:
+ 156:Src/usbpd_pwr_if.c **** 
+ 157:Src/usbpd_pwr_if.c **** /**
+ 158:Src/usbpd_pwr_if.c ****   * @brief  Enables VBUS power on a specified port
+ARM GAS  /tmp/ccZcsW6V.s 			page 6
+
+
+ 159:Src/usbpd_pwr_if.c ****   * @param  PortNum Port number
+ 160:Src/usbpd_pwr_if.c ****   * @retval USBPD status
+ 161:Src/usbpd_pwr_if.c ****   */
+ 162:Src/usbpd_pwr_if.c **** USBPD_StatusTypeDef USBPD_PWR_IF_VBUSEnable(uint8_t PortNum)
+ 163:Src/usbpd_pwr_if.c **** {
+ 129              		.loc 1 163 1 is_stmt 1 view -0
+ 130              		.cfi_startproc
+ 131              		@ args = 0, pretend = 0, frame = 0
+ 132              		@ frame_needed = 0, uses_anonymous_args = 0
+ 164:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_PWR_IF_VBUSEnable */
+ 165:Src/usbpd_pwr_if.c ****   USBPD_StatusTypeDef _status = (USBPD_StatusTypeDef)HW_IF_PWR_Enable(PortNum, USBPD_ENABLE, CCNONE
+ 133              		.loc 1 165 3 view .LVU17
+ 163:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_PWR_IF_VBUSEnable */
+ 134              		.loc 1 163 1 is_stmt 0 view .LVU18
+ 135 0000 07B5     		push	{r0, r1, r2, lr}
+ 136              	.LCFI1:
+ 137              		.cfi_def_cfa_offset 16
+ 138              		.cfi_offset 0, -16
+ 139              		.cfi_offset 1, -12
+ 140              		.cfi_offset 2, -8
+ 141              		.cfi_offset 14, -4
+ 142              		.loc 1 165 54 view .LVU19
+ 143 0002 0023     		movs	r3, #0
+ 144 0004 0121     		movs	r1, #1
+ 145 0006 1A00     		movs	r2, r3
+ 146 0008 0091     		str	r1, [sp]
+ 147 000a FFF7FEFF 		bl	HW_IF_PWR_Enable
+ 148              	.LVL6:
+ 166:Src/usbpd_pwr_if.c ****   return _status;
+ 149              		.loc 1 166 3 is_stmt 1 view .LVU20
+ 167:Src/usbpd_pwr_if.c **** /* USER CODE END USBPD_PWR_IF_VBUSEnable */
+ 168:Src/usbpd_pwr_if.c **** }
+ 150              		.loc 1 168 1 is_stmt 0 view .LVU21
+ 151              		@ sp needed
+ 152 000e 0EBD     		pop	{r1, r2, r3, pc}
+ 153              		.cfi_endproc
+ 154              	.LFE1072:
+ 156              		.section	.text.USBPD_PWR_IF_VBUSDisable,"ax",%progbits
+ 157              		.align	1
+ 158              		.global	USBPD_PWR_IF_VBUSDisable
+ 159              		.syntax unified
+ 160              		.code	16
+ 161              		.thumb_func
+ 162              		.fpu softvfp
+ 164              	USBPD_PWR_IF_VBUSDisable:
+ 165              	.LVL7:
+ 166              	.LFB1073:
+ 169:Src/usbpd_pwr_if.c **** 
+ 170:Src/usbpd_pwr_if.c **** /**
+ 171:Src/usbpd_pwr_if.c ****   * @brief  Disbale VBUS/VCONN the power on a specified port
+ 172:Src/usbpd_pwr_if.c ****   * @param  PortNum Port number
+ 173:Src/usbpd_pwr_if.c ****   * @retval USBPD status
+ 174:Src/usbpd_pwr_if.c ****   */
+ 175:Src/usbpd_pwr_if.c **** USBPD_StatusTypeDef USBPD_PWR_IF_VBUSDisable(uint8_t PortNum)
+ 176:Src/usbpd_pwr_if.c **** {
+ 167              		.loc 1 176 1 is_stmt 1 view -0
+ 168              		.cfi_startproc
+ARM GAS  /tmp/ccZcsW6V.s 			page 7
+
+
+ 169              		@ args = 0, pretend = 0, frame = 0
+ 170              		@ frame_needed = 0, uses_anonymous_args = 0
+ 177:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_PWR_IF_VBUSDisable */
+ 178:Src/usbpd_pwr_if.c ****   USBPD_StatusTypeDef _status = (USBPD_StatusTypeDef)HW_IF_PWR_Enable(PortNum, USBPD_DISABLE, CCNON
+ 171              		.loc 1 178 3 view .LVU23
+ 172              		.loc 1 178 54 is_stmt 0 view .LVU24
+ 173 0000 0123     		movs	r3, #1
+ 176:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_PWR_IF_VBUSDisable */
+ 174              		.loc 1 176 1 view .LVU25
+ 175 0002 07B5     		push	{r0, r1, r2, lr}
+ 176              	.LCFI2:
+ 177              		.cfi_def_cfa_offset 16
+ 178              		.cfi_offset 0, -16
+ 179              		.cfi_offset 1, -12
+ 180              		.cfi_offset 2, -8
+ 181              		.cfi_offset 14, -4
+ 182              		.loc 1 178 54 view .LVU26
+ 183 0004 0093     		str	r3, [sp]
+ 184 0006 0023     		movs	r3, #0
+ 185 0008 1A00     		movs	r2, r3
+ 186 000a 1900     		movs	r1, r3
+ 187 000c FFF7FEFF 		bl	HW_IF_PWR_Enable
+ 188              	.LVL8:
+ 179:Src/usbpd_pwr_if.c ****   return _status;
+ 189              		.loc 1 179 3 is_stmt 1 view .LVU27
+ 180:Src/usbpd_pwr_if.c **** /* USER CODE END USBPD_PWR_IF_VBUSDisable */
+ 181:Src/usbpd_pwr_if.c **** }
+ 190              		.loc 1 181 1 is_stmt 0 view .LVU28
+ 191              		@ sp needed
+ 192 0010 0EBD     		pop	{r1, r2, r3, pc}
+ 193              		.cfi_endproc
+ 194              	.LFE1073:
+ 196              		.section	.text.USBPD_PWR_IF_VBUSIsEnabled,"ax",%progbits
+ 197              		.align	1
+ 198              		.global	USBPD_PWR_IF_VBUSIsEnabled
+ 199              		.syntax unified
+ 200              		.code	16
+ 201              		.thumb_func
+ 202              		.fpu softvfp
+ 204              	USBPD_PWR_IF_VBUSIsEnabled:
+ 205              	.LVL9:
+ 206              	.LFB1074:
+ 182:Src/usbpd_pwr_if.c **** 
+ 183:Src/usbpd_pwr_if.c **** /**
+ 184:Src/usbpd_pwr_if.c ****   * @brief  Checks if the power on a specified port is enabled
+ 185:Src/usbpd_pwr_if.c ****   * @param  PortNum Port number
+ 186:Src/usbpd_pwr_if.c ****   * @retval USBPD_ENABLE or USBPD_DISABLE
+ 187:Src/usbpd_pwr_if.c ****   */
+ 188:Src/usbpd_pwr_if.c **** USBPD_FunctionalState USBPD_PWR_IF_VBUSIsEnabled(uint8_t PortNum)
+ 189:Src/usbpd_pwr_if.c **** {
+ 207              		.loc 1 189 1 is_stmt 1 view -0
+ 208              		.cfi_startproc
+ 209              		@ args = 0, pretend = 0, frame = 0
+ 210              		@ frame_needed = 0, uses_anonymous_args = 0
+ 190:Src/usbpd_pwr_if.c ****   /* Get the Status of the port */
+ 191:Src/usbpd_pwr_if.c ****   return USBPD_PORT_IsValid(PortNum) ? (USBPD_FunctionalState)HW_IF_PWR_VBUSIsEnabled(PortNum) : US
+ 211              		.loc 1 191 3 view .LVU30
+ARM GAS  /tmp/ccZcsW6V.s 			page 8
+
+
+ 189:Src/usbpd_pwr_if.c ****   /* Get the Status of the port */
+ 212              		.loc 1 189 1 is_stmt 0 view .LVU31
+ 213 0000 0300     		movs	r3, r0
+ 214              		.loc 1 191 96 view .LVU32
+ 215 0002 0020     		movs	r0, #0
+ 216              	.LVL10:
+ 189:Src/usbpd_pwr_if.c ****   /* Get the Status of the port */
+ 217              		.loc 1 189 1 view .LVU33
+ 218 0004 10B5     		push	{r4, lr}
+ 219              	.LCFI3:
+ 220              		.cfi_def_cfa_offset 8
+ 221              		.cfi_offset 4, -8
+ 222              		.cfi_offset 14, -4
+ 223              		.loc 1 191 96 view .LVU34
+ 224 0006 8342     		cmp	r3, r0
+ 225 0008 01D1     		bne	.L9
+ 226              		.loc 1 191 63 discriminator 1 view .LVU35
+ 227 000a FFF7FEFF 		bl	HW_IF_PWR_VBUSIsEnabled
+ 228              	.LVL11:
+ 229              	.L9:
+ 192:Src/usbpd_pwr_if.c **** }
+ 230              		.loc 1 192 1 discriminator 4 view .LVU36
+ 231              		@ sp needed
+ 232 000e 10BD     		pop	{r4, pc}
+ 233              		.cfi_endproc
+ 234              	.LFE1074:
+ 236              		.section	.text.USBPD_PWR_IF_ReadVA,"ax",%progbits
+ 237              		.align	1
+ 238              		.global	USBPD_PWR_IF_ReadVA
+ 239              		.syntax unified
+ 240              		.code	16
+ 241              		.thumb_func
+ 242              		.fpu softvfp
+ 244              	USBPD_PWR_IF_ReadVA:
+ 245              	.LVL12:
+ 246              	.LFB1075:
+ 193:Src/usbpd_pwr_if.c **** 
+ 194:Src/usbpd_pwr_if.c **** /**
+ 195:Src/usbpd_pwr_if.c ****   * @brief  Reads the voltage and the current on a specified port
+ 196:Src/usbpd_pwr_if.c ****   * @param  PortNum Port number
+ 197:Src/usbpd_pwr_if.c ****   * @param  pVoltage: The Voltage in mV
+ 198:Src/usbpd_pwr_if.c ****   * @param  pCurrent: The Current in mA
+ 199:Src/usbpd_pwr_if.c ****   * @retval USBPD_ERROR or USBPD_OK
+ 200:Src/usbpd_pwr_if.c ****   */
+ 201:Src/usbpd_pwr_if.c **** USBPD_StatusTypeDef USBPD_PWR_IF_ReadVA(uint8_t PortNum, uint16_t *pVoltage, uint16_t *pCurrent)
+ 202:Src/usbpd_pwr_if.c **** {
+ 247              		.loc 1 202 1 is_stmt 1 view -0
+ 248              		.cfi_startproc
+ 249              		@ args = 0, pretend = 0, frame = 0
+ 250              		@ frame_needed = 0, uses_anonymous_args = 0
+ 251              		@ link register save eliminated.
+ 203:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_PWR_IF_ReadVA */
+ 204:Src/usbpd_pwr_if.c ****   return USBPD_ERROR;
+ 252              		.loc 1 204 3 view .LVU38
+ 205:Src/usbpd_pwr_if.c **** /* USER CODE END USBPD_PWR_IF_ReadVA */
+ 206:Src/usbpd_pwr_if.c **** }
+ 253              		.loc 1 206 1 is_stmt 0 view .LVU39
+ARM GAS  /tmp/ccZcsW6V.s 			page 9
+
+
+ 254 0000 0220     		movs	r0, #2
+ 255              	.LVL13:
+ 256              		.loc 1 206 1 view .LVU40
+ 257              		@ sp needed
+ 258 0002 7047     		bx	lr
+ 259              		.cfi_endproc
+ 260              	.LFE1075:
+ 262              		.section	.text.USBPD_PWR_IF_Enable_VConn,"ax",%progbits
+ 263              		.align	1
+ 264              		.global	USBPD_PWR_IF_Enable_VConn
+ 265              		.syntax unified
+ 266              		.code	16
+ 267              		.thumb_func
+ 268              		.fpu softvfp
+ 270              	USBPD_PWR_IF_Enable_VConn:
+ 271              	.LVL14:
+ 272              	.LFB1076:
+ 207:Src/usbpd_pwr_if.c **** 
+ 208:Src/usbpd_pwr_if.c **** /**
+ 209:Src/usbpd_pwr_if.c ****   * @brief  Enables the VConn on the port.
+ 210:Src/usbpd_pwr_if.c ****   * @param  PortNum Port number
+ 211:Src/usbpd_pwr_if.c ****   * @param  CC      Specifies the CCx to be selected based on @ref CCxPin_TypeDef structure
+ 212:Src/usbpd_pwr_if.c ****   * @retval USBPD status
+ 213:Src/usbpd_pwr_if.c ****   */
+ 214:Src/usbpd_pwr_if.c **** USBPD_StatusTypeDef USBPD_PWR_IF_Enable_VConn(uint8_t PortNum, CCxPin_TypeDef CC)
+ 215:Src/usbpd_pwr_if.c **** {
+ 273              		.loc 1 215 1 is_stmt 1 view -0
+ 274              		.cfi_startproc
+ 275              		@ args = 0, pretend = 0, frame = 0
+ 276              		@ frame_needed = 0, uses_anonymous_args = 0
+ 277              		@ link register save eliminated.
+ 216:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_PWR_IF_Enable_VConn */
+ 217:Src/usbpd_pwr_if.c ****   return USBPD_ERROR;
+ 278              		.loc 1 217 3 view .LVU42
+ 218:Src/usbpd_pwr_if.c **** /* USER CODE END USBPD_PWR_IF_Enable_VConn */
+ 219:Src/usbpd_pwr_if.c **** }
+ 279              		.loc 1 219 1 is_stmt 0 view .LVU43
+ 280 0000 0220     		movs	r0, #2
+ 281              	.LVL15:
+ 282              		.loc 1 219 1 view .LVU44
+ 283              		@ sp needed
+ 284 0002 7047     		bx	lr
+ 285              		.cfi_endproc
+ 286              	.LFE1076:
+ 288              		.section	.text.USBPD_PWR_IF_Disable_VConn,"ax",%progbits
+ 289              		.align	1
+ 290              		.global	USBPD_PWR_IF_Disable_VConn
+ 291              		.syntax unified
+ 292              		.code	16
+ 293              		.thumb_func
+ 294              		.fpu softvfp
+ 296              	USBPD_PWR_IF_Disable_VConn:
+ 297              	.LFB1082:
+ 298              		.cfi_startproc
+ 299              		@ args = 0, pretend = 0, frame = 0
+ 300              		@ frame_needed = 0, uses_anonymous_args = 0
+ 301              		@ link register save eliminated.
+ARM GAS  /tmp/ccZcsW6V.s 			page 10
+
+
+ 302 0000 0220     		movs	r0, #2
+ 303              		@ sp needed
+ 304 0002 7047     		bx	lr
+ 305              		.cfi_endproc
+ 306              	.LFE1082:
+ 308              		.section	.text.USBPD_PWR_IF_GetPortPDOs,"ax",%progbits
+ 309              		.align	1
+ 310              		.global	USBPD_PWR_IF_GetPortPDOs
+ 311              		.syntax unified
+ 312              		.code	16
+ 313              		.thumb_func
+ 314              		.fpu softvfp
+ 316              	USBPD_PWR_IF_GetPortPDOs:
+ 317              	.LVL16:
+ 318              	.LFB1078:
+ 220:Src/usbpd_pwr_if.c **** 
+ 221:Src/usbpd_pwr_if.c **** /**
+ 222:Src/usbpd_pwr_if.c ****   * @brief  Disable the VConn on the port.
+ 223:Src/usbpd_pwr_if.c ****   * @param  PortNum Port number
+ 224:Src/usbpd_pwr_if.c ****   * @param  CC      Specifies the CCx to be selected based on @ref CCxPin_TypeDef structure
+ 225:Src/usbpd_pwr_if.c ****   * @retval USBPD status
+ 226:Src/usbpd_pwr_if.c ****   */
+ 227:Src/usbpd_pwr_if.c **** USBPD_StatusTypeDef USBPD_PWR_IF_Disable_VConn(uint8_t PortNum, CCxPin_TypeDef CC)
+ 228:Src/usbpd_pwr_if.c **** {
+ 229:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_PWR_IF_Disable_VConn */
+ 230:Src/usbpd_pwr_if.c ****   return USBPD_ERROR;
+ 231:Src/usbpd_pwr_if.c **** /* USER CODE END USBPD_PWR_IF_Disable_VConn */
+ 232:Src/usbpd_pwr_if.c **** }
+ 233:Src/usbpd_pwr_if.c **** 
+ 234:Src/usbpd_pwr_if.c **** /**
+ 235:Src/usbpd_pwr_if.c ****   * @brief  Allow PDO data reading from PWR_IF storage.
+ 236:Src/usbpd_pwr_if.c ****   * @param  PortNum Port number
+ 237:Src/usbpd_pwr_if.c ****   * @param  DataId Type of data to be read from PWR_IF
+ 238:Src/usbpd_pwr_if.c ****   *         This parameter can be one of the following values:
+ 239:Src/usbpd_pwr_if.c ****   *           @arg @ref USBPD_CORE_DATATYPE_SRC_PDO Source PDO reading requested
+ 240:Src/usbpd_pwr_if.c ****   *           @arg @ref USBPD_CORE_DATATYPE_SNK_PDO Sink PDO reading requested
+ 241:Src/usbpd_pwr_if.c ****   * @param  Ptr Pointer on address where PDO values should be written (u8 pointer)
+ 242:Src/usbpd_pwr_if.c ****   * @param  Size Pointer on nb of u32 written by PWR_IF (nb of PDOs)
+ 243:Src/usbpd_pwr_if.c ****   * @retval None
+ 244:Src/usbpd_pwr_if.c ****   */
+ 245:Src/usbpd_pwr_if.c **** void USBPD_PWR_IF_GetPortPDOs(uint8_t PortNum, USBPD_CORE_DataInfoType_TypeDef DataId, uint8_t *Ptr
+ 246:Src/usbpd_pwr_if.c **** {
+ 319              		.loc 1 246 1 is_stmt 1 view -0
+ 320              		.cfi_startproc
+ 321              		@ args = 0, pretend = 0, frame = 0
+ 322              		@ frame_needed = 0, uses_anonymous_args = 0
+ 247:Src/usbpd_pwr_if.c ****     {
+ 248:Src/usbpd_pwr_if.c ****       *Size = GUI_NbPDO[0];
+ 323              		.loc 1 248 7 view .LVU46
+ 246:Src/usbpd_pwr_if.c ****     {
+ 324              		.loc 1 246 1 is_stmt 0 view .LVU47
+ 325 0000 10B5     		push	{r4, lr}
+ 326              	.LCFI4:
+ 327              		.cfi_def_cfa_offset 8
+ 328              		.cfi_offset 4, -8
+ 329              		.cfi_offset 14, -4
+ 246:Src/usbpd_pwr_if.c ****     {
+ARM GAS  /tmp/ccZcsW6V.s 			page 11
+
+
+ 330              		.loc 1 246 1 view .LVU48
+ 331 0002 1000     		movs	r0, r2
+ 332              	.LVL17:
+ 333              		.loc 1 248 24 view .LVU49
+ 334 0004 044A     		ldr	r2, .L15
+ 335              	.LVL18:
+ 249:Src/usbpd_pwr_if.c ****       memcpy(Ptr,PORT0_PDO_ListSNK, sizeof(uint32_t) * GUI_NbPDO[0]);
+ 250:Src/usbpd_pwr_if.c ****     }
+ 251:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_PWR_IF_GetPortPDOs */
+ 252:Src/usbpd_pwr_if.c **** 
+ 253:Src/usbpd_pwr_if.c **** /* USER CODE END USBPD_PWR_IF_GetPortPDOs */
+ 254:Src/usbpd_pwr_if.c **** }
+ 336              		.loc 1 254 1 view .LVU50
+ 337              		@ sp needed
+ 248:Src/usbpd_pwr_if.c ****       memcpy(Ptr,PORT0_PDO_ListSNK, sizeof(uint32_t) * GUI_NbPDO[0]);
+ 338              		.loc 1 248 24 view .LVU51
+ 339 0006 1178     		ldrb	r1, [r2]
+ 340              	.LVL19:
+ 248:Src/usbpd_pwr_if.c ****       memcpy(Ptr,PORT0_PDO_ListSNK, sizeof(uint32_t) * GUI_NbPDO[0]);
+ 341              		.loc 1 248 24 view .LVU52
+ 342 0008 1960     		str	r1, [r3]
+ 249:Src/usbpd_pwr_if.c ****       memcpy(Ptr,PORT0_PDO_ListSNK, sizeof(uint32_t) * GUI_NbPDO[0]);
+ 343              		.loc 1 249 7 is_stmt 1 view .LVU53
+ 249:Src/usbpd_pwr_if.c ****       memcpy(Ptr,PORT0_PDO_ListSNK, sizeof(uint32_t) * GUI_NbPDO[0]);
+ 344              		.loc 1 249 65 is_stmt 0 view .LVU54
+ 345 000a 1278     		ldrb	r2, [r2]
+ 249:Src/usbpd_pwr_if.c ****       memcpy(Ptr,PORT0_PDO_ListSNK, sizeof(uint32_t) * GUI_NbPDO[0]);
+ 346              		.loc 1 249 7 view .LVU55
+ 347 000c 0349     		ldr	r1, .L15+4
+ 348 000e 9200     		lsls	r2, r2, #2
+ 349 0010 FFF7FEFF 		bl	memcpy
+ 350              	.LVL20:
+ 351              		.loc 1 254 1 view .LVU56
+ 352 0014 10BD     		pop	{r4, pc}
+ 353              	.L16:
+ 354 0016 C046     		.align	2
+ 355              	.L15:
+ 356 0018 00000000 		.word	GUI_NbPDO
+ 357 001c 00000000 		.word	.LANCHOR0
+ 358              		.cfi_endproc
+ 359              	.LFE1078:
+ 361              		.section	.text.USBPD_PWR_IF_SearchRequestedPDO,"ax",%progbits
+ 362              		.align	1
+ 363              		.global	USBPD_PWR_IF_SearchRequestedPDO
+ 364              		.syntax unified
+ 365              		.code	16
+ 366              		.thumb_func
+ 367              		.fpu softvfp
+ 369              	USBPD_PWR_IF_SearchRequestedPDO:
+ 370              	.LVL21:
+ 371              	.LFB1079:
+ 255:Src/usbpd_pwr_if.c **** 
+ 256:Src/usbpd_pwr_if.c **** /**
+ 257:Src/usbpd_pwr_if.c ****   * @brief  Find out SRC PDO pointed out by a position provided in a Request DO (from Sink).
+ 258:Src/usbpd_pwr_if.c ****   * @param  PortNum Port number
+ 259:Src/usbpd_pwr_if.c ****   * @param  RdoPosition RDO Position in list of provided PDO
+ 260:Src/usbpd_pwr_if.c ****   * @param  Pdo Pointer on PDO value pointed out by RDO position (u32 pointer)
+ARM GAS  /tmp/ccZcsW6V.s 			page 12
+
+
+ 261:Src/usbpd_pwr_if.c ****   * @retval Status of search
+ 262:Src/usbpd_pwr_if.c ****   *         USBPD_OK : Src PDO found for requested DO position (output Pdo parameter is set)
+ 263:Src/usbpd_pwr_if.c ****   *         USBPD_FAIL : Position is not compliant with current Src PDO for this port (no correspon
+ 264:Src/usbpd_pwr_if.c ****   */
+ 265:Src/usbpd_pwr_if.c **** USBPD_StatusTypeDef USBPD_PWR_IF_SearchRequestedPDO(uint8_t PortNum, uint32_t RdoPosition, uint32_t
+ 266:Src/usbpd_pwr_if.c **** {
+ 372              		.loc 1 266 1 is_stmt 1 view -0
+ 373              		.cfi_startproc
+ 374              		@ args = 0, pretend = 0, frame = 0
+ 375              		@ frame_needed = 0, uses_anonymous_args = 0
+ 376              		@ link register save eliminated.
+ 267:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_PWR_IF_SearchRequestedPDO */
+ 268:Src/usbpd_pwr_if.c ****   return USBPD_FAIL;
+ 377              		.loc 1 268 3 view .LVU58
+ 269:Src/usbpd_pwr_if.c **** /* USER CODE END USBPD_PWR_IF_SearchRequestedPDO */
+ 270:Src/usbpd_pwr_if.c **** }
+ 378              		.loc 1 270 1 is_stmt 0 view .LVU59
+ 379 0000 1020     		movs	r0, #16
+ 380              	.LVL22:
+ 381              		.loc 1 270 1 view .LVU60
+ 382              		@ sp needed
+ 383 0002 7047     		bx	lr
+ 384              		.cfi_endproc
+ 385              	.LFE1079:
+ 387              		.section	.text.USBPD_PWR_IF_Alarm,"ax",%progbits
+ 388              		.align	1
+ 389              		.global	USBPD_PWR_IF_Alarm
+ 390              		.syntax unified
+ 391              		.code	16
+ 392              		.thumb_func
+ 393              		.fpu softvfp
+ 395              	USBPD_PWR_IF_Alarm:
+ 396              	.LFB1080:
+ 271:Src/usbpd_pwr_if.c **** 
+ 272:Src/usbpd_pwr_if.c **** /**
+ 273:Src/usbpd_pwr_if.c ****   * @brief  the function is called in case of critical issue is detected to switch in safety mode.
+ 274:Src/usbpd_pwr_if.c ****   * @retval None
+ 275:Src/usbpd_pwr_if.c ****   */
+ 276:Src/usbpd_pwr_if.c **** void USBPD_PWR_IF_Alarm()
+ 277:Src/usbpd_pwr_if.c **** {
+ 397              		.loc 1 277 1 is_stmt 1 view -0
+ 398              		.cfi_startproc
+ 399              		@ args = 0, pretend = 0, frame = 0
+ 400              		@ frame_needed = 0, uses_anonymous_args = 0
+ 401              		@ link register save eliminated.
+ 278:Src/usbpd_pwr_if.c **** /* USER CODE BEGIN USBPD_PWR_IF_Alarm */
+ 279:Src/usbpd_pwr_if.c **** 
+ 280:Src/usbpd_pwr_if.c **** /* USER CODE END USBPD_PWR_IF_Alarm */
+ 281:Src/usbpd_pwr_if.c **** }
+ 402              		.loc 1 281 1 view .LVU62
+ 403              		@ sp needed
+ 404 0000 7047     		bx	lr
+ 405              		.cfi_endproc
+ 406              	.LFE1080:
+ 408              		.global	PORT0_PDO_ListSNK
+ 409              		.global	PORT0_PDO_ListSRC
+ 410              		.global	USBPD_NbPDO
+ARM GAS  /tmp/ccZcsW6V.s 			page 13
+
+
+ 411              		.section	.bss.PORT0_PDO_ListSRC,"aw",%nobits
+ 412              		.align	2
+ 415              	PORT0_PDO_ListSRC:
+ 416 0000 00000000 		.space	28
+ 416      00000000 
+ 416      00000000 
+ 416      00000000 
+ 416      00000000 
+ 417              		.section	.data.PORT0_PDO_ListSNK,"aw"
+ 418              		.align	2
+ 419              		.set	.LANCHOR0,. + 0
+ 422              	PORT0_PDO_ListSNK:
+ 423 0000 96900126 		.word	637636758
+ 424 0004 00000000 		.word	0
+ 425 0008 00000000 		.word	0
+ 426 000c 00000000 		.word	0
+ 427 0010 00000000 		.word	0
+ 428 0014 00000000 		.word	0
+ 429 0018 00000000 		.word	0
+ 430              		.section	.data.USBPD_NbPDO,"aw"
+ 433              	USBPD_NbPDO:
+ 434 0000 010000   		.ascii	"\001\000\000"
+ 435 0003 00       		.space	1
+ 436              		.text
+ 437              	.Letext0:
+ 438              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 439              		.file 3 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_def.h"
+ 440              		.file 4 "Drivers/CMSIS/Device/ST/STM32G0xx/Include/system_stm32g0xx.h"
+ 441              		.file 5 "Drivers/CMSIS/Device/ST/STM32G0xx/Include/stm32g071xx.h"
+ 442              		.file 6 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_def.h"
+ 443              		.file 7 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_flash.h"
+ 444              		.file 8 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal.h"
+ 445              		.file 9 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_dma.h"
+ 446              		.file 10 "Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_tim.h"
+ 447              		.file 11 "Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/inc/usbpd_hw_if.h"
+ 448              		.file 12 "Inc/usbpd_dpm_core.h"
+ 449              		.file 13 "Inc/usbpd_pdo_defs.h"
+ 450              		.file 14 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 451              		.file 15 "/usr/include/newlib/sys/_types.h"
+ 452              		.file 16 "/usr/include/newlib/sys/reent.h"
+ 453              		.file 17 "/usr/include/newlib/sys/lock.h"
+ 454              		.file 18 "Utilities/GUI_INTERFACE/gui_api.h"
+ 455              		.file 19 "Inc/usbpd_dpm_conf.h"
+ 456              		.file 20 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_core.h"
+ 457              		.file 21 "Middlewares/ST/STM32_USBPD_Library/Core/inc/usbpd_trace.h"
+ 458              		.file 22 "<built-in>"
+ARM GAS  /tmp/ccZcsW6V.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usbpd_pwr_if.c
+     /tmp/ccZcsW6V.s:16     .text.USBPD_PWR_IF_Init:0000000000000000 $t
+     /tmp/ccZcsW6V.s:24     .text.USBPD_PWR_IF_Init:0000000000000000 USBPD_PWR_IF_Init
+     /tmp/ccZcsW6V.s:44     .text.USBPD_PWR_IF_SetProfile:0000000000000000 $t
+     /tmp/ccZcsW6V.s:51     .text.USBPD_PWR_IF_SetProfile:0000000000000000 USBPD_PWR_IF_SetProfile
+     /tmp/ccZcsW6V.s:88     .text.USBPD_PWR_IF_SetProfile:0000000000000018 $d
+     /tmp/ccZcsW6V.s:93     .text.USBPD_PWR_IF_SupplyReady:0000000000000000 $t
+     /tmp/ccZcsW6V.s:100    .text.USBPD_PWR_IF_SupplyReady:0000000000000000 USBPD_PWR_IF_SupplyReady
+     /tmp/ccZcsW6V.s:119    .text.USBPD_PWR_IF_VBUSEnable:0000000000000000 $t
+     /tmp/ccZcsW6V.s:126    .text.USBPD_PWR_IF_VBUSEnable:0000000000000000 USBPD_PWR_IF_VBUSEnable
+     /tmp/ccZcsW6V.s:157    .text.USBPD_PWR_IF_VBUSDisable:0000000000000000 $t
+     /tmp/ccZcsW6V.s:164    .text.USBPD_PWR_IF_VBUSDisable:0000000000000000 USBPD_PWR_IF_VBUSDisable
+     /tmp/ccZcsW6V.s:197    .text.USBPD_PWR_IF_VBUSIsEnabled:0000000000000000 $t
+     /tmp/ccZcsW6V.s:204    .text.USBPD_PWR_IF_VBUSIsEnabled:0000000000000000 USBPD_PWR_IF_VBUSIsEnabled
+     /tmp/ccZcsW6V.s:237    .text.USBPD_PWR_IF_ReadVA:0000000000000000 $t
+     /tmp/ccZcsW6V.s:244    .text.USBPD_PWR_IF_ReadVA:0000000000000000 USBPD_PWR_IF_ReadVA
+     /tmp/ccZcsW6V.s:263    .text.USBPD_PWR_IF_Enable_VConn:0000000000000000 $t
+     /tmp/ccZcsW6V.s:270    .text.USBPD_PWR_IF_Enable_VConn:0000000000000000 USBPD_PWR_IF_Enable_VConn
+     /tmp/ccZcsW6V.s:289    .text.USBPD_PWR_IF_Disable_VConn:0000000000000000 $t
+     /tmp/ccZcsW6V.s:296    .text.USBPD_PWR_IF_Disable_VConn:0000000000000000 USBPD_PWR_IF_Disable_VConn
+     /tmp/ccZcsW6V.s:309    .text.USBPD_PWR_IF_GetPortPDOs:0000000000000000 $t
+     /tmp/ccZcsW6V.s:316    .text.USBPD_PWR_IF_GetPortPDOs:0000000000000000 USBPD_PWR_IF_GetPortPDOs
+     /tmp/ccZcsW6V.s:356    .text.USBPD_PWR_IF_GetPortPDOs:0000000000000018 $d
+     /tmp/ccZcsW6V.s:362    .text.USBPD_PWR_IF_SearchRequestedPDO:0000000000000000 $t
+     /tmp/ccZcsW6V.s:369    .text.USBPD_PWR_IF_SearchRequestedPDO:0000000000000000 USBPD_PWR_IF_SearchRequestedPDO
+     /tmp/ccZcsW6V.s:388    .text.USBPD_PWR_IF_Alarm:0000000000000000 $t
+     /tmp/ccZcsW6V.s:395    .text.USBPD_PWR_IF_Alarm:0000000000000000 USBPD_PWR_IF_Alarm
+     /tmp/ccZcsW6V.s:422    .data.PORT0_PDO_ListSNK:0000000000000000 PORT0_PDO_ListSNK
+     /tmp/ccZcsW6V.s:415    .bss.PORT0_PDO_ListSRC:0000000000000000 PORT0_PDO_ListSRC
+     /tmp/ccZcsW6V.s:433    .data.USBPD_NbPDO:0000000000000000 USBPD_NbPDO
+     /tmp/ccZcsW6V.s:412    .bss.PORT0_PDO_ListSRC:0000000000000000 $d
+     /tmp/ccZcsW6V.s:418    .data.PORT0_PDO_ListSNK:0000000000000000 $d
+     /tmp/ccZcsW6V.s:435    .data.USBPD_NbPDO:0000000000000003 $d
+
+UNDEFINED SYMBOLS
+USBPD_TRACE_Add
+HW_IF_PWR_Enable
+HW_IF_PWR_VBUSIsEnabled
+memcpy
+GUI_NbPDO
