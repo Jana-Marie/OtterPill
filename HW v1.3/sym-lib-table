@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name STM32G070)(type Legacy)(uri ${KIPRJMOD}/STM32G070.lib)(options "")(descr ""))
+  (lib (name OtterPill-rescue)(type Legacy)(uri ${KIPRJMOD}/OtterPill-rescue.lib)(options "")(descr ""))
+)
