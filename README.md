@@ -53,19 +53,19 @@ Pinout by [SarahhhhFoster](https://github.com/SarahhhhFoster) :)
 
 ### STM workshop based on OtterPill
 
-[https://github.com/Jan--Henrik/hackerhotel-stm-workshop](https://github.com/Jan--Henrik/hackerhotel-stm-workshop)
+[https://github.com/Jan--Henrik/hackerhotel-stm-workshop](https://github.com/Jana-Marie/hackerhotel-stm-workshop)
 
-![](https://github.com/Jan--Henrik/hackerhotel-stm-workshop/blob/master/monochrome_c.gif)
+![](https://github.com/Jana-Marie/hackerhotel-stm-workshop/blob/master/monochrome_c.gif)
 
 ### USB-PD example firmware
 
 This is a working USB-PD example using ChibiOS, a new voltage can be requested by pressing the Button.
 
-[https://github.com/Jan--Henrik/USB-PD-Firmware](https://github.com/Jan--Henrik/USB-PD-Firmware)
+[https://github.com/Jan--Henrik/USB-PD-Firmware](https://github.com/Jana-Marie/USB-PD-Firmware)
 
 ### IBM dials retrofit
 
-[https://github.com/Jan--Henrik/IBM-dials-retrofit](https://github.com/Jan--Henrik/IBM-dials-retrofit)
+[https://github.com/Jan--Henrik/IBM-dials-retrofit](https://github.com/Jana-Marie/IBM-dials-retrofit)
 
 <img src="https://raw.githubusercontent.com/Jan--Henrik/IBM-dials-retrofit/4c27e5c5fda3bd528e12d15f71b0f5aaa8c24b97/images/1.jpeg" width="600">
 
@@ -73,7 +73,7 @@ This is a working USB-PD example using ChibiOS, a new voltage can be requested b
 
 Most Arduino shields should be compatible.
 
-#### [USB-to-CAN-adapter](https://github.com/Jan--Henrik/OtterPill-CAN-Adapter)
+#### [USB-to-CAN-adapter](https://github.com/Jana-Marie/OtterPill-CAN-Adapter)
 
 ## Todo for HW v1.3
 
