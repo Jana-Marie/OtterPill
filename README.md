@@ -4,7 +4,7 @@ OtterPill is a 3$ STM32F072 devboard featuring USB 2.0 full-speed, a DFU Bootloa
 
 Changelog V1.2: BOM cost reduction by ~40%, PCB can be fully populated by JLCSMT, more efficient buck converter (PCB gets less warm at 20V), GND-hook for probing, Reset-Pin exposed as pad, power pads for 20V/5A
 
-**How do I get an OtterPill?** 
+**How do I get an OtterPill?**
 
 Via [tindie](https://www.tindie.com/products/jan_henrik/otterpill/) (if sold out DM via Twitter, I might have a few left ;))
 
@@ -53,19 +53,19 @@ Pinout by [SarahhhhFoster](https://github.com/SarahhhhFoster) :)
 
 ### STM workshop based on OtterPill
 
-[https://github.com/Jan--Henrik/hackerhotel-stm-workshop](https://github.com/Jan--Henrik/hackerhotel-stm-workshop)
+[https://github.com/Jana-Marie/hackerhotel-stm-workshop](https://github.com/Jana-Marie/hackerhotel-stm-workshop)
 
-![](https://github.com/Jan--Henrik/hackerhotel-stm-workshop/blob/master/monochrome_c.gif)
+![](https://github.com/Jana-Marie/hackerhotel-stm-workshop/blob/master/monochrome_c.gif)
 
 ### USB-PD example firmware
 
 This is a working USB-PD example using ChibiOS, a new voltage can be requested by pressing the Button.
 
-[https://github.com/Jan--Henrik/USB-PD-Firmware](https://github.com/Jan--Henrik/USB-PD-Firmware)
+[https://github.com/Jana-Marie/USB-PD-Firmware](https://github.com/Jana-Marie/USB-PD-Firmware)
 
 ### IBM dials retrofit
 
-[https://github.com/Jan--Henrik/IBM-dials-retrofit](https://github.com/Jan--Henrik/IBM-dials-retrofit)
+[https://github.com/Jana-Marie/IBM-dials-retrofit](https://github.com/Jana-Marie/IBM-dials-retrofit)
 
 <img src="https://raw.githubusercontent.com/Jan--Henrik/IBM-dials-retrofit/4c27e5c5fda3bd528e12d15f71b0f5aaa8c24b97/images/1.jpeg" width="600">
 
@@ -73,7 +73,7 @@ This is a working USB-PD example using ChibiOS, a new voltage can be requested b
 
 Most Arduino shields should be compatible.
 
-#### [USB-to-CAN-adapter](https://github.com/Jan--Henrik/OtterPill-CAN-Adapter)
+#### [USB-to-CAN-adapter](https://github.com/Jana-Marie/OtterPill-CAN-Adapter)
 
 ## Todo for HW v1.3
 
@@ -83,8 +83,8 @@ Most Arduino shields should be compatible.
  - [x] ~~Redraw the FUSB302B Symbol~~ -> forgot why, works great
  - [x] ~~Consider switching to STUSB4500 (Easier PD requesting, same price)~~ -> FUSB works great, no need to change
  - [x] Add VBUS ADC
- 
- 
+
+
 ## Special thanks
 
 [@jamesmunns](https://github.com/jamesmunns) for creating the Rust examples.
@@ -101,13 +101,27 @@ Most Arduino shields should be compatible.
 ![](images/1.jpg)
 ![](images/2.jpg)
 
-### Rev 1.1
-
-![](images/3.jpg)
-![](images/4.jpg)
-
 ### Rev 1.2
-
 
 ![](images/2_1.jpg)
 ![](images/2_2.jpg)
+
+### License
+
+Copyright Jana Marie Hemsing 2022.
+
+This source describes Open Hardware and is licensed under the CERN-OHL-S v2.
+
+You may redistribute and modify this source and make products using it under
+the terms of the CERN-OHL-S v2 (https://ohwr.org/cern_ohl_s_v2.txt).
+
+This source is distributed WITHOUT ANY EXPRESS OR IMPLIED WARRANTY,
+INCLUDING OF MERCHANTABILITY, SATISFACTORY QUALITY AND FITNESS FOR A
+PARTICULAR PURPOSE. Please see the CERN-OHL-S v2 for applicable conditions.
+
+Source location: https://github.com/Jana-Marie/electrostatic-adhesion-plate
+
+As per CERN-OHL-S v2 section 4, should You produce hardware based on this
+source, You must where practicable maintain the Source Location visible
+on the external case of the Gizmo or other products you make using this
+source.
