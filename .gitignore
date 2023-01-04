@@ -12,6 +12,11 @@
 *.bck
 *.kicad_pcb-bak
 *~
+*.kicad_pcb-bak
+*.kicad_sch-bak
+*-backups
+*.kicad_prl
+*.sch-bak
 _autosave-*
 *.tmp
 *-save.pro
@@ -30,12 +35,12 @@ fp-info-cache
 *.csv
 
 ### KiCad Patch ###
-escue-backup/
+rescue-backup/
 
 *.tsv
 bom/
 
 # Gerber export output
-out/
+gerber/
 
 # End of https://www.gitignore.io/api/kicad
