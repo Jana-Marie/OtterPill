@@ -108,7 +108,7 @@ Most Arduino shields should be compatible.
 
 ### License
 
-Copyright Jana Marie Hemsing 2022.
+Copyright Jana Marie Hemsing 2023.
 
 This source describes Open Hardware and is licensed under the CERN-OHL-S v2.
 
@@ -119,7 +119,7 @@ This source is distributed WITHOUT ANY EXPRESS OR IMPLIED WARRANTY,
 INCLUDING OF MERCHANTABILITY, SATISFACTORY QUALITY AND FITNESS FOR A
 PARTICULAR PURPOSE. Please see the CERN-OHL-S v2 for applicable conditions.
 
-Source location: https://github.com/Jana-Marie/electrostatic-adhesion-plate
+Source location: https://github.com/Jana-Marie/OtterPill
 
 As per CERN-OHL-S v2 section 4, should You produce hardware based on this
 source, You must where practicable maintain the Source Location visible
