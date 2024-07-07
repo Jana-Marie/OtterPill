@@ -108,7 +108,7 @@ Most Arduino shields should be compatible.
 
 ### License
 
-Copyright Jana Marie Hemsing 2023.
+Copyright Jana Marie Hemsing 2027.
 
 This source describes Open Hardware and is licensed under the CERN-OHL-S v2.
 
